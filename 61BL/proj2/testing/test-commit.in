@@ -1,0 +1,11 @@
+> init
+<<<
+> commit test
+No changes added to the commit.
+<<<
+> commit
+Please enter a commit message.
+<<<
+> commit ""
+Please enter a commit message.
+<<<

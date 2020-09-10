@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="819e0438-8a77-4d58-8f15-3cc740e22566" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../lab07/DNASequenceSetTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../lab07/DNASequenceSetTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lab07/Error.java" beforeDir="false" afterPath="$PROJECT_DIR$/../lab07/Error.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1e31jNEsNMprMqZMEGc2GYE0lzP" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="create.test.in.the.same.root" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../library-su20/javalib/xchart-3.5.1.jar!/" />
+    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+  </component>
+  <component name="RunManager" selected="Application.LinkedList">
+    <configuration name="LinkedList" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="LinkedList" />
+      <module name="lab06" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Main" />
+      <module name="lab06" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SLListTest.testReverse" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="lab06" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="SLListTest" />
+      <option name="METHOD_NAME" value="testReverse" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SLListTest.testSLListAdd" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="lab06" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="SLListTest" />
+      <option name="METHOD_NAME" value="testSLListAdd" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.LinkedList" />
+        <item itemvalue="Application.Main" />
+        <item itemvalue="JUnit.SLListTest.testReverse" />
+        <item itemvalue="JUnit.SLListTest.testSLListAdd" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="1684" y="461" key="FileChooserDialogImpl" timestamp="1593535622681">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1684" y="461" key="FileChooserDialogImpl/0.0.2498.1440@0.0.2498.1440" timestamp="1593535622681" />
+    <state width="2499" height="419" key="GridCell.Tab.0.bottom" timestamp="1594044544103">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="2499" height="419" key="GridCell.Tab.0.bottom/0.0.2498.1440@0.0.2498.1440" timestamp="1594044544103" />
+    <state width="2499" height="419" key="GridCell.Tab.0.center" timestamp="1594044544101">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="2499" height="419" key="GridCell.Tab.0.center/0.0.2498.1440@0.0.2498.1440" timestamp="1594044544101" />
+    <state width="2499" height="419" key="GridCell.Tab.0.left" timestamp="1594044544100">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="2499" height="419" key="GridCell.Tab.0.left/0.0.2498.1440@0.0.2498.1440" timestamp="1594044544100" />
+    <state width="2499" height="419" key="GridCell.Tab.0.right" timestamp="1594044544103">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="2499" height="419" key="GridCell.Tab.0.right/0.0.2498.1440@0.0.2498.1440" timestamp="1594044544103" />
+    <state width="1247" height="526" key="GridCell.Tab.1.bottom" timestamp="1593657537560">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="526" key="GridCell.Tab.1.bottom/0.0.2498.1440@0.0.2498.1440" timestamp="1593657537560" />
+    <state width="1247" height="526" key="GridCell.Tab.1.center" timestamp="1593657537560">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="526" key="GridCell.Tab.1.center/0.0.2498.1440@0.0.2498.1440" timestamp="1593657537560" />
+    <state width="1247" height="526" key="GridCell.Tab.1.left" timestamp="1593657537560">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="526" key="GridCell.Tab.1.left/0.0.2498.1440@0.0.2498.1440" timestamp="1593657537560" />
+    <state width="1247" height="526" key="GridCell.Tab.1.right" timestamp="1593657537560">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="526" key="GridCell.Tab.1.right/0.0.2498.1440@0.0.2498.1440" timestamp="1593657537560" />
+    <state x="794" y="332" key="SettingsEditor" timestamp="1594044497457">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="794" y="332" key="SettingsEditor/0.0.2498.1440@0.0.2498.1440" timestamp="1594044497457" />
+    <state x="92" y="92" width="2314" height="1256" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1593573494311">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="92" y="92" width="2314" height="1256" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.2498.1440@0.0.2498.1440" timestamp="1593573494311" />
+    <state x="1644" y="442" key="com.intellij.testIntegration.createTest.CreateTestDialog" timestamp="1593888948319">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1644" y="442" key="com.intellij.testIntegration.createTest.CreateTestDialog/0.0.2498.1440@0.0.2498.1440" timestamp="1593888948319" />
+    <state width="600" height="428" key="javadoc.popup" timestamp="1593640158494">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="600" height="428" key="javadoc.popup/0.0.2498.1440@0.0.2498.1440" timestamp="1593640158494" />
+    <state x="1529" y="344" width="672" height="677" key="run.anything.popup" timestamp="1593621653070">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1529" y="344" width="672" height="677" key="run.anything.popup/0.0.2498.1440@0.0.2498.1440" timestamp="1593621653070" />
+    <state x="502" y="352" width="672" height="678" key="search.everywhere.popup" timestamp="1593889505912">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="502" y="352" width="672" height="678" key="search.everywhere.popup/0.0.2498.1440@0.0.2498.1440" timestamp="1593889505912" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/Main.java</url>
+          <line>2</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

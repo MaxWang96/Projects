@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:skeleton" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </select>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="084f6464-b29a-415e-86aa-ce256f26d9b1" name="Default Changelist" comment="Modified decreaseSize">
+      <change afterPath="$PROJECT_DIR$/../lab11/ConcurrentModification.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../lab11/DBTable.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../lab11/DLList.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../lab11/DLListTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../lab11/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ArrayDequeTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/ArrayDequeTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../proj2/bird.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../proj2/bird.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../proj2/cat.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../proj2/cat.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../proj2/gitlet/Comi.java" beforeDir="false" afterPath="$PROJECT_DIR$/../proj2/gitlet/Comi.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../proj2/gitlet/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../proj2/gitlet/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../proj2/gitlet/UtilsExtend.java" beforeDir="false" afterPath="$PROJECT_DIR$/../proj2/gitlet/UtilsExtend.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+        <option value="Interface" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="InstancesTracker">
+    <option name="classes">
+      <map>
+        <entry key="LinkedListDeque" value="CREATION" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectId" id="1e70zf3LcFrkyHi0ry5xpN3xCXh" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../library-su20/javalib/xchart-3.5.1.jar!/" />
+    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+  </component>
+  <component name="RunManager" selected="JUnit.ArrayDequeTest.testRemove">
+    <configuration name="ArrayDequeTest.testRemove" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="proj1" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="ArrayDequeTest" />
+      <option name="METHOD_NAME" value="testRemove" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ArrayDequeTest.testSizePlusOne" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="proj1" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="ArrayDequeTest" />
+      <option name="METHOD_NAME" value="testSizePlusOne" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="LinkedListDequeTest.addRemoveTest2" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="proj1" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="LinkedListDequeTest" />
+      <option name="METHOD_NAME" value="addRemoveTest2" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="LinkedListDequeTest.fuzzTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="proj1" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="LinkedListDequeTest" />
+      <option name="METHOD_NAME" value="fuzzTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="LinkedListDequeTest.testTime" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="proj1" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="LinkedListDequeTest" />
+      <option name="METHOD_NAME" value="testTime" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.ArrayDequeTest.testRemove" />
+        <item itemvalue="JUnit.LinkedListDequeTest.fuzzTest" />
+        <item itemvalue="JUnit.LinkedListDequeTest.testTime" />
+        <item itemvalue="JUnit.LinkedListDequeTest.addRemoveTest2" />
+        <item itemvalue="JUnit.ArrayDequeTest.testSizePlusOne" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="SHOW_OTHER_BRANCHES" value="true" />
+    <option name="COLUMN_ORDER">
+      <list>
+        <option value="0" />
+        <option value="2" />
+        <option value="3" />
+        <option value="1" />
+      </list>
+    </option>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CHECK_NEW_TODO" value="false" />
+    <MESSAGE value="Clean up" />
+    <MESSAGE value="Modified decreaseSize" />
+    <option name="LAST_COMMIT_MESSAGE" value="Modified decreaseSize" />
+    <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="1465" y="378" key="#Templates" timestamp="1593706198050">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1465" y="378" key="#Templates/0.0.2498.1440@0.0.2498.1440" timestamp="1593706198050" />
+    <state x="1678" y="439" key="#com.intellij.ide.util.MemberChooser" timestamp="1593658539533">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1678" y="439" key="#com.intellij.ide.util.MemberChooser/0.0.2498.1440@0.0.2498.1440" timestamp="1593658539533" />
+    <state x="794" y="475" key="#org.jetbrains.debugger.memory.view.InstancesWindow" timestamp="1593788159498">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="794" y="475" key="#org.jetbrains.debugger.memory.view.InstancesWindow/0.0.2498.1440@0.0.2498.1440" timestamp="1593788159498" />
+    <state x="1501" y="285" key="CommitChangelistDialog2" timestamp="1593989875693">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1501" y="285" key="CommitChangelistDialog2/0.0.2498.1440@0.0.2498.1440" timestamp="1593989875693" />
+    <state x="1341" y="100" width="1065" height="1240" key="DiffContextDialog" timestamp="1593988277851">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1341" y="100" width="1065" height="1240" key="DiffContextDialog/0.0.2498.1440@0.0.2498.1440" timestamp="1593988277851" />
+    <state x="1684" y="461" key="FileChooserDialogImpl" timestamp="1594053281667">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1684" y="461" key="FileChooserDialogImpl/0.0.2498.1440@0.0.2498.1440" timestamp="1594053281667" />
+    <state width="1247" height="413" key="GridCell.Tab.0.bottom" timestamp="1594779206767">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="413" key="GridCell.Tab.0.bottom/0.0.2498.1440@0.0.2498.1440" timestamp="1594779206767" />
+    <state width="1247" height="413" key="GridCell.Tab.0.center" timestamp="1594779206767">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="413" key="GridCell.Tab.0.center/0.0.2498.1440@0.0.2498.1440" timestamp="1594779206767" />
+    <state width="1247" height="413" key="GridCell.Tab.0.left" timestamp="1594779206766">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="413" key="GridCell.Tab.0.left/0.0.2498.1440@0.0.2498.1440" timestamp="1594779206766" />
+    <state width="1247" height="413" key="GridCell.Tab.0.right" timestamp="1594779206767">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="413" key="GridCell.Tab.0.right/0.0.2498.1440@0.0.2498.1440" timestamp="1594779206767" />
+    <state width="1247" height="529" key="GridCell.Tab.1.bottom" timestamp="1593820900185">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="529" key="GridCell.Tab.1.bottom/0.0.2498.1440@0.0.2498.1440" timestamp="1593820900185" />
+    <state width="1247" height="529" key="GridCell.Tab.1.center" timestamp="1593820900185">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="529" key="GridCell.Tab.1.center/0.0.2498.1440@0.0.2498.1440" timestamp="1593820900185" />
+    <state width="1247" height="529" key="GridCell.Tab.1.left" timestamp="1593820900185">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="529" key="GridCell.Tab.1.left/0.0.2498.1440@0.0.2498.1440" timestamp="1593820900185" />
+    <state width="1247" height="529" key="GridCell.Tab.1.right" timestamp="1593820900185">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="529" key="GridCell.Tab.1.right/0.0.2498.1440@0.0.2498.1440" timestamp="1593820900185" />
+    <state x="1547" y="342" width="673" height="763" key="NewModule_or_Project.wizard" timestamp="1594053291554">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1547" y="342" width="673" height="763" key="NewModule_or_Project.wizard/0.0.2498.1440@0.0.2498.1440" timestamp="1594053291554" />
+    <state x="1612" y="422" key="RollbackChangesDialog" timestamp="1593987230394">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1612" y="422" key="RollbackChangesDialog/0.0.2498.1440@0.0.2498.1440" timestamp="1593987230394" />
+    <state x="845" y="342" key="SettingsEditor" timestamp="1594007461247">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="845" y="342" key="SettingsEditor/0.0.2498.1440@0.0.2498.1440" timestamp="1594007461247" />
+    <state x="1465" y="453" key="Vcs.Push.Dialog.v2" timestamp="1593990047985">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1465" y="453" key="Vcs.Push.Dialog.v2/0.0.2498.1440@0.0.2498.1440" timestamp="1593990047985" />
+    <state x="1682" y="634" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1593710589009">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1682" y="634" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.2498.1440@0.0.2498.1440" timestamp="1593710589009" />
+    <state x="1536" y="330" width="672" height="678" key="search.everywhere.popup" timestamp="1594007441105">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1536" y="330" width="672" height="678" key="search.everywhere.popup/0.0.2498.1440@0.0.2498.1440" timestamp="1594007441105" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/LinkedListDequeTest.java</url>
+          <line>131</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

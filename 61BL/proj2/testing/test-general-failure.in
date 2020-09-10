@@ -1,0 +1,16 @@
+> add cat.txt
+Not in an initialized Gitlet directory.
+<<<
+> init
+<<<
+>
+Please enter a command.
+<<<
+
+> cat
+No command with that name exists.
+<<<
+
+> add cat.txt dog.txt
+Incorrect operands.
+<<<

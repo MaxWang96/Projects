@@ -1,0 +1,16 @@
+I template.in
+> branch cat
+<<<
+> rm-branch dog
+A branch with that name does not exist.
+<<<
+> rm-branch master
+Cannot remove the current branch.
+<<<
+> checkout cat
+<<<
+> rm-branch master
+<<<
+> checkout master
+No such branch exists.
+<<<

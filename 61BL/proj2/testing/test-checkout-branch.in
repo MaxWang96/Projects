@@ -1,0 +1,40 @@
+> init
+<<<
+> branch cat
+<<<
++ cat.txt cat.txt
++ dog.txt dog.txt
+> add cat.txt
+<<<
+> commit test
+<<<
+> add dog.txt
+<<<
+> checkout cat
+<<<
+* cat.txt
+E dog.txt
+> commit test
+No changes added to the commit.
+<<<
++ org.txt org1.txt
+> add dog.txt
+<<<
+> add org.txt
+<<<
+> commit test2
+<<<
+> checkout cat
+No need to checkout the current branch.
+<<<
+> checkout master
+<<<
+E cat.txt
+* dog.txt
+> checkout chickenfinger
+No such branch exists.
+<<<
++ org.txt org2.txt
+> checkout cat
+There is an untracked file in the way; delete it, or add and commit it first.
+<<<

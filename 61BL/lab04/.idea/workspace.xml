@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="6030816a-6136-4a98-991e-5d3fa8b4b8ee" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../proj1/ArrayDequeTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../proj1/LinkedListDequeTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lab03/SieveOfEratosthenes.java" beforeDir="false" afterPath="$PROJECT_DIR$/../lab03/SieveOfEratosthenes.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lab03/SieveOfEratosthenes.template" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DebugExercise3.java" beforeDir="false" afterPath="$PROJECT_DIR$/DebugExercise3.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../proj0/NBody.java" beforeDir="false" afterPath="$PROJECT_DIR$/../proj0/NBody.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../proj0/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/../proj0/Test.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JUnit4 Test Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1draJ2zemNDL3KPljjjOJQ8DbJF" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit4" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit4" value="" />
+    <property name="create.test.in.the.same.root" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../library-su20/javalib/xchart-3.5.1.jar!/" />
+    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="terminal" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.DebugExercise3">
+    <configuration name="DebugExercise1" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="DebugExercise1" />
+      <module name="lab04" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="DebugExercise2" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="DebugExercise2" />
+      <module name="lab04" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="DebugExercise3" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="DebugExercise3" />
+      <module name="lab04" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="DogTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="lab04" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="DogTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MeasurementTest.testMinus" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="lab04" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="MeasurementTest" />
+      <option name="METHOD_NAME" value="testMinus" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.DebugExercise3" />
+        <item itemvalue="Application.DebugExercise1" />
+        <item itemvalue="Application.DebugExercise2" />
+        <item itemvalue="JUnit.DogTest" />
+        <item itemvalue="JUnit.MeasurementTest.testMinus" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="930" y="284" width="1092" height="689" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1593192982568">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="930" y="284" width="1092" height="689" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.2498.1440@0.0.2498.1440" timestamp="1593192982568" />
+    <state x="1565" y="227" width="617" height="633" key="#com.intellij.featureStatistics.actions.ShowFeatureUsageStatisticsDialog" timestamp="1593467200776">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1565" y="227" width="617" height="633" key="#com.intellij.featureStatistics.actions.ShowFeatureUsageStatisticsDialog/0.0.2498.1440@0.0.2498.1440" timestamp="1593467200776" />
+    <state x="1603" y="510" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1593466956388">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1603" y="510" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.2498.1440@0.0.2498.1440" timestamp="1593466956388" />
+    <state x="1582" y="250" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1593442875651">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1582" y="250" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.2498.1440@0.0.2498.1440" timestamp="1593442875651" />
+    <state x="1628" y="423" key="#xdebugger.evaluate" timestamp="1593466581271">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1628" y="423" key="#xdebugger.evaluate/0.0.2498.1440@0.0.2498.1440" timestamp="1593466581271" />
+    <state x="1147" y="351" key="FileChooserDialogImpl" timestamp="1593230070472">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1147" y="351" key="FileChooserDialogImpl/0.0.2498.1440@0.0.2498.1440" timestamp="1593230070472" />
+    <state width="1247" height="527" key="GridCell.Tab.-1.bottom" timestamp="1593440444234">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="527" key="GridCell.Tab.-1.bottom/0.0.2498.1440@0.0.2498.1440" timestamp="1593440444234" />
+    <state width="1247" height="527" key="GridCell.Tab.-1.center" timestamp="1593440444234">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="527" key="GridCell.Tab.-1.center/0.0.2498.1440@0.0.2498.1440" timestamp="1593440444234" />
+    <state width="1247" height="527" key="GridCell.Tab.-1.left" timestamp="1593440444234">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="527" key="GridCell.Tab.-1.left/0.0.2498.1440@0.0.2498.1440" timestamp="1593440444234" />
+    <state width="1247" height="527" key="GridCell.Tab.-1.right" timestamp="1593440444234">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="527" key="GridCell.Tab.-1.right/0.0.2498.1440@0.0.2498.1440" timestamp="1593440444234" />
+    <state width="1247" height="524" key="GridCell.Tab.0.bottom" timestamp="1593467719545">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="524" key="GridCell.Tab.0.bottom/0.0.2498.1440@0.0.2498.1440" timestamp="1593467719545" />
+    <state width="1247" height="524" key="GridCell.Tab.0.center" timestamp="1593467719545">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="524" key="GridCell.Tab.0.center/0.0.2498.1440@0.0.2498.1440" timestamp="1593467719545" />
+    <state width="1247" height="524" key="GridCell.Tab.0.left" timestamp="1593467719545">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="524" key="GridCell.Tab.0.left/0.0.2498.1440@0.0.2498.1440" timestamp="1593467719545" />
+    <state width="1247" height="524" key="GridCell.Tab.0.right" timestamp="1593467719545">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="524" key="GridCell.Tab.0.right/0.0.2498.1440@0.0.2498.1440" timestamp="1593467719545" />
+    <state width="1247" height="524" key="GridCell.Tab.1.bottom" timestamp="1593467719545">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="524" key="GridCell.Tab.1.bottom/0.0.2498.1440@0.0.2498.1440" timestamp="1593467719545" />
+    <state width="1247" height="524" key="GridCell.Tab.1.center" timestamp="1593467719545">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="524" key="GridCell.Tab.1.center/0.0.2498.1440@0.0.2498.1440" timestamp="1593467719545" />
+    <state width="1247" height="524" key="GridCell.Tab.1.left" timestamp="1593467719545">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="524" key="GridCell.Tab.1.left/0.0.2498.1440@0.0.2498.1440" timestamp="1593467719545" />
+    <state width="1247" height="524" key="GridCell.Tab.1.right" timestamp="1593467719545">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="524" key="GridCell.Tab.1.right/0.0.2498.1440@0.0.2498.1440" timestamp="1593467719545" />
+    <state width="1247" height="527" key="GridCell.Tab.2.bottom" timestamp="1593440401651">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="527" key="GridCell.Tab.2.bottom/0.0.2498.1440@0.0.2498.1440" timestamp="1593440401651" />
+    <state width="1247" height="527" key="GridCell.Tab.2.center" timestamp="1593440401651">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="527" key="GridCell.Tab.2.center/0.0.2498.1440@0.0.2498.1440" timestamp="1593440401651" />
+    <state width="1247" height="527" key="GridCell.Tab.2.left" timestamp="1593440401651">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="527" key="GridCell.Tab.2.left/0.0.2498.1440@0.0.2498.1440" timestamp="1593440401651" />
+    <state width="1247" height="527" key="GridCell.Tab.2.right" timestamp="1593440401651">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="527" key="GridCell.Tab.2.right/0.0.2498.1440@0.0.2498.1440" timestamp="1593440401651" />
+    <state x="1675" y="555" width="672" height="591" key="NewModule_or_Project.wizard" timestamp="1593230097048">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1675" y="555" width="672" height="591" key="NewModule_or_Project.wizard/0.0.2498.1440@0.0.2498.1440" timestamp="1593230097048" />
+    <state x="1429" y="288" width="983" height="717" key="SettingsEditor" timestamp="1593198180177">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1429" y="288" width="983" height="717" key="SettingsEditor/0.0.2498.1440@0.0.2498.1440" timestamp="1593198180177" />
+    <state x="1642" y="550" key="com.intellij.testIntegration.createTest.CreateTestDialog" timestamp="1593193536094">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1642" y="550" key="com.intellij.testIntegration.createTest.CreateTestDialog/0.0.2498.1440@0.0.2498.1440" timestamp="1593193536094" />
+    <state x="782" y="364" width="872" height="655" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1593466977155">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="782" y="364" width="872" height="655" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.2498.1440@0.0.2498.1440" timestamp="1593466977155" />
+    <state x="1529" y="344" key="run.anything.popup" timestamp="1593186630487">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1529" y="344" key="run.anything.popup/0.0.2498.1440@0.0.2498.1440" timestamp="1593186630487" />
+    <state x="1536" y="330" width="672" height="678" key="search.everywhere.popup" timestamp="1593467174137">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1536" y="330" width="672" height="678" key="search.everywhere.popup/0.0.2498.1440@0.0.2498.1440" timestamp="1593467174137" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/DebugExercise1.java</url>
+          <line>22</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/DebugExercise2.java</url>
+          <line>12</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <breakpoint type="java-exception">
+          <properties class="java.lang.ArithmeticException" package="java.lang" />
+          <option name="timeStamp" value="5" />
+        </breakpoint>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.NullPointerException" package="java.lang" />
+          <option name="timeStamp" value="6" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

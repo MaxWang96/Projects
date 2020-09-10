@@ -1,0 +1,35 @@
+I template.in
+> branch cat
+<<<
++ bird.txt bird.txt
+> add bird.txt
+<<<
+> merge cat
+You have uncommitted changes.
+<<<
+> commit cat
+<<<
+> rm bird.txt
+<<<
+> commit cute
+<<<
+> merge cutecat
+A branch with that name does not exist.
+<<<
+> merge master
+Cannot merge a branch with itself.
+<<<
+> checkout cat
+<<<
++ bird.txt bird.txt
+> add bird.txt
+<<<
+> commit bird.txt
+<<<
+> checkout master
+<<<
+* bird.txt
++ bird.txt bird.txt
+> merge cat
+There is an untracked file in the way; delete it, or add and commit it first.
+<<<

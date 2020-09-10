@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="a7fb79ee-09ee-4a43-8459-5a72bf31e6a3" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../lab21/GraphTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../lab21/GraphTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../proj3/bearmaps/utils/TrieSet.java" beforeDir="false" afterPath="$PROJECT_DIR$/../proj3/bearmaps/utils/TrieSet.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1f5w8feATqL06l3cyp9P2LU2f6p" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../library-su20/javalib/xchart-3.5.1.jar!/" />
+    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.2" />
+  </component>
+  <component name="RunManager" selected="JUnit.TestMyTrieSet.sanityPrefixTest">
+    <configuration name="TestMyTrieSet.sanityClearTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="lab15" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="TestMyTrieSet" />
+      <option name="METHOD_NAME" value="sanityClearTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestMyTrieSet.sanityContainsTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="lab15" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="TestMyTrieSet" />
+      <option name="METHOD_NAME" value="sanityContainsTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestMyTrieSet.sanityPrefixTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="lab15" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="TestMyTrieSet" />
+      <option name="METHOD_NAME" value="sanityPrefixTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.TestMyTrieSet.sanityPrefixTest" />
+        <item itemvalue="JUnit.TestMyTrieSet.sanityContainsTest" />
+        <item itemvalue="JUnit.TestMyTrieSet.sanityClearTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="WindowStateProjectService">
+    <state x="1678" y="423" key="#com.intellij.ide.util.MemberChooser" timestamp="1595525015002">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1678" y="423" key="#com.intellij.ide.util.MemberChooser/0.0.2498.1440@0.0.2498.1440" timestamp="1595525015002" />
+    <state x="1553" y="456" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1595527436262">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1553" y="456" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.2498.1440@0.0.2498.1440" timestamp="1595527436262" />
+    <state x="1579" y="461" key="FileChooserDialogImpl" timestamp="1595521118249">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1579" y="461" key="FileChooserDialogImpl/0.0.2498.1440@0.0.2498.1440" timestamp="1595521118249" />
+    <state width="1247" height="511" key="GridCell.Tab.0.bottom" timestamp="1595530512618">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="511" key="GridCell.Tab.0.bottom/0.0.2498.1440@0.0.2498.1440" timestamp="1595530512618" />
+    <state width="1247" height="511" key="GridCell.Tab.0.center" timestamp="1595530512617">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="511" key="GridCell.Tab.0.center/0.0.2498.1440@0.0.2498.1440" timestamp="1595530512617" />
+    <state width="1247" height="511" key="GridCell.Tab.0.left" timestamp="1595530512617">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="511" key="GridCell.Tab.0.left/0.0.2498.1440@0.0.2498.1440" timestamp="1595530512617" />
+    <state width="1247" height="511" key="GridCell.Tab.0.right" timestamp="1595530512618">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="511" key="GridCell.Tab.0.right/0.0.2498.1440@0.0.2498.1440" timestamp="1595530512618" />
+    <state width="1247" height="511" key="GridCell.Tab.1.bottom" timestamp="1595530512619">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="511" key="GridCell.Tab.1.bottom/0.0.2498.1440@0.0.2498.1440" timestamp="1595530512619" />
+    <state width="1247" height="511" key="GridCell.Tab.1.center" timestamp="1595530512618">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="511" key="GridCell.Tab.1.center/0.0.2498.1440@0.0.2498.1440" timestamp="1595530512618" />
+    <state width="1247" height="511" key="GridCell.Tab.1.left" timestamp="1595530512618">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="511" key="GridCell.Tab.1.left/0.0.2498.1440@0.0.2498.1440" timestamp="1595530512618" />
+    <state width="1247" height="511" key="GridCell.Tab.1.right" timestamp="1595530512618">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="511" key="GridCell.Tab.1.right/0.0.2498.1440@0.0.2498.1440" timestamp="1595530512618" />
+    <state x="1353" y="294" key="SettingsEditor" timestamp="1595521120435">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1353" y="294" key="SettingsEditor/0.0.2498.1440@0.0.2498.1440" timestamp="1595521120435" />
+    <state x="1536" y="329" width="672" height="678" key="search.everywhere.popup" timestamp="1595524800987">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1536" y="329" width="672" height="678" key="search.everywhere.popup/0.0.2498.1440@0.0.2498.1440" timestamp="1595524800987" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/TestMyTrieSet.java</url>
+          <line>50</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

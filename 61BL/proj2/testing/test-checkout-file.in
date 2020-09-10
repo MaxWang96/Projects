@@ -1,0 +1,16 @@
+I template.in
++ org.txt org1.txt
+> add org.txt
+<<<
+> commit org
+<<<
++ org.txt org2.txt
+> checkout -- org.txt
+<<<
+= org.txt org1.txt
+> commit org
+No changes added to the commit.
+<<<
+> checkout -- dog.txt
+File does not exist in that commit.
+<<<

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="0f126772-5dca-49d6-9cc0-00d718a46bfc" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/BinarySearchTree.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BinaryTree.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BinaryTreeTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../proj2/cat.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../proj2/cat.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../proj2/gitlet/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../proj2/gitlet/Main.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ProjectId" id="1exUiIJQf94JmvBeP1C2fdCv1ga" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../library-su20/javalib/xchart-3.5.1.jar!/" />
+    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.2" />
+  </component>
+  <component name="RunManager">
+    <configuration name="BinaryTreeTest.treeFormatTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="lab13" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="BinaryTreeTest" />
+      <option name="METHOD_NAME" value="treeFormatTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.BinaryTreeTest.treeFormatTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="1579" y="461" key="FileChooserDialogImpl" timestamp="1595262874340">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1579" y="461" key="FileChooserDialogImpl/0.0.2498.1440@0.0.2498.1440" timestamp="1595262874340" />
+    <state x="1353" y="294" key="SettingsEditor" timestamp="1595262875923">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1353" y="294" key="SettingsEditor/0.0.2498.1440@0.0.2498.1440" timestamp="1595262875923" />
+  </component>
+</project>

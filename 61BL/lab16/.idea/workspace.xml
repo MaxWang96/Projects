@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="6f6aac4b-ce10-4442-9aed-2f0facf7a21a" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../lab24/RegexPuzzles.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../lab24/mystery.txt" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1fExeDGhAS2wmzuZwS93y9cLs3Y" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../library-su20/javalib/xchart-3.5.1.jar!/" />
+    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+  </component>
+  <component name="RunManager" selected="JUnit.HashMapTest">
+    <configuration name="HashMapTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="lab16" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="HashMapTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="HashMapTest.basicFunctionalityTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="lab16" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="HashMapTest" />
+      <option name="METHOD_NAME" value="basicFunctionalityTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="HashMapTest.iteratorTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="lab16" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="HashMapTest" />
+      <option name="METHOD_NAME" value="iteratorTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="HashMapTest.testRemove" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="lab16" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="HashMapTest" />
+      <option name="METHOD_NAME" value="testRemove" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="HashMapTest.testResize" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="lab16" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="HashMapTest" />
+      <option name="METHOD_NAME" value="testResize" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.HashMapTest" />
+        <item itemvalue="JUnit.HashMapTest.iteratorTest" />
+        <item itemvalue="JUnit.HashMapTest.basicFunctionalityTest" />
+        <item itemvalue="JUnit.HashMapTest.testResize" />
+        <item itemvalue="JUnit.HashMapTest.testRemove" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="WindowStateProjectService">
+    <state x="1342" y="100" width="1063" height="1247" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1595859618661">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1342" y="100" width="1063" height="1247" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/0.0.2498.1440@0.0.2498.1440" timestamp="1595859618661" />
+    <state x="1678" y="427" key="#com.intellij.ide.util.MemberChooser" timestamp="1595870956119">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1678" y="427" key="#com.intellij.ide.util.MemberChooser/0.0.2498.1440@0.0.2498.1440" timestamp="1595870956119" />
+    <state x="1579" y="461" key="FileChooserDialogImpl" timestamp="1595797155154">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1579" y="461" key="FileChooserDialogImpl/0.0.2498.1440@0.0.2498.1440" timestamp="1595797155154" />
+    <state width="1247" height="417" key="GridCell.Tab.0.bottom" timestamp="1595871686050">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="417" key="GridCell.Tab.0.bottom/0.0.2498.1440@0.0.2498.1440" timestamp="1595871686050" />
+    <state width="1247" height="417" key="GridCell.Tab.0.center" timestamp="1595871686050">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="417" key="GridCell.Tab.0.center/0.0.2498.1440@0.0.2498.1440" timestamp="1595871686050" />
+    <state width="1247" height="417" key="GridCell.Tab.0.left" timestamp="1595871686050">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="417" key="GridCell.Tab.0.left/0.0.2498.1440@0.0.2498.1440" timestamp="1595871686050" />
+    <state width="1247" height="417" key="GridCell.Tab.0.right" timestamp="1595871686050">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state width="1247" height="417" key="GridCell.Tab.0.right/0.0.2498.1440@0.0.2498.1440" timestamp="1595871686050" />
+    <state x="1377" y="294" width="998" height="708" key="SettingsEditor" timestamp="1595856528790">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1377" y="294" width="998" height="708" key="SettingsEditor/0.0.2498.1440@0.0.2498.1440" timestamp="1595856528790" />
+    <state x="1681" y="633" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1595818029227">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1681" y="633" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.2498.1440@0.0.2498.1440" timestamp="1595818029227" />
+    <state x="1536" y="329" width="672" height="678" key="search.everywhere.popup" timestamp="1595870976382">
+      <screen x="0" y="0" width="2498" height="1440" />
+    </state>
+    <state x="1536" y="329" width="672" height="678" key="search.everywhere.popup/0.0.2498.1440@0.0.2498.1440" timestamp="1595870976382" />
+  </component>
+</project>

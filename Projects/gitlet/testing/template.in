@@ -1,0 +1,7 @@
+> init
+<<<
++ cat.txt cat.txt
+> add cat.txt
+<<<
+> commit cat
+<<<

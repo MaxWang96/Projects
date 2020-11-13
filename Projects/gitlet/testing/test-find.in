@@ -1,0 +1,25 @@
+> init
+<<<
++ cat.txt cat.txt
+> add cat.txt
+<<<
+> commit cat
+<<<
++ dog.txt dog.txt
+> add dog.txt
+<<<
+> commit cat
+<<<
+> find test
+Found no commit with that message.
+<<<
+D HEADER "[a-f0-9]+"
+> find "initial commit"
+${HEADER}
+
+<<<*
+> find cat
+${HEADER}
+${HEADER}
+
+<<<*

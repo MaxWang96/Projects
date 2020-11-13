@@ -1,0 +1,10 @@
++ org.txt org1.txt
+> add org.txt
+<<<
+> commit org1
+<<<
++ org.txt org2.txt
+> add org.txt
+<<<
+> commit org2
+<<<

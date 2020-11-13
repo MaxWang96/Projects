@@ -1,0 +1,54 @@
+I template.in
++ org.txt org1.txt
+> add org.txt
+<<<
+> commit org1
+<<<
++ org.txt org2.txt
+> add org.txt
+<<<
+> commit org2
+<<<
+D CID "[a-f0-9]+"
+D HEADER "commit (${CID})"
+D DATE "Date: \w\w\w \w\w\w \d+ \d\d:\d\d:\d\d \d\d\d\d [-+]\d\d\d\d"
+> log
+===
+${HEADER}
+${DATE}
+org2
+
+===
+${HEADER}
+${DATE}
+org1
+
+===
+${HEADER}
+${DATE}
+cat
+
+===
+${HEADER}
+${DATE}
+initial commit
+
+<<<*
+D CID2 "${1}"
+D CID1 "${2}"
+D CID3 "${3}"
+- cat.txt
+> checkout ${CID1} -- org.txt
+<<<
+= org.txt org1.txt
+* cat.txt
+> checkout ${CID3} -- cat.txt
+<<<
+= org.txt org1.txt
+= cat.txt cat.txt
+> commit head
+No changes added to the commit.
+<<<
+> checkout 443 -- cat.txt
+No commit with that id exists.
+<<<

@@ -1,0 +1,60 @@
+> init
+<<<
+> branch cat
+<<<
++ dog.txt dog.txt
++ pancake.txt pancake1.txt
+> add dog.txt
+<<<
+> add pancake.txt
+<<<
+> commit dog
+<<<
+> checkout cat
+<<<
++ cat.txt cat.txt
++ pancake.txt pancake.txt
+> add cat.txt
+<<<
+> add pancake.txt
+<<<
+> commit cat
+<<<
+> branch tmp
+<<<
+> merge master
+Encountered a merge conflict.
+<<<
+> checkout master
+<<<
++ org.txt org1.txt
+> add org.txt
+<<<
+> commit org
+<<<
+> merge tmp
+Encountered a merge conflict.
+<<<
++ org1.txt org1.txt
++ pancake.txt pancake.txt
+> add org1.txt
+<<<
+> add pancake.txt
+<<<
+> commit org1
+<<<
+> checkout cat
+<<<
++ bird.txt bird.txt
++ pancake.txt pancake1.txt
+> add bird.txt
+<<<
+> add pancake.txt
+<<<
+> commit bird
+<<<
+> checkout master
+<<<
+> merge cat
+<<<
+= pancake.txt pancake1.txt

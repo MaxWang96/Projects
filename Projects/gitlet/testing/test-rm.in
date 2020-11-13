@@ -1,0 +1,23 @@
+> init
+<<<
++ cat.txt cat.txt
+> add cat.txt
+<<<
+> rm cat.txt
+<<<
+> commit test
+No changes added to the commit.
+<<<
+= cat.txt cat.txt
+> add cat.txt
+<<<
+> commit test
+<<<
+> rm cat.txt
+<<<
+* cat.txt
++ dog.txt dog.txt
+> rm dog.txt
+No reason to remove the file.
+<<<
+

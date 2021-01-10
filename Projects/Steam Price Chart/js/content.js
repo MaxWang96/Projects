@@ -1,6 +1,9 @@
-// console.time('t')
 let drawChart;
 let wait_on = 2;
+// chrome.storage.sync.get('region', (value) => console.log(value));
+// console.time('t');
+// chrome.storage.sync.get('region', (value) => {
+// })
 chrome.runtime.sendMessage(location.href, function(response) {
 	drawChart = `
 Highcharts.stockChart('chart_container', {
@@ -129,7 +132,7 @@ Highcharts.stockChart('chart_container', {
 		}
     },
 
-});`
+});`;
 	drawChartCounter();
 	// console.log(response[0]);
 	// console.timeEnd('t');
@@ -151,17 +154,15 @@ function createScript(source, text, loc, option, promise) {
 	else if (option === 'after') loc.appendChild(newScript);
 	if (promise) {
 		return new Promise((res, rej) => {
-			newScript.onload = function() {
-				res();
-			}
+			newScript.onload = drawChartCounter;
 			newScript.onerror = rej;
-		})
-	};
+		});
+	}
 }
 
 const src1 = 'https://code.highcharts.com/stock/highstock.js';
 createScript(src1, '', document.head, 'after', true)
-	.then(drawChartCounter());
+	.then();
 // const src2 = 'https://code.highcharts.com/stock/modules/data.js';
 // createScript(src2, '', document.head, 'after', true)
 // 	.then(drawChartCounter());
@@ -181,5 +182,6 @@ function drawChartCounter() {
 	wait_on--;
 	if (wait_on == 0) {
 		createScript('', drawChart, spcDiv, 'after', false);
+		// console.timeEnd('t');
 	}
 }

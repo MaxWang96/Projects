@@ -2,11 +2,11 @@
     "name": "Steam Price Chart",
     "version": "0.1.0",
     "manifest_version": 2,
-    "permissions": [ "https://isthereanydeal.com/game/*/history/" ],
+    "permissions": [ "https://isthereanydeal.com/game/*/history/", "declarativeContent", "storage" ],
     "optional_permissions": [],
     "author": "gingerax",
     "background": {
-        "scripts": [ "scripts/background.js" ],
+        "scripts": [ "js/background.js" ],
         "persistent": false
     },
     "description": "Adds price history charts to the Steam site.",
@@ -15,19 +15,20 @@
     "content_scripts": [
         {
             "all_frames": true,
-            "js": [ "scripts/content.js" ],
+            "js": [ "js/content.js" ],
             "matches": [ "*://store.steampowered.com/app/*" ]
         }
     ],
     "page_action": {
         "default_icon": {
-            "48": "icons/icon_48.png",
-            "96": "icons/icon_96.png"
+            "48": "images/icon_48.png",
+            "96": "images/icon_96.png"
         },
-        "default_title": "Steam Price Chart automatically loads on Steam store pages"
+        "default_title": "Steam Price Chart automatically loads on Steam store pages",
+        "default_popup": "html/popup.html"
     },
     "icons": {
-        "48": "icons/icon_48.png",
-        "96": "icons/icon_96.png"
+        "48": "images/icon_48.png",
+        "96": "images/icon_96.png"
     }
 }

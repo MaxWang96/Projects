@@ -2,7 +2,7 @@
     "name": "Steam Price Chart",
     "version": "0.1.0",
     "manifest_version": 2,
-    "permissions": [ "https://isthereanydeal.com/game/*/history/", "declarativeContent", "storage" ],
+    "permissions": [ "https://isthereanydeal.com/*", "declarativeContent", "storage" ],
     "optional_permissions": [],
     "author": "gingerax",
     "background": {
@@ -16,7 +16,8 @@
         {
             "all_frames": true,
             "js": [ "js/content.js" ],
-            "matches": [ "*://store.steampowered.com/app/*" ]
+            "matches": [ "*://store.steampowered.com/app/*" ],
+            "run_at": "document_end"
         }
     ],
     "page_action": {
@@ -24,8 +25,8 @@
             "48": "images/icon_48.png",
             "96": "images/icon_96.png"
         },
-        "default_title": "Steam Price Chart automatically loads on Steam store pages",
-        "default_popup": "html/popup.html"
+        "default_title": "Steam Price Chart automatically loads on Steam store pages"
+        //"default_popup": "html/popup.html"
     },
     "icons": {
         "48": "images/icon_48.png",

@@ -2,10 +2,27 @@ let drawChart;
 let wait_on = 2;
 // chrome.storage.sync.get('region', (value) => console.log(value));
 // console.time('t');
-// chrome.storage.sync.get('region', (value) => {
-// })
-chrome.runtime.sendMessage(location.href, function(response) {
-	drawChart = `
+let steamRegion = JSON.parse(document.getElementById('application_config').getAttribute('data-userinfo'))['country_code'].toLowerCase();
+console.time('t');
+chrome.storage.sync.get('region', (value) => {
+	console.timeEnd('t');
+	let setCookie = false, regionUser = value.region, currency = '$';
+	if (regionUser != steamRegion) {
+		chrome.storage.sync.set({
+			region: steamRegion
+		});
+		setCookie = true;
+		regionUser = steamRegion;
+	}
+	if (regionUser == 'cn') {
+		currency = '¥';
+	}
+	chrome.runtime.sendMessage({
+		url: location.href,
+		cookie: setCookie,
+		region: regionUser
+	}, function(response) {
+		drawChart = `
 Highcharts.stockChart('chart_container', {
 
 	chart: {
@@ -53,23 +70,28 @@ Highcharts.stockChart('chart_container', {
 				color: '#acb2b8',
 				fontSize: '12px',
 			},
-			format: '$\{value\}',
+			format: '${currency}\{value\}',
 		},
 		offset: 25,
         tickLength: 25,
 	},
 
 	tooltip: {
-		backgroundColor: '#000000',
+		backgroundColor: '#171a21',
 		style: {
-			color: '#67c1f5',
+			color: '#b8b6b4',
 		},
 		split: false,
 		shared: true,
 		useHTML: true,
+		borderColor: '#171a21',
 	},
 
 	navigator: {
+        handles: {
+            backgroundColor: '#434953',
+            borderColor: '#acb2b8',
+        },
         series: {
             type: 'area'
         },
@@ -86,13 +108,19 @@ Highcharts.stockChart('chart_container', {
                     fill: "rgb(84, 165, 212)",
                     style: {
                         color: "#ffffff"
-                    }
+                    },
+                    select: {
+                        fill: "rgb(84, 165, 212)",
+                        style: {
+                            color: "#ffffff"
+                        }
+                    },
                 }
             }
         },
         inputStyle: {
-            backgroundColor: "rgba( 103, 193, 245, 0.2 )",
-            color: "#acb2b8"
+            backgroundColor: "#18222e",
+            color: "#acb2b8",
         },
         labelStyle: {
             color: "#acb2b8"
@@ -129,15 +157,26 @@ Highcharts.stockChart('chart_container', {
     	text: 'IsThereAnyDeal.com',
     	style: {
 			color: '#acb2b8',
-		}
+		},
+		position: {
+			x: -35,
+		},
     },
 
 });`;
-	drawChartCounter();
-	// console.log(response[0]);
-	// console.timeEnd('t');
-});
-const loc = document.getElementsByClassName('page_content')[2];
+		drawChartCounter();
+		// console.log(response[0]);
+		// console.timeEnd('t');
+	});
+})
+const elements = document.getElementsByClassName('page_content');
+let loc;
+for (let i = 0; i < elements.length; i++) {
+	if (elements[i].className == 'page_content') {
+		loc = elements[i];
+		break;
+	}
+}
 loc.insertAdjacentHTML('afterbegin', `
 	<div class="steam_price_chart">
 		<div id="chart_container" style="height: 400px; min-width: 310px"></div>

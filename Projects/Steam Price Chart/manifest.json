@@ -2,7 +2,7 @@
     "name": "Steam Price Chart",
     "version": "0.2.0",
     "manifest_version": 2,
-    "permissions": [ "https://isthereanydeal.com/*", "http://store.steampowered.com/api/*", "declarativeContent", "storage" ],
+    "permissions": [ "https://isthereanydeal.com/*", "http://store.steampowered.com/api/*", "https://api.steampowered.com/*", "https://steamspy.com/api.php*", "declarativeContent", "storage" ],
     "optional_permissions": [],
     "author": "gingerax",
     "background": {

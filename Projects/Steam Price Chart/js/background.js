@@ -4,30 +4,48 @@ chrome.runtime.onMessage.addListener(
 		const namePart = splittedUrl[5];
 
 		if (namePart[0] == '_') {
+			// console.time('a');
 			const id = splittedUrl[4];
-			const getName = new XMLHttpRequest;
-			getName.open('GET', `https://store.steampowered.com/api/appdetails?appids=${id}`);
-			getName.mozAnon = true;
-			getName.onload = function(gameData) {
-				const name = gameData.target.response.match(/"name":"(.+?)"/)[1];
-				console.log(name);
-			}
-			getName.send();
+			fetch(`https://store.steampowered.com/api/appdetails?appids=${id}&l=en&filters=basic`).then(function(response) {
+				response.text().then(function(text) {
+					const gameName = text.match(/"name":"(.+?)"/)[1].toLowerCase().replace(/[^a-z0-9]+/g, '');
+					sendUrl(gameName);
+					// console.timeEnd('a');
+				})
+			})
+			// fetch(`https://store.steampowered.com/api/appdetails?appids=${id}`).then(function(response) {
+			// 	response.text().then(function(text) {
+			// 		const name = text.match(/"name":"(.+?)"/)[1];
+			// 		console.log(name);
+			// 	})
+			// })
+			// const getName = new XMLHttpRequest;
+			// getName.open('GET', `https://store.steampowered.com/api/appdetails?appids=${id}`);
+			// getName.mozAnon = true;
+			// getName.onload = function(gameData) {
+			// 	const name = gameData.target.response.match(/"name":"(.+?)"/)[1];
+			// 	console.log(name);
+			// }
+			// getName.send();
 		} else {
-			let gameName = namePart.replace(/_/g, '').toLowerCase();
+			const gameName = namePart.replace(/_/g, '').toLowerCase();
+			sendUrl(gameName);
+		}
+		return true;
 
-			function romanize(num) {
-				const key = ['', 'i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix'];
-				return key[num] + '';
-			}
-			for (let i = 0; i < gameName.length; i++) {
-				if (gameName[i] >= '1' && gameName[i] <= '9') {
-					gameName = gameName.replace(gameName[i], romanize(+gameName[i]));
+		function romanize(num) {
+			const key = ['', 'i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix'];
+			return key[num] + '';
+		}
+
+		function sendUrl(name) {
+			for (let i = 0; i < name.length; i++) {
+				if (name[i] >= '1' && name[i] <= '9') {
+					name = name.replace(name[i], romanize(+name[i]));
 				}
 			}
-			const url = `https://isthereanydeal.com/game/${gameName}/history/`;
+			const url = `https://isthereanydeal.com/game/${name}/history/`;
 			requests(url);
-			return true;
 		}
 
 		function requests(url) {
@@ -36,6 +54,7 @@ chrome.runtime.onMessage.addListener(
 			} else {
 				dataRequest();
 			}
+
 			function cookieRequest() {
 				const cookieRequest = new XMLHttpRequest;
 				cookieRequest.open('GET', `https://isthereanydeal.com/legal/cookies/${request.region}/?set`);
@@ -46,15 +65,17 @@ chrome.runtime.onMessage.addListener(
 			function dataRequest() {
 				const xhr = new XMLHttpRequest;
 				xhr.open('GET', url);
+				xhr.timeout = 10;
+				xhr.ontimeout = function() {alert('cat!!')};
 				xhr.onload = function(data) {
 					try {
 						// console.time('t');
-						const region = data.target.response.match(/<strong>\s*(.+?)\s*<\/strong>/)[1].toLowerCase();
+						const region = this.response.match(/<strong>\s*(.+?)\s*<\/strong>/)[1].toLowerCase();
 						// console.timeEnd('t');
 						if (region != request.region) {
 							cookieRequest();
 						} else {
-							const dataArr = JSON.parse(data.target.response.match(/"Steam","data":(\[\[.+?\]\])/)[1]);
+							const dataArr = JSON.parse(this.response.match(/"Steam","data":(\[\[.+?\]\])/)[1]);
 							// console.time('t');
 							for (let i = dataArr.length - 3; i >= 0; i--) {
 								if (dataArr[i][1] == null) {

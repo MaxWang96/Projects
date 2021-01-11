@@ -1,8 +1,8 @@
 {
     "name": "Steam Price Chart",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "manifest_version": 2,
-    "permissions": [ "https://isthereanydeal.com/*", "declarativeContent", "storage" ],
+    "permissions": [ "https://isthereanydeal.com/*", "http://store.steampowered.com/api/*", "declarativeContent", "storage" ],
     "optional_permissions": [],
     "author": "gingerax",
     "background": {

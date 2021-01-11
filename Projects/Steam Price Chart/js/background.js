@@ -1,65 +1,88 @@
 chrome.runtime.onMessage.addListener(
 	(request, sender, sendResponse) => {
-		let gameName = request.url.split('/')[5].replace(/_/g, '').toLowerCase();
+		const splittedUrl = request.url.split('/');
+		const namePart = splittedUrl[5];
 
-		function romanize(num) {
-			const key = ['', 'i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix'];
-			return key[num] + '';
-		}
-		for (let i = 0; i < gameName.length; i++) {
-			if (gameName[i] >= '1' && gameName[i] <= '9') {
-				gameName = gameName.replace(gameName[i], romanize(+gameName[i]));
+		if (namePart[0] == '_') {
+			const id = splittedUrl[4];
+			const getName = new XMLHttpRequest;
+			getName.open('GET', `https://store.steampowered.com/api/appdetails?appids=${id}`);
+			getName.mozAnon = true;
+			getName.onload = function(gameData) {
+				const name = gameData.target.response.match(/"name":"(.+?)"/)[1];
+				console.log(name);
 			}
-		}
-		const url = `https://isthereanydeal.com/game/${gameName}/history/`;
-
-		if (request.cookie) {
-			// const cookieRequest = new XMLHttpRequest;
-			// cookieRequest.open('GET', `https://isthereanydeal.com/legal/cookies/${request.region}/?set`);
-			// cookieRequest.onload = sendRequest;
-			// cookieRequest.send();
-			cookieRequest();
+			getName.send();
 		} else {
-			dataRequest();
-		}
-		return true;
+			let gameName = namePart.replace(/_/g, '').toLowerCase();
 
-		function cookieRequest() {
-			const cookieRequest = new XMLHttpRequest;
-			cookieRequest.open('GET', `https://isthereanydeal.com/legal/cookies/${request.region}/?set`);
-			cookieRequest.onload = dataRequest;
-			cookieRequest.send();
-		}
-
-		function dataRequest() {
-			const xhr = new XMLHttpRequest;
-			xhr.open('GET', url);
-			xhr.onload = function(data) {
-				try {
-					// const region = 
-					// console.log(data.target);
-					// console.time('t');
-					const region = data.target.response.match(/<strong>\s*(.+?)\s*<\/strong>/)[1].toLowerCase();
-					// console.timeEnd('t');
-					if (region != request.region) {
-						cookieRequest();
-					} else {
-						const dataArr = data.target.response.match(/"Steam","data":(\[\[.+?\]\])/)[1];
-						console.log(dataArr.length);
-						console.log(JSON.parse(dataArr));
-						for (let j = 0; j < dataArr.length; j++) {
-							if (dataArr[j][1] == null) {
-								dataArr.splice(j, 1);
-								console.log(dataArr);
-							}
-							console.log(dataArr);
-						}
-						console.log(dataArr);
-						sendResponse(dataArr);
-					}
-				} catch (error) {}
+			function romanize(num) {
+				const key = ['', 'i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix'];
+				return key[num] + '';
 			}
-			xhr.send();
+			for (let i = 0; i < gameName.length; i++) {
+				if (gameName[i] >= '1' && gameName[i] <= '9') {
+					gameName = gameName.replace(gameName[i], romanize(+gameName[i]));
+				}
+			}
+			const url = `https://isthereanydeal.com/game/${gameName}/history/`;
+			requests(url);
+			return true;
+		}
+
+		function requests(url) {
+			if (request.cookie) {
+				cookieRequest();
+			} else {
+				dataRequest();
+			}
+			function cookieRequest() {
+				const cookieRequest = new XMLHttpRequest;
+				cookieRequest.open('GET', `https://isthereanydeal.com/legal/cookies/${request.region}/?set`);
+				cookieRequest.onload = dataRequest;
+				cookieRequest.send();
+			}
+
+			function dataRequest() {
+				const xhr = new XMLHttpRequest;
+				xhr.open('GET', url);
+				xhr.onload = function(data) {
+					try {
+						// console.time('t');
+						const region = data.target.response.match(/<strong>\s*(.+?)\s*<\/strong>/)[1].toLowerCase();
+						// console.timeEnd('t');
+						if (region != request.region) {
+							cookieRequest();
+						} else {
+							const dataArr = JSON.parse(data.target.response.match(/"Steam","data":(\[\[.+?\]\])/)[1]);
+							// console.time('t');
+							for (let i = dataArr.length - 3; i >= 0; i--) {
+								if (dataArr[i][1] == null) {
+									dataArr.splice(i, 1);
+								}
+								if (dataArr[i + 1][1] == dataArr[i][1]) {
+									dataArr.splice(i + 1, 1);
+								}
+							}
+							for (let j = dataArr.length - 2; j >= 0; j--) {
+								if (dataArr[j + 1][0] - dataArr[j][0] <= 7200000) {
+									if (dataArr[j + 1][1] >= dataArr[j][1]) {
+										dataArr.splice(j - 1, 2);
+									} else {
+										dataArr.splice(j, 1);
+									}
+								}
+							}
+							// console.timeEnd('t');
+							// console.log(dataArr);
+							sendResponse(JSON.stringify(dataArr));
+						}
+					} catch (error) {}
+				}
+				xhr.send();
+
+				// console.time('t');
+			}
 		}
 	}
 );

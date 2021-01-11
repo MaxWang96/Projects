@@ -1,12 +1,23 @@
 let drawChart;
 let wait_on = 2;
+const setting = {
+	us: {
+		currency: '$',
+		valueDecimals: 2,
+	},
+	cn: {
+		currency: '¥',
+		valueDecimals: 0,
+	}
+};
+let region = setting.us;
 // chrome.storage.sync.get('region', (value) => console.log(value));
 // console.time('t');
 let steamRegion = JSON.parse(document.getElementById('application_config').getAttribute('data-userinfo'))['country_code'].toLowerCase();
 console.time('t');
 chrome.storage.sync.get('region', (value) => {
 	console.timeEnd('t');
-	let setCookie = false, regionUser = value.region, currency = '$';
+	let setCookie = false, regionUser = value.region;
 	if (regionUser != steamRegion) {
 		chrome.storage.sync.set({
 			region: steamRegion
@@ -15,7 +26,7 @@ chrome.storage.sync.get('region', (value) => {
 		regionUser = steamRegion;
 	}
 	if (regionUser == 'cn') {
-		currency = '¥';
+		region = setting.cn;
 	}
 	chrome.runtime.sendMessage({
 		url: location.href,
@@ -45,8 +56,8 @@ Highcharts.stockChart('chart_container', {
 	    color: '#67c1f5',
 	    step: true,
 	    tooltip: {
-	        valueDecimals: 2,
-	        valuePrefix: '$'
+	        valueDecimals: ${region.valueDecimals},
+	        valuePrefix: '${region.currency}'
 	    }
 	}],
 
@@ -70,7 +81,7 @@ Highcharts.stockChart('chart_container', {
 				color: '#acb2b8',
 				fontSize: '12px',
 			},
-			format: '${currency}\{value\}',
+			format: '${region.currency}\{value\}',
 		},
 		offset: 25,
         tickLength: 25,
@@ -85,6 +96,7 @@ Highcharts.stockChart('chart_container', {
 		shared: true,
 		useHTML: true,
 		borderColor: '#171a21',
+		xDateFormat: '%A, %b %e, %Y'
 	},
 
 	navigator: {

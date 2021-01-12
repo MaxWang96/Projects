@@ -6,7 +6,7 @@
     "optional_permissions": [],
     "author": "gingerax",
     "background": {
-        "scripts": [ "js/background.js" ],
+        "page": "html/background.html",
         "persistent": false
     },
     "description": "Adds price history charts to the Steam site.",
@@ -15,7 +15,7 @@
     "content_scripts": [
         {
             "all_frames": true,
-            "js": [ "js/content.js" ],
+            "js": [ "js/pinyin.js", "js/content.js" ],
             "matches": [ "*://store.steampowered.com/app/*" ],
             "run_at": "document_end"
         }

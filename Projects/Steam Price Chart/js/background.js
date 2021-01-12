@@ -1,26 +1,36 @@
+// import * as pinyin from './pinyin.js';
+
+// console.log(pinyinlite('三国群英传7'));
+// console.log(Pinyin.convertToPinyin('三国群英传7sssSSS'));
+
+
 chrome.runtime.onMessage.addListener(
 	(request, sender, sendResponse) => {
 		const splittedUrl = request.url.split('/');
 		const namePart = splittedUrl[5];
-		const specialName = ['The_Forest'];
+		const specialName = ['The_Forest', 'Tom_Clancys_Rainbow_Six_Siege'];
 		let gameName;
 
-		if (specialName.includes(namePart)) {
+		if (namePart == specialName[0]) {
 			gameName = namePart.replace(/_/g, '').toLowerCase();
 			sendUrl(gameName);
+		} else if (namePart == specialName[1]) {
+			sendUrl('tomclancysrainbowsixsiegestarteredition');
 		} else {
-			if (request.region == 'cn') {
+			if (request.lang == 'schinese') {
 				// console.time('a');
 				const id = splittedUrl[4];
 				fetch(`https://store.steampowered.com/api/appdetails?appids=${id}&l=en&filters=basic`).then(function(response) {
 					response.text().then(function(text) {
-						gameName = text.match(/"name":"(.+?)"/)[1].toLowerCase().replace(/\bthe\b/, '').replace(/[^a-z0-9]+/g, '');
+						gameName = text.match(/"name":"(.+?)"/)[1].toLowerCase().replace(/\bthe\b/g, '').replace(/[^a-z0-9]+/g, '');
 						sendUrl(gameName);
 						// console.timeEnd('a');
 					})
 				})
+				const pinyinName = Pinyin.convertToPinyin(request.name).toLowerCase().replace(/\bthe\b/g, '').replace(/[^a-z0-9]+/g, '').replace(/v/g, 'u');
+				sendUrl(pinyinName);
 			} else {
-				gameName = namePart.replace(/(\b|_)the_/, '').replace(/_/g, '').toLowerCase();
+				gameName = namePart.replace(/(\b|_)the_/g, '').replace(/_/g, '').toLowerCase();
 				sendUrl(gameName);
 			}
 		}
@@ -85,13 +95,13 @@ chrome.runtime.onMessage.addListener(
 									} else {
 										dataArr.splice(j, 1);
 									}
-								} else if (dataArr[j + 1][0] - dataArr[j][0] <= 10800000) {
+								} else if (dataArr[j + 1][0] - dataArr[j][0] <= 14400000) {
 									dataArr.splice(j, 1);
 								}
 							}
 							// console.timeEnd('t');
 							// console.log(dataArr);
-							sendResponse(JSON.stringify(dataArr));
+							sendResponse(dataArr);
 						}
 					} catch (error) {}
 				}
@@ -118,3 +128,5 @@ chrome.runtime.onInstalled.addListener(function() {
 		}]);
 	});
 });
+
+// pinyin.isSupported();

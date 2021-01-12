@@ -1,5 +1,5 @@
 let drawChart;
-let wait_on = 2;
+let waitOnChart = 2;
 const setting = {
 	us: {
 		currency: '$',
@@ -13,26 +13,35 @@ const setting = {
 let region = setting.us;
 // chrome.storage.sync.get('region', (value) => console.log(value));
 // console.time('t');
-let steamRegion = JSON.parse(document.getElementById('application_config').getAttribute('data-userinfo'))['country_code'].toLowerCase();
+const config = JSON.parse(document.getElementById('application_config').getAttribute('data-config'));
+const steamRegion = config.COUNTRY.toLowerCase();
+const lang = config.LANGUAGE;
+const gameName = document.getElementsByClassName('apphub_AppName')[0].textContent;
+const message = {
+	url: location.href,
+	cookie: false,
+	region: steamRegion,
+	name: gameName,
+	lang: lang
+}
 // console.time('t');
 chrome.storage.sync.get('region', (value) => {
 	// console.timeEnd('t');
-	let setCookie = false, regionUser = value.region;
+	let regionUser = value.region;
 	if (regionUser != steamRegion) {
 		chrome.storage.sync.set({
 			region: steamRegion
 		});
-		setCookie = true;
+		message.cookie = true;
 		regionUser = steamRegion;
 	}
 	if (regionUser == 'cn') {
 		region = setting.cn;
 	}
-	chrome.runtime.sendMessage({
-		url: location.href,
-		cookie: setCookie,
-		region: regionUser
-	}, function(response) {
+	chrome.runtime.sendMessage(message, function(response) {
+		if (response.length == 2 && response[0] == 0) {
+			return;
+		}
 		drawChart = `
 Highcharts.stockChart('chart_container', {
 
@@ -44,7 +53,7 @@ Highcharts.stockChart('chart_container', {
     },
 
 	title: {
-	    text: document.getElementsByClassName('apphub_AppName')[0].textContent + ' Price History',
+	    text: "${gameName}" + ' Price History',
 	    style: {
 	    	color: '#FFFFFF'
 	    }
@@ -52,7 +61,7 @@ Highcharts.stockChart('chart_container', {
 
 	series: [{
 		name: 'Price',
-	    data: ${response},
+	    data: ${JSON.stringify(response)},
 	    color: '#67c1f5',
 	    step: true,
 	    tooltip: {
@@ -180,58 +189,41 @@ Highcharts.stockChart('chart_container', {
 		// console.timeEnd('t');
 	});
 })
-const elements = document.getElementsByClassName('page_content');
-let loc;
-for (let i = 0; i < elements.length; i++) {
-	if (elements[i].className == 'page_content') {
-		loc = elements[i];
-		break;
-	}
-}
-loc.insertAdjacentHTML('afterbegin', `
-	<div class="steam_price_chart">
-		<div id="chart_container" style="height: 400px; min-width: 310px"></div>
-	</div>
-	`);
-const spcDiv = document.getElementsByClassName('steam_price_chart')[0];
-const chart = document.getElementsByClassName('chart_container')[0];
 
-function createScript(source, text, loc, option, promise) {
+function createScript(source, text, loc, promise = false) {
 	let newScript = document.createElement('script');
 	if (source) newScript.src = source;
 	newScript.text = text;
-	if (option === 'before') loc.insertBefore(newScript, chart);
-	else if (option === 'after') loc.appendChild(newScript);
+	loc.appendChild(newScript);
 	if (promise) {
 		return new Promise((res, rej) => {
-			newScript.onload = drawChartCounter;
+			newScript.onload = promise;
 			newScript.onerror = rej;
 		});
 	}
 }
 
-const src1 = 'https://code.highcharts.com/stock/highstock.js';
-createScript(src1, '', document.head, 'after', true)
-	.then();
-// const src2 = 'https://code.highcharts.com/stock/modules/data.js';
-// createScript(src2, '', document.head, 'after', true)
-// 	.then(drawChartCounter());
-// const src3 = 'https://code.highcharts.com/stock/modules/exporting.js';
-// createScript(src3, '', document.head, 'after', true)
-// 	.then(drawChartCounter());
-// const src4 = 'https://code.highcharts.com/stock/modules/export-data.js';
-// createScript(src4, '', document.head, 'after', true)
-// 	.then(drawChartCounter());
-
-// createScript(src, '', document.head, 'after', true)
-// 	.then(() => {
-// 		createScript('', drawChart, spcDiv, 'after', false);
-// 	});
+const chartSrc = 'https://code.highcharts.com/stock/highstock.js';
+createScript(chartSrc, '', document.head, drawChartCounter).then();
 
 function drawChartCounter() {
-	wait_on--;
-	if (wait_on == 0) {
-		createScript('', drawChart, spcDiv, 'after', false);
+	waitOnChart--;
+	if (waitOnChart == 0) {
+		const elements = document.getElementsByClassName('page_content');
+		let loc;
+		for (let i = 0; i < elements.length; i++) {
+			if (elements[i].className == 'page_content') {
+				loc = elements[i];
+				break;
+			}
+		}
+		loc.insertAdjacentHTML('afterbegin', `
+	<div class="steam_price_chart">
+		<div id="chart_container" style="height: 400px; min-width: 310px"></div>
+	</div>
+	`);
+		const spcDiv = document.getElementsByClassName('steam_price_chart')[0];
+		createScript('', drawChart, spcDiv, false);
 		// console.timeEnd('t');
 	}
 }

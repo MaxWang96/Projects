@@ -6,31 +6,66 @@ chrome.runtime.onMessage.addListener(
 		const namePart = splittedUrl[5];
 		const specialName = ['The_Forest', 'Tom_Clancys_Rainbow_Six_Siege'];
 		let gameName;
+		const id = splittedUrl[4];
 
-		if (namePart == specialName[0]) {
-			gameName = namePart.replace(/_/g, '').toLowerCase();
-			sendUrl(gameName);
-		} else if (namePart == specialName[1]) {
-			sendUrl('tomclancysrainbowsixsiegestarteredition');
-		} else {
-			if (request.lang == 'schinese') {
-				// console.time('a');
-				const id = splittedUrl[4];
-				fetch(`https://store.steampowered.com/api/appdetails?appids=${id}&l=en&filters=basic`).then(function(response) {
-					response.text().then(function(text) {
-						gameName = text.match(/"name":"(.+?)"/)[1].toLowerCase().replace(/\bthe\b/g, '').replace(/[^a-z0-9]+/g, '');
-						sendUrl(gameName);
-						// console.timeEnd('a');
-					})
-				})
-				const pinyinName = Pinyin.convertToPinyin(request.name).toLowerCase().replace(/\bthe\b/g, '').replace(/[^a-z0-9]+/g, '').replace(/v/g, 'u');
-				sendUrl(pinyinName);
-			} else {
-				gameName = namePart.replace(/(\b|_)the_/g, '').replace(/_/g, '').toLowerCase();
-				sendUrl(gameName);
-			}
-		}
+		// if (namePart == specialName[0]) {
+		// 	gameName = namePart.replace(/_/g, '').toLowerCase();
+		// 	sendUrl(gameName);
+		// } else if (namePart == specialName[1]) {
+		// 	sendUrl('tomclancysrainbowsixsiegestarteredition');
+		// } else {
+		// 	if (request.lang == 'schinese') {
+		// 		// console.time('a');
+		// 		const id = splittedUrl[4];
+		// 		fetch(`https://store.steampowered.com/api/appdetails?appids=${id}&l=en&filters=basic`).then(function(response) {
+		// 			response.text().then(function(text) {
+		// 				gameName = text.match(/"name":"(.+?)"/)[1].toLowerCase().replace(/\bthe\b/g, '').replace(/[^a-z0-9]+/g, '');
+		// 				sendUrl(gameName);
+		// 				// console.timeEnd('a');
+		// 			})
+		// 		})
+		// 		const pinyinName = Pinyin.convertToPinyin(request.name).toLowerCase().replace(/\bthe\b/g, '').replace(/[^a-z0-9]+/g, '').replace(/v/g, 'u');
+		// 		sendUrl(pinyinName);
+		// 		testSearch();
+		// 	} else {
+		// 		gameName = namePart.replace(/(\b|_)the_/g, '').replace(/_/g, '').toLowerCase();
+		// 		sendUrl(gameName);
+		// 		// testSearch();
+		// 	}
+		// }
+		// console.time('t');
+		// const tq = new XMLHttpRequest;
+		// tq.open('HEAD', `https://isthereanydeal.com/steam/app/${id}/`);
+		// tq.onreadystatechange = function() {
+		// 	if (tq.readyState == 2) {
+		// 		// console.timeEnd('t');
+		// 		// console.log('cat');
+		// 		const url = this.responseURL.replace('/info/', '/history/');
+		// 		requests(url);
+		// 	}
+		// };
+		// tq.send();
+
+		console.time('a');
+		const tt = new XMLHttpRequest;
+		tt.open('GET', `https://api.isthereanydeal.com/v02/game/plain/?key=2a0a6baa1713e7be64e451ab1b863b988ce63455&shop=steam&game_id=app%2F359550`);
+		tt.onload = function() {
+			console.timeEnd('a');
+			console.log('cat');
+		};
+		tt.send();
+
+
 		return true;
+
+		function testSearch() {
+			fetch(`https://isthereanydeal.com/search/?q=${request.cartName}`).then(function(response) {
+				response.text().then(function(text) {
+					const test = text.match(/'card__title' href='\/game\/(.+?)\/info\//)[1];
+					sendUrl(test);
+				})
+			})
+		}
 
 		function romanize(num) {
 			const key = ['', 'i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix'];
@@ -84,7 +119,7 @@ chrome.runtime.onMessage.addListener(
 									dataArr.splice(i + 1, 1);
 								}
 							}
-							for (let j = dataArr.length - 2; j >= 0; j--) {
+							for (let j = dataArr.length - 3; j >= 0; j--) {
 								if (dataArr[j + 1][0] - dataArr[j][0] <= 7200000) {
 									if (dataArr[j + 1][1] >= dataArr[j][1]) {
 										dataArr.splice(j - 1, 2);
@@ -124,5 +159,3 @@ chrome.runtime.onInstalled.addListener(function() {
 		}]);
 	});
 });
-
-// pinyin.isSupported();

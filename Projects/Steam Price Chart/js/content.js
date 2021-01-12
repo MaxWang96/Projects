@@ -1,3 +1,4 @@
+console.time('t');
 let drawChart;
 let waitOnChart = 2;
 const setting = {
@@ -17,11 +18,13 @@ const config = JSON.parse(document.getElementById('application_config').getAttri
 const steamRegion = config.COUNTRY.toLowerCase();
 const lang = config.LANGUAGE;
 const gameName = document.getElementsByClassName('apphub_AppName')[0].textContent;
+const cartName = document.getElementsByTagName('h1')[0].textContent.match(/ (.+?)$/)[1];
 const message = {
 	url: location.href,
 	cookie: false,
 	region: steamRegion,
 	name: gameName,
+	cartName: cartName,
 	lang: lang
 }
 // console.time('t');
@@ -224,6 +227,6 @@ function drawChartCounter() {
 	`);
 		const spcDiv = document.getElementsByClassName('steam_price_chart')[0];
 		createScript('', drawChart, spcDiv, false);
-		// console.timeEnd('t');
+		console.timeEnd('t');
 	}
 }

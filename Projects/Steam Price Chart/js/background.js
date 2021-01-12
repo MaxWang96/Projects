@@ -1,8 +1,4 @@
-// import * as pinyin from './pinyin.js';
-
-// console.log(pinyinlite('三国群英传7'));
-// console.log(Pinyin.convertToPinyin('三国群英传7sssSSS'));
-
+// console.log(romaji.fromKana('セレクション'));
 
 chrome.runtime.onMessage.addListener(
 	(request, sender, sendResponse) => {

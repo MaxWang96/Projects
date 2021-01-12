@@ -14,9 +14,9 @@ let region = setting.us;
 // chrome.storage.sync.get('region', (value) => console.log(value));
 // console.time('t');
 let steamRegion = JSON.parse(document.getElementById('application_config').getAttribute('data-userinfo'))['country_code'].toLowerCase();
-console.time('t');
+// console.time('t');
 chrome.storage.sync.get('region', (value) => {
-	console.timeEnd('t');
+	// console.timeEnd('t');
 	let setCookie = false, regionUser = value.region;
 	if (regionUser != steamRegion) {
 		chrome.storage.sync.set({
@@ -83,8 +83,8 @@ Highcharts.stockChart('chart_container', {
 			},
 			format: '${region.currency}\{value\}',
 		},
-		offset: 25,
-        tickLength: 25,
+		offset: 30,
+        tickLength: 30,
 	},
 
 	tooltip: {
@@ -171,13 +171,12 @@ Highcharts.stockChart('chart_container', {
 			color: '#acb2b8',
 		},
 		position: {
-			x: -35,
+			x: -40,
 		},
     },
 
 });`;
 		drawChartCounter();
-		// console.log(response[0]);
 		// console.timeEnd('t');
 	});
 })

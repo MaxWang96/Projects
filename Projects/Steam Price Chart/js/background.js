@@ -2,34 +2,27 @@ chrome.runtime.onMessage.addListener(
 	(request, sender, sendResponse) => {
 		const splittedUrl = request.url.split('/');
 		const namePart = splittedUrl[5];
+		const specialName = ['The_Forest'];
+		let gameName;
 
-		if (namePart[0] == '_') {
-			// console.time('a');
-			const id = splittedUrl[4];
-			fetch(`https://store.steampowered.com/api/appdetails?appids=${id}&l=en&filters=basic`).then(function(response) {
-				response.text().then(function(text) {
-					const gameName = text.match(/"name":"(.+?)"/)[1].toLowerCase().replace(/[^a-z0-9]+/g, '');
-					sendUrl(gameName);
-					// console.timeEnd('a');
-				})
-			})
-			// fetch(`https://store.steampowered.com/api/appdetails?appids=${id}`).then(function(response) {
-			// 	response.text().then(function(text) {
-			// 		const name = text.match(/"name":"(.+?)"/)[1];
-			// 		console.log(name);
-			// 	})
-			// })
-			// const getName = new XMLHttpRequest;
-			// getName.open('GET', `https://store.steampowered.com/api/appdetails?appids=${id}`);
-			// getName.mozAnon = true;
-			// getName.onload = function(gameData) {
-			// 	const name = gameData.target.response.match(/"name":"(.+?)"/)[1];
-			// 	console.log(name);
-			// }
-			// getName.send();
-		} else {
-			const gameName = namePart.replace(/_/g, '').toLowerCase();
+		if (specialName.includes(namePart)) {
+			gameName = namePart.replace(/_/g, '').toLowerCase();
 			sendUrl(gameName);
+		} else {
+			if (request.region == 'cn') {
+				// console.time('a');
+				const id = splittedUrl[4];
+				fetch(`https://store.steampowered.com/api/appdetails?appids=${id}&l=en&filters=basic`).then(function(response) {
+					response.text().then(function(text) {
+						gameName = text.match(/"name":"(.+?)"/)[1].toLowerCase().replace(/\bthe\b/, '').replace(/[^a-z0-9]+/g, '');
+						sendUrl(gameName);
+						// console.timeEnd('a');
+					})
+				})
+			} else {
+				gameName = namePart.replace(/(\b|_)the_/, '').replace(/_/g, '').toLowerCase();
+				sendUrl(gameName);
+			}
 		}
 		return true;
 
@@ -65,8 +58,8 @@ chrome.runtime.onMessage.addListener(
 			function dataRequest() {
 				const xhr = new XMLHttpRequest;
 				xhr.open('GET', url);
-				xhr.timeout = 10;
-				xhr.ontimeout = function() {alert('cat!!')};
+				// xhr.timeout = 10;
+				// xhr.ontimeout = function() {alert('cat!!')};
 				xhr.onload = function(data) {
 					try {
 						// console.time('t');
@@ -92,6 +85,8 @@ chrome.runtime.onMessage.addListener(
 									} else {
 										dataArr.splice(j, 1);
 									}
+								} else if (dataArr[j + 1][0] - dataArr[j][0] <= 10800000) {
+									dataArr.splice(j, 1);
 								}
 							}
 							// console.timeEnd('t');

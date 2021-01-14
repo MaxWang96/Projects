@@ -18,17 +18,18 @@ const setting = {
 const config = JSON.parse(document.getElementById('application_config').getAttribute('data-config'));
 const country = config.COUNTRY.toLowerCase();
 const countrySetting = setting[country];
+const gameName = document.getElementsByClassName('apphub_AppName')[0].textContent;
 // const lang = config.LANGUAGE;
 const message = {
 	url: location.href,
 	country: country,
+	name: gameName
 }
 // console.time('t');
 chrome.runtime.sendMessage(message, function(response) {
 	if (response.data.length == 2 && response.data[0] == 0) {
 		return;
 	}
-	const gameName = document.getElementsByClassName('apphub_AppName')[0].textContent;
 	const itadUrl = chrome.extension.getURL('../images/isthereanydeal_icon.svg');
 	const hltbUrl = chrome.extension.getURL('../images/howlongtobeat_logo.png');
 	drawChart = `
@@ -212,9 +213,9 @@ Highcharts.stockChart('chart_container', {
         }
 
         const itadLabel = addLabel('View the game on IsThereAnyDeal').align({ align: 'right', x: -215, y: 5 });
-        addImg('${itadUrl}', '${response.link}', itadLabel, -85);
+        addImg('${itadUrl}', '${response.itadUrl}', itadLabel, -85);
         const hltbLabel = addLabel('View the game on HowLongtoBeat').align({ align: 'right', x: -180, y: 5 });
-        addImg('${hltbUrl}', 'https://howlongtobeat.com/', hltbLabel, -55);
+        addImg('${hltbUrl}', '${response.hltbUrl}', hltbLabel, -55);
 });`;
 	drawChartCounter();
 	// console.timeEnd('t');

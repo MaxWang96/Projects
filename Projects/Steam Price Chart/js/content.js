@@ -35,197 +35,216 @@ port.onMessage.addListener(function(response) {
 		}
 		const itadUrl = chrome.extension.getURL('../images/isthereanydeal_icon.svg');
 		const hltbUrl = chrome.extension.getURL('../images/howlongtobeat_logo.png');
-		drawChart = `
-Highcharts.stockChart('chart_container', {
+		const drawChart =
+			Highcharts.stockChart('chart_container', {
 
-	chart: {
-        backgroundColor: 'rgba( 0, 0, 0, 0.2 )',
-        style: {
-        	fontFamily: '"Motiva Sans", sans-serif'
-        }
-    },
+				chart: {
+					backgroundColor: 'rgba( 0, 0, 0, 0.2 )',
+					style: {
+						fontFamily: '"Motiva Sans", sans-serif'
+					}
+				},
 
-	title: {
-	    text: "${gameName}" + ' Price History',
-	    style: {
-	    	color: '#FFFFFF'
-	    }
-	},
+				title: {
+					// text: "${gameName}" + ' Price History',
+					style: {
+						color: '#FFFFFF'
+					}
+				},
 
-	series: [{
-		name: 'Price',
-	    data: ${JSON.stringify(response.data)},
-	    color: '#67c1f5',
-	    step: true,
-	    tooltip: {
-	        valueDecimals: ${countrySetting.valueDecimals},
-	        valuePrefix: '${countrySetting.currency}'
-	    }
-	}],
+				series: {
+					name: 'Price',
+					data: JSON.stringify(response.data),
+					// data: ${JSON.stringify(response.data)},
+					color: '#67c1f5',
+					step: true,
+					tooltip: {
+						valueDecimals: $ {
+							countrySetting.valueDecimals
+						},
+						// valuePrefix: '${countrySetting.currency}'
+					}
+				},
 
-	xAxis: {
-		ordinal: false,
-		labels: {
-			style: {
-				color: '#acb2b8',
-				fontSize: '12px'
-			}
-		},
-		lineColor: '#626366',
-		tickColor: '#626366',
-		crosshair: false,
-	},
+				xAxis: {
+					ordinal: false,
+					labels: {
+						style: {
+							color: '#acb2b8',
+							fontSize: '12px'
+						}
+					},
+					lineColor: '#626366',
+					tickColor: '#626366',
+					crosshair: false,
+				},
 
-	yAxis: {
-		gridLineColor: '#626366',
-		gridLineWidth: 0.5,
-		labels: {
-			style: {
-				color: '#acb2b8',
-				fontSize: '12px',
-			},
-			formatter: function() {
-				return '${countrySetting.currency}' + Math.round(this.value);
-			}
-		},
-		offset: 30,
-        tickLength: 30,
-	},
+				yAxis: {
+					gridLineColor: '#626366',
+					gridLineWidth: 0.5,
+					labels: {
+						style: {
+							color: '#acb2b8',
+							fontSize: '12px',
+						},
+						// formatter: function() {
+						// 	return '${countrySetting.currency}' + Math.round(this.value);
+						// }
+					},
+					offset: 30,
+					tickLength: 30,
+				},
 
-	tooltip: {
-		backgroundColor: '#171a21',
-		style: {
-			color: '#b8b6b4',
-		},
-		split: false,
-		shared: true,
-		useHTML: true,
-		borderColor: '#171a21',
-		xDateFormat: '%A, %b %e, %Y'
-	},
+				tooltip: {
+					backgroundColor: '#171a21',
+					style: {
+						color: '#b8b6b4',
+					},
+					split: false,
+					shared: true,
+					useHTML: true,
+					borderColor: '#171a21',
+					xDateFormat: '%A, %b %e, %Y'
+				},
 
-	navigator: {
-        handles: {
-            backgroundColor: '#434953',
-            borderColor: '#acb2b8',
-        },
-        series: {
-            type: 'area'
-        },
-    },
+				navigator: {
+					handles: {
+						backgroundColor: '#434953',
+						borderColor: '#acb2b8',
+					},
+					series: {
+						type: 'area'
+					},
+				},
 
-    rangeSelector: {
-        buttonTheme: {
-            fill: "rgba( 103, 193, 245, 0.2 )",
-            style: {
-                color: "#67c1f5",
-            },
-            states: {
-                select: {
-                    fill: "rgb(84, 165, 212)",
-                    style: {
-                        color: "#ffffff"
-                    },
-                    select: {
-                        fill: "rgb(84, 165, 212)",
-                        style: {
-                            color: "#ffffff"
-                        }
-                    },
-                }
-            }
-        },
-        inputStyle: {
-            backgroundColor: "#18222e",
-            color: "#acb2b8",
-        },
-        labelStyle: {
-            color: "#acb2b8"
-        },
-        selected: 1,
-        buttons: [{
-            type: "month",
-            count: 1,
-            text: "1m"
-        }, {
-            type: "month",
-            count: 3,
-            text: "3m"
-        }, {
-            type: "month",
-            count: 6,
-            text: "6m"
-        }, {
-            type: "year",
-            count: 1,
-            text: "1y"
-        }, {
-            type: "year",
-            count: 3,
-            text: "3y"
-        }, {
-            type: "all",
-            text: "All"
-        }],
-    },
+				rangeSelector: {
+					buttonTheme: {
+						fill: "rgba( 103, 193, 245, 0.2 )",
+						style: {
+							color: "#67c1f5",
+						},
+						states: {
+							select: {
+								fill: "rgb(84, 165, 212)",
+								style: {
+									color: "#ffffff"
+								},
+								select: {
+									fill: "rgb(84, 165, 212)",
+									style: {
+										color: "#ffffff"
+									}
+								},
+							}
+						}
+					},
+					inputStyle: {
+						backgroundColor: "#18222e",
+						color: "#acb2b8",
+					},
+					labelStyle: {
+						color: "#acb2b8"
+					},
+					selected: 1,
+					buttons: [{
+						type: "month",
+						count: 1,
+						text: "1m"
+					}, {
+						type: "month",
+						count: 3,
+						text: "3m"
+					}, {
+						type: "month",
+						count: 6,
+						text: "6m"
+					}, {
+						type: "year",
+						count: 1,
+						text: "1y"
+					}, {
+						type: "year",
+						count: 3,
+						text: "3y"
+					}, {
+						type: "all",
+						text: "All"
+					}],
+				},
 
-    credits: {
-    	href: 'javascript:window.open("https://isthereanydeal.com/", "_blank")',
-    	text: 'IsThereAnyDeal.com',
-    	style: {
-			color: '#acb2b8',
-		},
-		position: {
-			x: -40,
-		},
-    },
+				credits: {
+					href: 'javascript:window.open("https://isthereanydeal.com/", "_blank")',
+					text: 'IsThereAnyDeal.com',
+					style: {
+						color: '#acb2b8',
+					},
+					position: {
+						x: -40,
+					},
+				},
 
-}, function (chart) {
-        function addImg(image, url, label, xAlign) {
-            chart.renderer.image(image, 0, 0, 20, 20)
-                .css({ cursor: 'pointer' })
-                .on('click', function () {
-                    window.open(url, "_blank");
-                })
-                .on('mouseover', function () {
-                    label.css({ display: 'inline' });
-                })
-                .on('mouseout', function () {
-                    label.css({ display: 'none' });
-                })
-                .align({ align: 'right', x: xAlign, y: 10 }, false, 'chart')
-                .add();
-        }
+			}, function(chart) {
+				function addImg(image, url, label, xAlign) {
+					chart.renderer.image(image, 0, 0, 20, 20)
+						.css({
+							cursor: 'pointer'
+						})
+						.on('click', function() {
+							window.open(url, "_blank");
+						})
+						.on('mouseover', function() {
+							label.css({
+								display: 'inline'
+							});
+						})
+						.on('mouseout', function() {
+							label.css({
+								display: 'none'
+							});
+						})
+						.align({
+							align: 'right',
+							x: xAlign,
+							y: 10
+						}, false, 'chart')
+						.add();
+				}
 
-        function addLabel(text) {
-            return chart.renderer.label(text, 0, 0, 'callout', 910, 15)
-                .attr({
-                    fill: '#377096',
-                    r: 5,
-                    padding: 8,
-                    zIndex: 8,
-                })
-                .css({
-                    color: '#d9dadd',
-                    fontSize: '12px',
-                    width: '120px',
-                    display: 'none',
-                })
-                .shadow(true)
-                .add();
-        }
+				function addLabel(text) {
+					return chart.renderer.label(text, 0, 0, 'callout', 910, 15)
+						.attr({
+							fill: '#377096',
+							r: 5,
+							padding: 8,
+							zIndex: 8,
+						})
+						.css({
+							color: '#d9dadd',
+							fontSize: '12px',
+							width: '120px',
+							display: 'none',
+						})
+						.shadow(true)
+						.add();
+				}
 
-        const itadLabel = addLabel('View the game on IsThereAnyDeal').align({ align: 'right', x: -215, y: 5 });
-        addImg('${itadUrl}', '${response.itadUrl}', itadLabel, -85);
-        const hltbLabel = addLabel('Fetching the HowLongToBeat link...').align({ align: 'right', x: -180, y: 5 });
-        addImg('${hltbUrl}', 'https://howlongtobeat.com/', hltbLabel, -55);
-});`;
+				const itadLabel = addLabel('View the game on IsThereAnyDeal').align({
+					align: 'right',
+					x: -215,
+					y: 5
+				});
+				addImg(itadUrl, response.itadUrl, itadLabel, -85);
+				const hltbLabel = addLabel('Fetching the HowLongToBeat link...').align({
+					align: 'right',
+					x: -180,
+					y: 5
+				});
+				addImg(hltbUrl, 'https://howlongtobeat.com/', hltbLabel, -55);
+			});
 		drawChartCounter();
 		// console.timeEnd('t');
-	} else if (response.header == 'hltb') {
-		
-	}
-})
+	} else if (response.header == 'hltb') {}
+});
 // chrome.runtime.sendMessage(message, function(response) {
 // 	if (response.data.length == 2 && response.data[0] == 0) {
 // 		return;

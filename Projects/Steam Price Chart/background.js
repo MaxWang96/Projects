@@ -1,18 +1,17 @@
 'use strict';
 
-chrome.runtime.onConnect.addListener(port => {
-	port.onMessage.addListener(message => {
+chrome.runtime.onMessage.addListener(
+	(message, sender, sendResponse) => {
 		const splittedUrl = message.url.split('/');
 		const id = splittedUrl[4];
-		// let itadReady = 0,
-			// hltbReady = 1;
-		// const response = {
-		// 	header: 'itad',
-		// 	hltbUrl: 'https://howlongtobeat.com/'
-		// };
+		let itadReady = 0,
+			hltbReady = 0;
+		const response = {
+			hltbUrl: 'https://howlongtobeat.com/'
+		};
 		// let a, b;
 
-		// console.time('t');
+		console.time('t');
 		const idRequest = new XMLHttpRequest;
 		idRequest.open('GET', `https://api.isthereanydeal.com/v02/game/plain/?key=2a0a6baa1713e7be64e451ab1b863b988ce63455&shop=steam&game_id=app%2F${id}`);
 		idRequest.onload = function() {
@@ -21,22 +20,22 @@ chrome.runtime.onConnect.addListener(port => {
 		}
 		idRequest.send();
 
-		// const hltbRequest = new XMLHttpRequest;
-		// const url = 'https://howlongtobeat.com/search_results.php';
-		// const name = message.name.replace(/[^\w\s]/gi, '');
-		// const params = `queryString=${name}&t=games`;
-		// hltbRequest.open('POST', url, true);
-		// hltbRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-		// hltbRequest.onload = function() {
-		// 	// console.log(this.response);
-		// 	const getId = this.response.match(/href="(.+?)"/);
-		// 	if (getId != null) {
-		// 		response.hltbUrl = 'http://howlongtobeat.com/' + this.response.match(/href="(.+?)"/)[1];
-		// 	}
-		// 	hltbReady = 1;
-		// 	tryRespond();
-		// }
-		// hltbRequest.send(params);
+		const hltbRequest = new XMLHttpRequest;
+		const url = 'https://howlongtobeat.com/search_results.php';
+		const name = message.name.replace(/[^\w\s]/gi, '');
+		const params = `queryString=${name}&t=games`;
+		hltbRequest.open('POST', url, true);
+		hltbRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+		hltbRequest.onload = function() {
+			// console.log(this.response);
+			const getId = this.response.match(/href="(.+?)"/);
+			if (getId != null) {
+				response.hltbUrl = 'http://howlongtobeat.com/' + this.response.match(/href="(.+?)"/)[1];
+			}
+			hltbReady = 1;
+			tryRespond();
+		}
+		hltbRequest.send(params);
 
 		return true;
 
@@ -64,27 +63,9 @@ chrome.runtime.onConnect.addListener(port => {
 			xhr.onload = function(data) {
 				try {
 					// console.time('t');
+					itadReady = 1;
 					// console.timeEnd('a');
 					// console.timeEnd('t');
-					const hltbRequest = new XMLHttpRequest;
-					const url = 'https://howlongtobeat.com/search_results.php';
-					const name = message.name.replace(/[^\w\s]/gi, '');
-					const params = `queryString=${name}&t=games`;
-					hltbRequest.open('POST', url, true);
-					hltbRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-					hltbRequest.onload = function() {
-						// console.log(this.response);
-						const message = {
-							header: 'hltb'						
-						}
-						const getId = this.response.match(/href="(.+?)"/);
-						if (getId != null) {
-							message.hltbUrl = 'http://howlongtobeat.com/' + this.response.match(/href="(.+?)"/)[1];
-						}
-						port.postMessage(message)
-					}
-					hltbRequest.send(params);
-
 					const dataArr = JSON.parse(this.response.match(/"Steam","data":(\[\[.+?\]\])/)[1]);
 					// console.time('t');
 					for (let i = dataArr.length - 3; i >= 0; i--) {
@@ -111,13 +92,9 @@ chrome.runtime.onConnect.addListener(port => {
 					}
 					// console.timeEnd('t');
 					// console.timeEnd('a');
-					const response = {
-						header: 'itad',
-						data: dataArr,
-						url: `https://isthereanydeal.com/game/${name}/info/${message.country}`
-					}
-					// tryRespond();
-					port.postMessage(response);
+					response.data = dataArr;
+					response.itadUrl = `https://isthereanydeal.com/game/${name}/info/${message.country}`;
+					tryRespond();
 				} catch (error) {}
 			}
 			xhr.send();
@@ -125,14 +102,14 @@ chrome.runtime.onConnect.addListener(port => {
 			// console.time('t');
 		}
 
-		// function tryRespond() {
-		// 	if (itadReady && hltbReady) {
-		// 		sendResponse(response);
-		// 		console.timeEnd('t');
-		// 	}
-		// }
-	})
-});
+		function tryRespond() {
+			if (itadReady && hltbReady) {
+				sendResponse(response);
+				console.timeEnd('t');
+			}
+		}
+	}
+);
 
 // chrome.runtime.onInstalled.addListener(function() {
 // 	chrome.storage.sync.set({

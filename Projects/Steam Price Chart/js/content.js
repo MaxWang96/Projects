@@ -1,3 +1,5 @@
+'use strict';
+
 console.time('t');
 let drawChart;
 let waitOnChart = 2;
@@ -11,41 +13,25 @@ const setting = {
 		valueDecimals: 0,
 	}
 };
-let region = setting.us;
 // chrome.storage.sync.get('region', (value) => console.log(value));
 // console.time('t');
 const config = JSON.parse(document.getElementById('application_config').getAttribute('data-config'));
-const steamRegion = config.COUNTRY.toLowerCase();
-const lang = config.LANGUAGE;
-const gameName = document.getElementsByClassName('apphub_AppName')[0].textContent;
-const cartName = document.getElementsByTagName('h1')[0].textContent.match(/ (.+?)$/)[1];
+const country = config.COUNTRY.toLowerCase();
+const countrySetting = setting[country];
+// const lang = config.LANGUAGE;
 const message = {
 	url: location.href,
-	cookie: false,
-	region: steamRegion,
-	name: gameName,
-	cartName: cartName,
-	lang: lang
+	country: country,
 }
 // console.time('t');
-chrome.storage.sync.get('region', (value) => {
-	// console.timeEnd('t');
-	let regionUser = value.region;
-	if (regionUser != steamRegion) {
-		chrome.storage.sync.set({
-			region: steamRegion
-		});
-		message.cookie = true;
-		regionUser = steamRegion;
+chrome.runtime.sendMessage(message, function(response) {
+	if (response.data.length == 2 && response.data[0] == 0) {
+		return;
 	}
-	if (regionUser == 'cn') {
-		region = setting.cn;
-	}
-	chrome.runtime.sendMessage(message, function(response) {
-		if (response.length == 2 && response[0] == 0) {
-			return;
-		}
-		drawChart = `
+	const gameName = document.getElementsByClassName('apphub_AppName')[0].textContent;
+	const itadUrl = chrome.extension.getURL('../images/isthereanydeal_icon.svg');
+	const hltbUrl = chrome.extension.getURL('../images/howlongtobeat_logo.png');
+	drawChart = `
 Highcharts.stockChart('chart_container', {
 
 	chart: {
@@ -64,12 +50,12 @@ Highcharts.stockChart('chart_container', {
 
 	series: [{
 		name: 'Price',
-	    data: ${JSON.stringify(response)},
+	    data: ${JSON.stringify(response.data)},
 	    color: '#67c1f5',
 	    step: true,
 	    tooltip: {
-	        valueDecimals: ${region.valueDecimals},
-	        valuePrefix: '${region.currency}'
+	        valueDecimals: ${countrySetting.valueDecimals},
+	        valuePrefix: '${countrySetting.currency}'
 	    }
 	}],
 
@@ -83,6 +69,7 @@ Highcharts.stockChart('chart_container', {
 		},
 		lineColor: '#626366',
 		tickColor: '#626366',
+		crosshair: false,
 	},
 
 	yAxis: {
@@ -93,7 +80,9 @@ Highcharts.stockChart('chart_container', {
 				color: '#acb2b8',
 				fontSize: '12px',
 			},
-			format: '${region.currency}\{value\}',
+			formatter: function() {
+				return '${countrySetting.currency}' + Math.round(this.value);
+			}
 		},
 		offset: 30,
         tickLength: 30,
@@ -177,7 +166,7 @@ Highcharts.stockChart('chart_container', {
     },
 
     credits: {
-    	href: 'https://isthereanydeal.com/',
+    	href: 'javascript:window.open("https://isthereanydeal.com/", "_blank")',
     	text: 'IsThereAnyDeal.com',
     	style: {
 			color: '#acb2b8',
@@ -187,11 +176,50 @@ Highcharts.stockChart('chart_container', {
 		},
     },
 
+}, function (chart) {
+        function addImg(image, url, label, xAlign) {
+            chart.renderer.image(image, 0, 0, 20, 20)
+                .css({ cursor: 'pointer' })
+                .on('click', function () {
+                    window.open(url, "_blank");
+                })
+                .on('mouseover', function () {
+                    label.css({ display: 'inline' });
+                })
+                .on('mouseout', function () {
+                    label.css({ display: 'none' });
+                })
+                .align({ align: 'right', x: xAlign, y: 10 }, false, 'chart')
+                .add();
+        }
+
+        function addLabel(text) {
+            return chart.renderer.label(text, 0, 0, 'callout', 910, 15)
+                .attr({
+                    fill: '#377096',
+                    r: 5,
+                    padding: 8,
+                    zIndex: 8,
+                })
+                .css({
+                    color: '#d9dadd',
+                    fontSize: '12px',
+                    width: '120px',
+                    display: 'none',
+                })
+                .shadow(true)
+                .add();
+        }
+
+        const itadLabel = addLabel('View the game on IsThereAnyDeal').align({ align: 'right', x: -215, y: 5 });
+        addImg('${itadUrl}', '${response.link}', itadLabel, -85);
+        const hltbLabel = addLabel('View the game on HowLongtoBeat').align({ align: 'right', x: -180, y: 5 });
+        addImg('${hltbUrl}', 'https://howlongtobeat.com/', hltbLabel, -55);
 });`;
-		drawChartCounter();
-		// console.timeEnd('t');
-	});
-})
+	drawChartCounter();
+	// console.timeEnd('t');
+});
+
 
 function createScript(source, text, loc, promise = false) {
 	let newScript = document.createElement('script');

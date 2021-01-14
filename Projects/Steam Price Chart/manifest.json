@@ -2,7 +2,7 @@
     "name": "Steam Price Chart",
     "version": "0.2.0",
     "manifest_version": 2,
-    "permissions": [ "https://isthereanydeal.com/*", "http://store.steampowered.com/api/*", "https://api.steampowered.com/*", "https://steamspy.com/api.php*", "declarativeContent", "storage" ],
+    "permissions": [ "https://isthereanydeal.com/*", "http://store.steampowered.com/api/*", "https://api.steampowered.com/*", "https://steamspy.com/api.php*", "https://howlongtobeat.com/*", "declarativeContent", "storage" ],
     "optional_permissions": [],
     "author": "gingerax",
     "background": {
@@ -15,7 +15,7 @@
     "content_scripts": [
         {
             "all_frames": true,
-            "js": [ "js/pinyin.js", "js/content.js" ],
+            "js": [ "js/content.js" ],
             "matches": [ "*://store.steampowered.com/app/*" ],
             "run_at": "document_end"
         }
@@ -31,5 +31,6 @@
     "icons": {
         "48": "images/icon_48.png",
         "96": "images/icon_96.png"
-    }
+    },
+    "web_accessible_resources": [ "images/isthereanydeal_icon.svg", "images/howlongtobeat_logo.png" ]
 }

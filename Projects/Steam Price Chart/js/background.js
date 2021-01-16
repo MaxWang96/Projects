@@ -1,15 +1,17 @@
 'use strict';
 
-chrome.runtime.onConnect.addListener(port => {
-	port.onMessage.addListener(message => {
+chrome.runtime.onMessage.addListener(
+	(message, sender, sendResponse) => {
 		const splittedUrl = message.url.split('/');
 		const id = splittedUrl[4];
-		// let itadReady = 0,
-			// hltbReady = 1;
-		// const response = {
-		// 	header: 'itad',
-		// 	hltbUrl: 'https://howlongtobeat.com/'
-		// };
+		const name = message.name;
+		let itadReady = 0,
+			hltbReady = 0,
+			receivedReg = 0,
+			receivedAlt = 0;
+		const response = {
+			hltbUrl: 'https://howlongtobeat.com/'
+		};
 		// let a, b;
 
 		// console.time('t');
@@ -32,13 +34,82 @@ chrome.runtime.onConnect.addListener(port => {
 		// 	const getId = this.response.match(/href="(.+?)"/);
 		// 	if (getId != null) {
 		// 		response.hltbUrl = 'http://howlongtobeat.com/' + this.response.match(/href="(.+?)"/)[1];
+		// 		hltbReady = 1;
 		// 	}
-		// 	hltbReady = 1;
 		// 	tryRespond();
 		// }
 		// hltbRequest.send(params);
 
+		hltbRequest(name, function() {
+			receivedReg = 1;
+			const getId = this.response.match(/href="(.+?)"/);
+			if (getId != null) {
+				response.hltbUrl = 'http://howlongtobeat.com/' + getId[1];
+				hltbReady = 1;
+			}
+			if (receivedAlt) hltbReady = 1;
+			tryRespond();
+		});
+
+		if (name.includes('Edition')) {
+			const colonIdx = name.lastIndexOf(':'),
+				dashIdx = name.lastIndexOf('-');
+			if (colonIdx < dashIdx) altRequest(dashIdx);
+			else if (colonIdx > dashIdx) altRequest(colonIdx);
+		}
+
+		// const symbol = [':', '-'];
+		// for (let i = 0; i < 2; i++) {
+		// 	if (name.includes(symbol[i]) && name.includes('Edition')) {
+		// 		const pos = name.lastIndexOf(symbol[i]);
+		// 		hltbRequest(name.slice(0, pos), function() {
+		// 			receivedAlt = 1;
+		// 			const getId = this.response.match(/href="(.+?)"/);
+		// 			if (getId != null) {
+		// 				response.hltbUrl = 'http://howlongtobeat.com/' + getId[1];
+		// 				if (receivedReg) hltbReady = 1;
+		// 			}
+		// 			tryRespond();
+		// 		})
+		// 	}
+		// }
+
 		return true;
+
+		function altRequest(idx) {
+			hltbRequest(name.slice(0, idx), function() {
+				receivedAlt = 1;
+				const getId = this.response.match(/href="(.+?)"/);
+				if (getId != null) {
+					response.hltbUrl = 'http://howlongtobeat.com/' + getId[1];
+					if (receivedReg) hltbReady = 1;
+				}
+				tryRespond();
+			})
+		}
+
+		function hltbRequest(gameName, onloadFunc) {
+			const name = gameName.replace(/[^\w\s]/gi, '');
+			const xhr = new XMLHttpRequest;
+			const url = 'https://howlongtobeat.com/search_results.php';
+			const params = `queryString=${name}&t=games`;
+			xhr.open('POST', url, true);
+			xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+			xhr.onload = onloadFunc;
+			// xhr.onload = function() {
+			// 	// console.log(this.response);
+			// 	if (!alt) {
+			// 		receivedReg = 1;
+			// 	}
+			// 	const getId = this.response.match(/href="(.+?)"/);
+			// 	if (getId != null) {
+			// 		response.hltbUrl = 'http://howlongtobeat.com/' + getId[1];
+			// 		hltbReady = 1;
+			// 	}
+			// 	tryRespond();
+			// }
+			xhr.send(params);
+		}
 
 		function romanize(num) {
 			const key = ['', 'i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix'];
@@ -57,34 +128,16 @@ chrome.runtime.onConnect.addListener(port => {
 		function request(name) {
 			// console.time('a');
 			const xhr = new XMLHttpRequest;
-			const url = `https://isthereanydeal.com/game/${name}/history/${message.country}/?shop%5B%5D=steam&generate=Select+Stores`;
+			const url = `https://isthereanydeal.com/game/${name}/history/${message.region}/?shop%5B%5D=steam&generate=Select+Stores`;
 			xhr.open('GET', url);
 			// xhr.timeout = 10;
 			// xhr.ontimeout = function() {alert('cat!!')};
 			xhr.onload = function(data) {
 				try {
 					// console.time('t');
+					itadReady = 1;
 					// console.timeEnd('a');
 					// console.timeEnd('t');
-					const hltbRequest = new XMLHttpRequest;
-					const url = 'https://howlongtobeat.com/search_results.php';
-					const name = message.name.replace(/[^\w\s]/gi, '');
-					const params = `queryString=${name}&t=games`;
-					hltbRequest.open('POST', url, true);
-					hltbRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-					hltbRequest.onload = function() {
-						// console.log(this.response);
-						const message = {
-							header: 'hltb'						
-						}
-						const getId = this.response.match(/href="(.+?)"/);
-						if (getId != null) {
-							message.hltbUrl = 'http://howlongtobeat.com/' + this.response.match(/href="(.+?)"/)[1];
-						}
-						port.postMessage(message)
-					}
-					hltbRequest.send(params);
-
 					const dataArr = JSON.parse(this.response.match(/"Steam","data":(\[\[.+?\]\])/)[1]);
 					// console.time('t');
 					for (let i = dataArr.length - 3; i >= 0; i--) {
@@ -111,13 +164,9 @@ chrome.runtime.onConnect.addListener(port => {
 					}
 					// console.timeEnd('t');
 					// console.timeEnd('a');
-					const response = {
-						header: 'itad',
-						data: dataArr,
-						url: `https://isthereanydeal.com/game/${name}/info/${message.country}`
-					}
-					// tryRespond();
-					port.postMessage(response);
+					response.data = dataArr;
+					response.itadUrl = `https://isthereanydeal.com/game/${name}/info/${message.region}`;
+					tryRespond();
 				} catch (error) {}
 			}
 			xhr.send();
@@ -125,14 +174,14 @@ chrome.runtime.onConnect.addListener(port => {
 			// console.time('t');
 		}
 
-		// function tryRespond() {
-		// 	if (itadReady && hltbReady) {
-		// 		sendResponse(response);
-		// 		console.timeEnd('t');
-		// 	}
-		// }
-	})
-});
+		function tryRespond() {
+			if (itadReady && hltbReady) {
+				sendResponse(response);
+				// console.timeEnd('t');
+			}
+		}
+	}
+);
 
 // chrome.runtime.onInstalled.addListener(function() {
 // 	chrome.storage.sync.set({

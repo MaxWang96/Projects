@@ -4,16 +4,16 @@ console.time('t');
 let drawChart;
 let waitOnChart = 2;
 const setting = {
-	us: {
-		currency: '$',
-		valueDecimals: 2,
+    us: {
+        currency: '$',
+        valueDecimals: 2,
         siteButton: true,
-	},
-	cn: {
-		currency: '¥',
-		valueDecimals: 0,
+    },
+    cn: {
+        currency: '¥',
+        valueDecimals: 0,
         siteButton: false,
-	}
+    }
 };
 // chrome.storage.sync.get('region', (value) => console.log(value));
 // console.time('t');
@@ -23,18 +23,61 @@ const regionSetting = setting[region];
 const gameName = document.getElementsByClassName('apphub_AppName')[0].textContent;
 // const lang = config.LANGUAGE;
 const message = {
-	url: location.href,
-	region: region,
-	name: gameName
+    url: location.href,
+    region: region,
+    name: gameName
 }
 // console.time('t');
 chrome.runtime.sendMessage(message, function(response) {
-	if (response.data.length == 2 && response.data[0] == 0) {
-		return;
-	}
-	const itadUrl = chrome.extension.getURL('../images/isthereanydeal_icon.svg');
-	const hltbUrl = chrome.extension.getURL('../images/howlongtobeat_logo.png');
-	drawChart = `
+    if (response.data.length == 2 && response.data[0] == 0) {
+        return;
+    }
+    let labelCode = 'function(chart) {}';
+    if (regionSetting.siteButton) {
+        const itadUrl = chrome.extension.getURL('../images/isthereanydeal_icon.svg');
+        const hltbUrl = chrome.extension.getURL('../images/howlongtobeat_logo.png');
+        labelCode = `function (chart) {
+    function addImg(image, url, label, xAlign) {
+            chart.renderer.image(image, 0, 0, 20, 20)
+                .css({ cursor: 'pointer' })
+                .on('click', function () {
+                    window.open(url, "_blank");
+                })
+                .on('mouseover', function () {
+                    label.css({ display: 'inline' });
+                })
+                .on('mouseout', function () {
+                    label.css({ display: 'none' });
+                })
+                .align({ align: 'right', x: xAlign, y: 10 }, false, 'chart')
+                .add();
+        }
+
+        function addLabel(text) {
+            return chart.renderer.label(text, 0, 0, 'callout', 910, 15)
+                .attr({
+                    fill: '#377096',
+                    r: 5,
+                    padding: 8,
+                    zIndex: 8,
+                })
+                .css({
+                    color: '#d9dadd',
+                    fontSize: '12px',
+                    width: '120px',
+                    display: 'none',
+                })
+                .shadow(true)
+                .add();
+        }
+
+        const itadLabel = addLabel('View the game on IsThereAnyDeal').align({ align: 'right', x: -215, y: 5 });
+        addImg('${itadUrl}', '${response.itadUrl}', itadLabel, -85);
+        const hltbLabel = addLabel('View the game on HowLongToBeat').align({ align: 'right', x: -180, y: 5 });
+        addImg('${hltbUrl}', '${response.hltbUrl}', hltbLabel, -55);
+}`;
+    }
+    drawChart = `
 Highcharts.stockChart('chart_container', {
 
 	chart: {
@@ -199,85 +242,46 @@ Highcharts.stockChart('chart_container', {
 		},
     },
 
-}, function (chart) {
-        function addImg(image, url, label, xAlign) {
-            chart.renderer.image(image, 0, 0, 20, 20)
-                .css({ cursor: 'pointer' })
-                .on('click', function () {
-                    window.open(url, "_blank");
-                })
-                .on('mouseover', function () {
-                    label.css({ display: 'inline' });
-                })
-                .on('mouseout', function () {
-                    label.css({ display: 'none' });
-                })
-                .align({ align: 'right', x: xAlign, y: 10 }, false, 'chart')
-                .add();
-        }
-
-        function addLabel(text) {
-            return chart.renderer.label(text, 0, 0, 'callout', 910, 15)
-                .attr({
-                    fill: '#377096',
-                    r: 5,
-                    padding: 8,
-                    zIndex: 8,
-                })
-                .css({
-                    color: '#d9dadd',
-                    fontSize: '12px',
-                    width: '120px',
-                    display: 'none',
-                })
-                .shadow(true)
-                .add();
-        }
-
-        const itadLabel = addLabel('View the game on IsThereAnyDeal').align({ align: 'right', x: -215, y: 5 });
-        addImg('${itadUrl}', '${response.itadUrl}', itadLabel, -85);
-        const hltbLabel = addLabel('View the game on HowLongToBeat').align({ align: 'right', x: -180, y: 5 });
-        addImg('${hltbUrl}', '${response.hltbUrl}', hltbLabel, -55);
-});`;
-	drawChartCounter();
-	// console.timeEnd('t');
+}, ${labelCode});`;
+    drawChartCounter();
+    // console.timeEnd('t');
 });
 
 
 function createScript(source, text, loc, promise = false) {
-	let newScript = document.createElement('script');
-	if (source) newScript.src = source;
-	newScript.text = text;
-	loc.appendChild(newScript);
-	if (promise) {
-		return new Promise((res, rej) => {
-			newScript.onload = promise;
-			newScript.onerror = rej;
-		});
-	}
+    let newScript = document.createElement('script');
+    if (source) newScript.src = source;
+    newScript.text = text;
+    loc.appendChild(newScript);
+    if (promise) {
+        return new Promise((res, rej) => {
+            newScript.onload = promise;
+            newScript.onerror = rej;
+        });
+    }
 }
 
 const chartSrc = 'https://code.highcharts.com/stock/highstock.js';
 createScript(chartSrc, '', document.head, drawChartCounter).then();
 
 function drawChartCounter() {
-	waitOnChart--;
-	if (waitOnChart == 0) {
-		const elements = document.getElementsByClassName('page_content');
-		let loc;
-		for (let i = 0; i < elements.length; i++) {
-			if (elements[i].className == 'page_content') {
-				loc = elements[i];
-				break;
-			}
-		}
-		loc.insertAdjacentHTML('afterbegin', `
+    waitOnChart--;
+    if (waitOnChart == 0) {
+        const elements = document.getElementsByClassName('page_content');
+        let loc;
+        for (let i = 0; i < elements.length; i++) {
+            if (elements[i].className == 'page_content') {
+                loc = elements[i];
+                break;
+            }
+        }
+        loc.insertAdjacentHTML('afterbegin', `
 	<div class="steam_price_chart">
 		<div id="chart_container" style="height: 400px; min-width: 310px"></div>
 	</div>
 	`);
-		const spcDiv = document.getElementsByClassName('steam_price_chart')[0];
-		createScript('', drawChart, spcDiv, false);
-		console.timeEnd('t');
-	}
+        const spcDiv = document.getElementsByClassName('steam_price_chart')[0];
+        createScript('', drawChart, spcDiv, false);
+        console.timeEnd('t');
+    }
 }

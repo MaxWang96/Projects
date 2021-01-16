@@ -25,7 +25,7 @@
             "48": "images/icon_48.png",
             "96": "images/icon_96.png"
         },
-        "default_title": "Steam Price Chart automatically loads on Steam store pages"
+        "default_title": "Steam Price Chart automatically loads on supported Steam store pages"
         //"default_popup": "html/popup.html"
     },
     "icons": {

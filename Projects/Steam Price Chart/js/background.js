@@ -12,7 +12,6 @@ chrome.runtime.onMessage.addListener(
 		const response = {
 			hltbUrl: 'https://howlongtobeat.com/'
 		};
-		// let a, b;
 
 		// console.time('t');
 		const idRequest = new XMLHttpRequest;
@@ -23,56 +22,25 @@ chrome.runtime.onMessage.addListener(
 		}
 		idRequest.send();
 
-		// const hltbRequest = new XMLHttpRequest;
-		// const url = 'https://howlongtobeat.com/search_results.php';
-		// const name = message.name.replace(/[^\w\s]/gi, '');
-		// const params = `queryString=${name}&t=games`;
-		// hltbRequest.open('POST', url, true);
-		// hltbRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-		// hltbRequest.onload = function() {
-		// 	// console.log(this.response);
-		// 	const getId = this.response.match(/href="(.+?)"/);
-		// 	if (getId != null) {
-		// 		response.hltbUrl = 'http://howlongtobeat.com/' + this.response.match(/href="(.+?)"/)[1];
-		// 		hltbReady = 1;
-		// 	}
-		// 	tryRespond();
-		// }
-		// hltbRequest.send(params);
+		if (message.region == 'us') {
+			hltbRequest(name, function() {
+				receivedReg = 1;
+				const getId = this.response.match(/href="(.+?)"/);
+				if (getId != null) {
+					response.hltbUrl = 'http://howlongtobeat.com/' + getId[1];
+					hltbReady = 1;
+				}
+				if (receivedAlt) hltbReady = 1;
+				tryRespond();
+			});
 
-		hltbRequest(name, function() {
-			receivedReg = 1;
-			const getId = this.response.match(/href="(.+?)"/);
-			if (getId != null) {
-				response.hltbUrl = 'http://howlongtobeat.com/' + getId[1];
-				hltbReady = 1;
+			if (name.includes('Edition')) {
+				const colonIdx = name.lastIndexOf(':'),
+					dashIdx = name.lastIndexOf('-');
+				if (colonIdx < dashIdx) altRequest(dashIdx);
+				else if (colonIdx > dashIdx) altRequest(colonIdx);
 			}
-			if (receivedAlt) hltbReady = 1;
-			tryRespond();
-		});
-
-		if (name.includes('Edition')) {
-			const colonIdx = name.lastIndexOf(':'),
-				dashIdx = name.lastIndexOf('-');
-			if (colonIdx < dashIdx) altRequest(dashIdx);
-			else if (colonIdx > dashIdx) altRequest(colonIdx);
-		}
-
-		// const symbol = [':', '-'];
-		// for (let i = 0; i < 2; i++) {
-		// 	if (name.includes(symbol[i]) && name.includes('Edition')) {
-		// 		const pos = name.lastIndexOf(symbol[i]);
-		// 		hltbRequest(name.slice(0, pos), function() {
-		// 			receivedAlt = 1;
-		// 			const getId = this.response.match(/href="(.+?)"/);
-		// 			if (getId != null) {
-		// 				response.hltbUrl = 'http://howlongtobeat.com/' + getId[1];
-		// 				if (receivedReg) hltbReady = 1;
-		// 			}
-		// 			tryRespond();
-		// 		})
-		// 	}
-		// }
+		} else hltbReady = 1;
 
 		return true;
 
@@ -96,33 +64,7 @@ chrome.runtime.onMessage.addListener(
 			xhr.open('POST', url, true);
 			xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 			xhr.onload = onloadFunc;
-			// xhr.onload = function() {
-			// 	// console.log(this.response);
-			// 	if (!alt) {
-			// 		receivedReg = 1;
-			// 	}
-			// 	const getId = this.response.match(/href="(.+?)"/);
-			// 	if (getId != null) {
-			// 		response.hltbUrl = 'http://howlongtobeat.com/' + getId[1];
-			// 		hltbReady = 1;
-			// 	}
-			// 	tryRespond();
-			// }
 			xhr.send(params);
-		}
-
-		function romanize(num) {
-			const key = ['', 'i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix'];
-			return key[num] + '';
-		}
-
-		function sendUrl(name) {
-			for (let i = 0; i < name.length; i++) {
-				if (name[i] >= '1' && name[i] <= '9') {
-					name = name.replace(name[i], romanize(+name[i]));
-				}
-			}
-			request(name);
 		}
 
 		function request(name) {

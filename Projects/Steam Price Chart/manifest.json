@@ -14,8 +14,8 @@
     "options_ui": "",
     "content_scripts": [
         {
-            "all_frames": true,
-            "js": [ "js/content.js" ],
+            "css": [ "css/bootstrap.css" ],
+            "js": [ "js/highstock.js", "js/jquery.min.js", "js/bootstrap.min.js", "js/content.js" ],
             "matches": [ "*://store.steampowered.com/app/*" ],
             "run_at": "document_end"
         }

@@ -58,7 +58,7 @@ const message = {
 }
 // console.time('t');
 chrome.runtime.sendMessage(message, function(response) {
-    if (response.data[response.data.length - 1][1] == 0) {
+    if (response.data.points[response.data.points.length - 1][1] == 0) {
         return;
     }
     const elements = document.getElementsByClassName('page_content');
@@ -137,9 +137,9 @@ chrome.runtime.sendMessage(message, function(response) {
             });
             addImg(hltbUrl, response.hltbUrl, hltbLabel, -55);
 
-            chart.yAxis[1].update({
-                min: chart.yAxis[1].min - (chart.yAxis[1].max - chart.yAxis[1].min) * 0.4,
-            });
+            // chart.yAxis[1].update({
+            //     min: chart.yAxis[1].min - (chart.yAxis[1].max - chart.yAxis[1].min) * 0.4,
+            // });
         }
     }
 
@@ -160,7 +160,7 @@ chrome.runtime.sendMessage(message, function(response) {
 
         series: [{
             name: 'Price',
-            data: response.data,
+            data: response.data.points,
             color: '#67c1f5',
             step: true,
             tooltip: {
@@ -224,9 +224,10 @@ chrome.runtime.sendMessage(message, function(response) {
             xAxis: {
                 gridLineColor: '#626366',
             },
-            // yAxis: {
-            //     minPadding: 0.7,
-            // },
+            yAxis: {
+                min: response.data.range[0] - (response.data.range[1] - response.data.range[0]) * 0.6,
+                // minPadding: 0.7,
+            },
             outlineColor: 'rgba( 0, 0, 0, 0 )',
             maskFill: 'rgba(102,133,194,0.2)',
         },

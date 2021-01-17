@@ -82,6 +82,8 @@ chrome.runtime.onMessage.addListener(
 					// console.timeEnd('t');
 					const dataArr = JSON.parse(this.response.match(/"Steam","data":(\[\[.+?\]\])/)[1]);
 					// console.time('t');
+					let min = dataArr[dataArr.length - 2][1];
+					let max = dataArr[dataArr.length - 2][1];
 					for (let i = dataArr.length - 3; i >= 0; i--) {
 						if (dataArr[i][1] == null) {
 							dataArr.splice(i, 1);
@@ -103,10 +105,15 @@ chrome.runtime.onMessage.addListener(
 						if (dataArr[j + 1][1] == dataArr[j][1]) {
 							dataArr.splice(j + 1, 1);
 						}
+						if (dataArr[j][1] > max) {
+							max = dataArr[j][1];
+						} else if (dataArr[j][1] < min) {
+							min = dataArr[j][1];
+						}
 					}
 					// console.timeEnd('t');
 					// console.timeEnd('a');
-					response.data = dataArr;
+					response.data = {points: dataArr, range: [min, max]};
 					response.itadUrl = `https://isthereanydeal.com/game/${name}/info/${message.region}`;
 					tryRespond();
 				} catch (error) {}

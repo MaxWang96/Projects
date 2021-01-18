@@ -2,8 +2,6 @@
 
 chrome.runtime.onMessage.addListener(
 	(message, sender, sendResponse) => {
-		const splittedUrl = message.url.split('/');
-		const id = splittedUrl[4];
 		const name = message.name;
 		let itadReady = 0,
 			hltbReady = 0,
@@ -14,15 +12,26 @@ chrome.runtime.onMessage.addListener(
 		};
 
 		// console.time('t');
-		const idRequest = new XMLHttpRequest;
-		idRequest.open('GET', `https://api.isthereanydeal.com/v02/game/plain/?key=2a0a6baa1713e7be64e451ab1b863b988ce63455&shop=steam&game_id=app%2F${id}`);
-		idRequest.onload = function() {
-			const gameName = this.response.match(/"plain":"(.+?)"/)[1];
-			request(gameName);
+		if (!message.bundle) {
+			const idRequest = new XMLHttpRequest;
+			idRequest.open('GET', `https://api.isthereanydeal.com/v02/game/plain/?key=2a0a6baa1713e7be64e451ab1b863b988ce63455&shop=steam&game_id=app%2F${message.id}`);
+			idRequest.onload = function() {
+				const gameName = this.response.match(/"plain":"(.+?)"/)[1];
+				request(gameName);
+			}
+			idRequest.send();
+		} else {
+			const idRequest = new XMLHttpRequest;
+			idRequest.open('HEAD', `https://isthereanydeal.com/steam/bundle/${message.id}/`);
+			idRequest.onload = function() {
+				// console.log('cat');
+				const bundleName = this.responseURL.split('/')[4];
+				request(bundleName);
+			}
+			idRequest.send();
 		}
-		idRequest.send();
 
-		if (message.region == 'us') {
+		if (message.lang.startsWith('en')) {
 			hltbRequest(name, function() {
 				receivedReg = 1;
 				const getId = this.response.match(/href="(.+?)"/);
@@ -70,7 +79,7 @@ chrome.runtime.onMessage.addListener(
 		function request(name) {
 			// console.time('a');
 			const xhr = new XMLHttpRequest;
-			const url = `https://isthereanydeal.com/game/${name}/history/${message.region}/?shop%5B%5D=steam&generate=Select+Stores`;
+			const url = `https://isthereanydeal.com/game/${name}/history/${message.storeRegion}/?shop%5B%5D=steam&generate=Select+Stores`;
 			xhr.open('GET', url);
 			// xhr.timeout = 10;
 			// xhr.ontimeout = function() {alert('cat!!')};
@@ -113,8 +122,11 @@ chrome.runtime.onMessage.addListener(
 					}
 					// console.timeEnd('t');
 					// console.timeEnd('a');
-					response.data = {points: dataArr, range: [min, max]};
-					response.itadUrl = `https://isthereanydeal.com/game/${name}/info/${message.region}`;
+					response.data = {
+						points: dataArr,
+						range: [min, max]
+					};
+					response.itadUrl = `https://isthereanydeal.com/game/${name}/info/${message.storeRegion}`;
 					tryRespond();
 				} catch (error) {}
 			}

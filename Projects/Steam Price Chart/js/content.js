@@ -2,21 +2,18 @@
 
 console.time('t');
 // console.log(window.navigator.languages[0]);
-const config = JSON.parse(document.getElementById('application_config').getAttribute('data-config'));
-const region = config.COUNTRY;
-const supportedRegion = ['US', 'CN'];
-if (!supportedRegion.includes(region)) {
+function errorModal(id, header, text, error) {
     document.body.insertAdjacentHTML('beforeend', `
             <div class="spc_modal_container">
-                <div class="modal right fade" id="not_supported_modal" role="dialog">
+                <div class="modal right fade" id="${id}" role="dialog">
                     <div class="modal-dialog" style='width:230px;'>
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <p>Region Not Supported<p>
+                                <p>${header}<p>
                             </div>
                             <div class="modal-body">
-                                <p style="margin:0px;">Sorry, Steam Price Chart doesn't support the store region (${region}) you are in.</p>
+                                <p style="margin:0px;">${text}</p>
                             </div>
                         </div>
                     </div>
@@ -24,7 +21,7 @@ if (!supportedRegion.includes(region)) {
             </div>`);
 
     $(window).on('load', function() {
-        $('#not_supported_modal')
+        $(`#${id}`)
             .css({
                 'font-size': '13px',
                 'color': '#25282a'
@@ -33,8 +30,57 @@ if (!supportedRegion.includes(region)) {
                 backdrop: false
             });
     })
-    throw new Error();
+    throw new Error(error);
 }
+const config = JSON.parse(document.getElementById('application_config').getAttribute('data-config'));
+const region = config.COUNTRY;
+const supportedRegion = ['US', 'CN'];
+if (supportedRegion.includes(region)) {
+    errorModal('not_supported_modal',
+        'Region Not Supported',
+        `Sorry, Steam Price Chart doesn't support the store region (${region}) you are in.`,
+        'Region not supported');
+    // document.body.insertAdjacentHTML('beforeend', `
+    //         <div class="spc_modal_container">
+    //             <div class="modal right fade" id="not_supported_modal" role="dialog">
+    //                 <div class="modal-dialog" style='width:230px;'>
+    //                     <div class="modal-content">
+    //                         <div class="modal-header">
+    //                             <button type="button" class="close" data-dismiss="modal">&times;</button>
+    //                             <p>Region Not Supported<p>
+    //                         </div>
+    //                         <div class="modal-body">
+    //                             <p style="margin:0px;">Sorry, Steam Price Chart doesn't support the store region (${region}) you are in.</p>
+    //                         </div>
+    //                     </div>
+    //                 </div>
+    //             </div>
+    //         </div>`);
+
+    // $(window).on('load', function() {
+    //     $('#not_supported_modal')
+    //         .css({
+    //             'font-size': '13px',
+    //             'color': '#25282a'
+    //         })
+    //         .modal({
+    //             backdrop: false
+    //         });
+    // })
+    // throw new Error('Region not supported');
+}
+
+// console.log(document.getElementsByClassName('game_area_purchase_game_wrapper'));
+if (document.getElementsByClassName('game_area_purchase_game_wrapper').length == 0) throw new Error('This game is free, stopped drawing the chart');
+const firstCartOption = document.getElementsByClassName('game_area_purchase_game_wrapper')[0];
+let id, isBundle = false;
+if (firstCartOption.classList.length == 1) id = location.href.split('/')[4];
+else if (firstCartOption.classList.length == 3) {
+    isBundle = true;
+    // const config = JSON.parse(document.getElementById('application_config').getAttribute('data-config'));
+    id = firstCartOption.getAttribute('data-ds-bundleid');
+}
+
 const locale = {
     US: {
         siteButton: true,
@@ -78,24 +124,37 @@ const localePrice = {
 }
 // chrome.storage.sync.get('region', (value) => console.log(value));
 // console.time('t');
-console.log(window.navigator.languages[0]);
+// console.log(window.navigator.languages[0]);
+const sysLang = window.navigator.languages[0];
 let langSetting = locale['US'];
-if (window.navigator.languages[0] == 'zh-CN') {
+if (sysLang == 'zh-CN') {
     langSetting = locale['CN'];
 }
 const priceSetting = localePrice[region];
 const gameName = document.getElementsByClassName('apphub_AppName')[0].textContent;
 // const lang = config.LANGUAGE;
 const message = {
-    url: location.href,
-    region: region.toLowerCase(),
-    name: gameName
+    id: id,
+    storeRegion: region.toLowerCase(),
+    lang: sysLang,
+    name: gameName,
+    bundle: isBundle
 }
 // console.time('t');
 chrome.runtime.sendMessage(message, function(response) {
-    if (response.data.points[response.data.points.length - 1][1] == 0) {
+    // if (response.data.points[response.data.points.length - 1][1] == 0) {
+    //     return;
+    // }
+    let curPrice;
+    if (firstCartOption.getElementsByClassName('discount_final_price').length != 0) curPrice = firstCartOption.getElementsByClassName('discount_final_price')[0];
+    else curPrice = firstCartOption.getElementsByClassName('game_purchase_price')[0];
+    const price = curPrice.textContent.match(/\d+/)[0];
+    console.log(price);
+    if (price != response.data.points[response.data.points.length - 1][1]) {
+        console.log('this price is wrong');
         return;
     }
+
     const elements = document.getElementsByClassName('page_content');
     let loc;
     for (let i = 0; i < elements.length; i++) {
@@ -180,7 +239,7 @@ chrome.runtime.sendMessage(message, function(response) {
 
     Highcharts.setOptions(langSetting.chartLang);
 
-    console.time('chartTime');
+    // console.time('chartTime');
 
     const chart = Highcharts.stockChart('chart_container', {
         chart: {
@@ -345,11 +404,6 @@ chrome.runtime.sendMessage(message, function(response) {
             }],
         },
 
-        boost: {
-            useGPUTranslations: true,
-            usePreallocated: true,
-        },
-
         credits: {
             href: 'javascript:window.open("https://isthereanydeal.com/", "_blank")',
             text: 'IsThereAnyDeal.com',
@@ -364,5 +418,5 @@ chrome.runtime.sendMessage(message, function(response) {
     }, addButton);
 
     console.timeEnd('t');
-    console.timeEnd('chartTime');
+    // console.timeEnd('chartTime');
 });

@@ -1,6 +1,7 @@
 'use strict';
 
 console.time('t');
+// console.log(window.navigator.languages[0]);
 const config = JSON.parse(document.getElementById('application_config').getAttribute('data-config'));
 const region = config.COUNTRY;
 const supportedRegion = ['US', 'CN'];
@@ -34,25 +35,26 @@ if (!supportedRegion.includes(region)) {
     })
     throw new Error();
 }
-const setting = {
+const locale = {
     US: {
-        currency: '$',
-        valueDecimals: 2,
         siteButton: true,
         dateFormat: '%A, %b %e, %Y',
         inputDateFormat: '%b %e, %Y',
         inputBoxWidth: 90,
         buttonText: ['1m', '3m', '6m', '1y', '3y', 'All'],
+        dateTimeLabelFormats: {},
         chartLang: {},
     },
     CN: {
-        currency: '¥',
-        valueDecimals: 0,
         siteButton: false,
         dateFormat: '%m月%d日 %A %Y',
         inputDateFormat: '%Y年%m月%d日',
         inputBoxWidth: 100,
         buttonText: ['1月', '3月', '6月', '1年', '3年', '全部'],
+        dateTimeLabelFormats: {
+            week: '%m月%d日',
+            month: '%Y年%m月',
+        },
         chartLang: {
             lang: {
                 months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
@@ -64,9 +66,24 @@ const setting = {
         }
     }
 };
+const localePrice = {
+    US: {
+        currency: '$',
+        valueDecimals: 2,
+    },
+    CN: {
+        currency: '¥',
+        valueDecimals: 0,
+    }
+}
 // chrome.storage.sync.get('region', (value) => console.log(value));
 // console.time('t');
-const regionSetting = setting[region];
+console.log(window.navigator.languages[0]);
+let langSetting = locale['US'];
+if (window.navigator.languages[0] == 'zh-CN') {
+    langSetting = locale['CN'];
+}
+const priceSetting = localePrice[region];
 const gameName = document.getElementsByClassName('apphub_AppName')[0].textContent;
 // const lang = config.LANGUAGE;
 const message = {
@@ -93,7 +110,7 @@ chrome.runtime.sendMessage(message, function(response) {
     </div>
     `);
     let addButton = function(chart) {};
-    if (regionSetting.siteButton) {
+    if (langSetting.siteButton) {
         const itadUrl = chrome.extension.getURL('../images/isthereanydeal_icon.svg');
         const hltbUrl = chrome.extension.getURL('../images/howlongtobeat_logo.png');
 
@@ -161,7 +178,9 @@ chrome.runtime.sendMessage(message, function(response) {
         }
     }
 
-    Highcharts.setOptions(regionSetting.chartLang);
+    Highcharts.setOptions(langSetting.chartLang);
+
+    console.time('chartTime');
 
     const chart = Highcharts.stockChart('chart_container', {
         chart: {
@@ -184,8 +203,8 @@ chrome.runtime.sendMessage(message, function(response) {
             color: '#67c1f5',
             step: true,
             tooltip: {
-                valueDecimals: regionSetting.valueDecimals,
-                valuePrefix: regionSetting.currency,
+                valueDecimals: priceSetting.valueDecimals,
+                valuePrefix: priceSetting.currency,
             }
         }],
 
@@ -194,12 +213,14 @@ chrome.runtime.sendMessage(message, function(response) {
             labels: {
                 style: {
                     color: '#acb2b8',
-                    fontSize: '12px'
+                    fontSize: '12px',
                 }
             },
             lineColor: '#626366',
             tickColor: '#626366',
             crosshair: false,
+            tickPixelInterval: 200,
+            dateTimeLabelFormats: langSetting.dateTimeLabelFormats,
         },
 
         yAxis: {
@@ -211,7 +232,7 @@ chrome.runtime.sendMessage(message, function(response) {
                     fontSize: '12px',
                 },
                 formatter: function() {
-                    return regionSetting.currency + Math.round(this.value);
+                    return priceSetting.currency + Math.round(this.value);
                 }
             },
             offset: 30,
@@ -227,7 +248,7 @@ chrome.runtime.sendMessage(message, function(response) {
             shared: true,
             useHTML: true,
             borderColor: '#171a21',
-            xDateFormat: regionSetting.dateFormat,
+            xDateFormat: langSetting.dateFormat,
         },
 
         navigator: {
@@ -291,9 +312,9 @@ chrome.runtime.sendMessage(message, function(response) {
                 backgroundColor: "#18222e",
                 color: "#acb2b8",
             },
-            inputDateFormat: regionSetting.inputDateFormat,
+            inputDateFormat: langSetting.inputDateFormat,
             inputEditDateFormat: '%m/%d/%Y',
-            inputBoxWidth: regionSetting.inputBoxWidth,
+            inputBoxWidth: langSetting.inputBoxWidth,
             labelStyle: {
                 color: "#acb2b8"
             },
@@ -301,27 +322,32 @@ chrome.runtime.sendMessage(message, function(response) {
             buttons: [{
                 type: "month",
                 count: 1,
-                text: regionSetting.buttonText[0],
+                text: langSetting.buttonText[0],
             }, {
                 type: "month",
                 count: 3,
-                text: regionSetting.buttonText[1],
+                text: langSetting.buttonText[1],
             }, {
                 type: "month",
                 count: 6,
-                text: regionSetting.buttonText[2],
+                text: langSetting.buttonText[2],
             }, {
                 type: "year",
                 count: 1,
-                text: regionSetting.buttonText[3],
+                text: langSetting.buttonText[3],
             }, {
                 type: "year",
                 count: 3,
-                text: regionSetting.buttonText[4],
+                text: langSetting.buttonText[4],
             }, {
                 type: "all",
-                text: regionSetting.buttonText[5],
+                text: langSetting.buttonText[5],
             }],
+        },
+
+        boost: {
+            useGPUTranslations: true,
+            usePreallocated: true,
         },
 
         credits: {
@@ -338,4 +364,5 @@ chrome.runtime.sendMessage(message, function(response) {
     }, addButton);
 
     console.timeEnd('t');
+    console.timeEnd('chartTime');
 });

@@ -1,4 +1,13 @@
 {
+    "extensionName": {
+        "message": "Steam Price Chart"
+    },
+    "extensionDescription": {
+        "message": "Adds price history charts to the Steam site."
+    },
+    "extensionTitle": {
+        "message": "Steam Price Chart automatically loads on supported Steam store pages"
+    },
     "priceHistory": {
         "message": " Price History"
     },

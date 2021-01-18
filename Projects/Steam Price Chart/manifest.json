@@ -1,5 +1,5 @@
 {
-    "name": "Steam Price Chart",
+    "name": "__MSG_extensionName__",
     "version": "0.2.0",
     "manifest_version": 2,
     "permissions": [ "https://isthereanydeal.com/*", "http://store.steampowered.com/api/*", "https://api.steampowered.com/*", "https://steamspy.com/api.php*", "https://howlongtobeat.com/*", "declarativeContent", "storage" ],
@@ -9,13 +9,13 @@
         "page": "html/background.html",
         "persistent": false
     },
-    "description": "Adds price history charts to the Steam site.",
+    "description": "__MSG_extensionDescription__",
     "default_locale": "en",
     "options_ui": "",
     "content_scripts": [
         {
             "css": [ "css/bootstrap.css" ],
-            "js": [ "js/highstock.js", "js/jquery.min.js", "js/bootstrap.min.js", "js/content.js" ],
+            "js": [ "js/highstock.js", "js/boost.js", "js/jquery.min.js", "js/bootstrap.min.js", "js/content.js" ],
             "matches": [ "*://store.steampowered.com/app/*" ],
             "run_at": "document_end"
         }
@@ -25,7 +25,7 @@
             "48": "images/icon_48.png",
             "96": "images/icon_96.png"
         },
-        "default_title": "Steam Price Chart automatically loads on supported Steam store pages"
+        "default_title": "__MSG_extensionTitle__"
         //"default_popup": "html/popup.html"
     },
     "icons": {

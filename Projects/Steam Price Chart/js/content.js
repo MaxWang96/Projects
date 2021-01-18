@@ -39,11 +39,29 @@ const setting = {
         currency: '$',
         valueDecimals: 2,
         siteButton: true,
+        dateFormat: '%A, %b %e, %Y',
+        inputDateFormat: '%b %e, %Y',
+        inputBoxWidth: 90,
+        buttonText: ['1m', '3m', '6m', '1y', '3y', 'All'],
+        chartLang: {},
     },
     CN: {
         currency: '¥',
         valueDecimals: 0,
         siteButton: false,
+        dateFormat: '%m月%d日 %A %Y',
+        inputDateFormat: '%Y年%m月%d日',
+        inputBoxWidth: 100,
+        buttonText: ['1月', '3月', '6月', '1年', '3年', '全部'],
+        chartLang: {
+            lang: {
+                months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                weekdays: ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'],
+                rangeSelectorZoom: '缩放',
+                rangeSelectorFrom: '从',
+                rangeSelectorTo: '到',
+            }
+        }
     }
 };
 // chrome.storage.sync.get('region', (value) => console.log(value));
@@ -143,6 +161,8 @@ chrome.runtime.sendMessage(message, function(response) {
         }
     }
 
+    Highcharts.setOptions(regionSetting.chartLang);
+
     const chart = Highcharts.stockChart('chart_container', {
         chart: {
             backgroundColor: 'rgba( 0, 0, 0, 0.2 )',
@@ -152,14 +172,14 @@ chrome.runtime.sendMessage(message, function(response) {
         },
 
         title: {
-            text: gameName + ' Price History',
+            text: gameName + chrome.i18n.getMessage('priceHistory'),
             style: {
                 color: '#FFFFFF'
             }
         },
 
         series: [{
-            name: 'Price',
+            name: chrome.i18n.getMessage('lineName'),
             data: response.data.points,
             color: '#67c1f5',
             step: true,
@@ -207,7 +227,7 @@ chrome.runtime.sendMessage(message, function(response) {
             shared: true,
             useHTML: true,
             borderColor: '#171a21',
-            xDateFormat: '%A, %b %e, %Y'
+            xDateFormat: regionSetting.dateFormat,
         },
 
         navigator: {
@@ -271,7 +291,9 @@ chrome.runtime.sendMessage(message, function(response) {
                 backgroundColor: "#18222e",
                 color: "#acb2b8",
             },
+            inputDateFormat: regionSetting.inputDateFormat,
             inputEditDateFormat: '%m/%d/%Y',
+            inputBoxWidth: regionSetting.inputBoxWidth,
             labelStyle: {
                 color: "#acb2b8"
             },
@@ -279,26 +301,26 @@ chrome.runtime.sendMessage(message, function(response) {
             buttons: [{
                 type: "month",
                 count: 1,
-                text: "1m"
+                text: regionSetting.buttonText[0],
             }, {
                 type: "month",
                 count: 3,
-                text: "3m"
+                text: regionSetting.buttonText[1],
             }, {
                 type: "month",
                 count: 6,
-                text: "6m"
+                text: regionSetting.buttonText[2],
             }, {
                 type: "year",
                 count: 1,
-                text: "1y"
+                text: regionSetting.buttonText[3],
             }, {
                 type: "year",
                 count: 3,
-                text: "3y"
+                text: regionSetting.buttonText[4],
             }, {
                 type: "all",
-                text: "All"
+                text: regionSetting.buttonText[5],
             }],
         },
 

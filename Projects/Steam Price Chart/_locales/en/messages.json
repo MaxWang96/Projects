@@ -1,6 +1,8 @@
 {
-    "dummy": {
-        "description": "dummyDesc",
-        "message": "dummyMsg"
+    "priceHistory": {
+        "message": " Price History"
+    },
+    "lineName": {
+        "message": "Price"
     }
 }

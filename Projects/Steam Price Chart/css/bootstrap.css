@@ -536,7 +536,7 @@ tbody.collapse.in {
     font-size: 18px;
     font-weight: bold;
     line-height: 1;
-    color: #d9dadd;
+    color: #25282a;
 }
 
 .close:hover,
@@ -557,7 +557,9 @@ button.close {
 }
 .modal-open {
   overflow: auto;
+  padding-right: 0 !important;
 }
+
 .modal {
     position: fixed;
     top: 0;
@@ -566,7 +568,7 @@ button.close {
     left: 0;
     z-index: 1050;
     display: none;
-    overflow: hidden;
+    overflow: auto;
     -webkit-overflow-scrolling: touch;
     outline: 0;
 }
@@ -586,19 +588,20 @@ button.close {
   transform: translate(0, 0);
 }
 .modal-open .modal {
-    width: 200px;
+    width: 0px;
     margin: 0 auto;
-    overflow-x: hidden;
+    overflow-x: auto;
     overflow-y: auto;
 }
 .modal-dialog {
     position: fixed;
     top: 6px;
-    right: 12px;
+    right: 6px;
     margin: 0px;
 }
 .modal-content {
     position: relative;
+    /*background-color: #377096;*/
     background-color: #d3dee6;
     -webkit-background-clip: padding-box;
     background-clip: padding-box;
@@ -607,7 +610,7 @@ button.close {
     -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
     box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
     outline: 0;
-    overflow:hidden;
+    overflow: auto;
 }
 .modal-backdrop {
   position: fixed;
@@ -628,9 +631,11 @@ button.close {
 }
 .modal-header {
     padding: 13px;
-    border-bottom: 0 none;
-    background-color: #377096;
-    color: #d9dadd;
+    /*border-bottom: 0 none;*/
+    /*color: #ffffff;*/
+    font-size: 14px;
+    color: #4f94bc;
+    padding-bottom: 0px;
 }
 .modal-header .close {
   margin-top: -2px;

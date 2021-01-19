@@ -20,54 +20,33 @@ function errorModal(id, header, text, error) {
                 </div>
             </div>`);
 
-    $(window).on('load', function() {
+    function showModal() {
         $(`#${id}`)
             .css({
                 'font-size': '13px',
-                'color': '#25282a'
+                // 'color': '#ffffff'
+                'color': '#25282a',
+                'line-height': '19px',
             })
             .modal({
                 backdrop: false
             });
-    })
+    }
+
+    if (document.readyState != 'complete') {
+        $(window).on('load', showModal);
+    } else showModal();
+
     throw new Error(error);
 }
 const config = JSON.parse(document.getElementById('application_config').getAttribute('data-config'));
 const region = config.COUNTRY;
 const supportedRegion = ['US', 'CN'];
-if (supportedRegion.includes(region)) {
+if (!supportedRegion.includes(region)) {
     errorModal('not_supported_modal',
         'Region Not Supported',
         `Sorry, Steam Price Chart doesn't support the store region (${region}) you are in.`,
         'Region not supported');
-    // document.body.insertAdjacentHTML('beforeend', `
-    //         <div class="spc_modal_container">
-    //             <div class="modal right fade" id="not_supported_modal" role="dialog">
-    //                 <div class="modal-dialog" style='width:230px;'>
-    //                     <div class="modal-content">
-    //                         <div class="modal-header">
-    //                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-    //                             <p>Region Not Supported<p>
-    //                         </div>
-    //                         <div class="modal-body">
-    //                             <p style="margin:0px;">Sorry, Steam Price Chart doesn't support the store region (${region}) you are in.</p>
-    //                         </div>
-    //                     </div>
-    //                 </div>
-    //             </div>
-    //         </div>`);
-
-    // $(window).on('load', function() {
-    //     $('#not_supported_modal')
-    //         .css({
-    //             'font-size': '13px',
-    //             'color': '#25282a'
-    //         })
-    //         .modal({
-    //             backdrop: false
-    //         });
-    // })
-    // throw new Error('Region not supported');
 }
 
 // console.log(document.getElementsByClassName('game_area_purchase_game_wrapper'));
@@ -148,11 +127,11 @@ chrome.runtime.sendMessage(message, function(response) {
     let curPrice;
     if (firstCartOption.getElementsByClassName('discount_final_price').length != 0) curPrice = firstCartOption.getElementsByClassName('discount_final_price')[0];
     else curPrice = firstCartOption.getElementsByClassName('game_purchase_price')[0];
-    const price = curPrice.textContent.match(/\d+/)[0];
+    const price = curPrice.textContent.match(/[\d.]+/)[0];
     console.log(price);
     if (price != response.data.points[response.data.points.length - 1][1]) {
-        console.log('this price is wrong');
-        return;
+        // console.log('this price is wrong');
+        errorModal('price_data_error_modal', 'Price History Data Error', `Sorry, there is something wrong with ${gameName}'s price history data, Steam Price Chart won't draw the chart.`, 'Price data error');
     }
 
     const elements = document.getElementsByClassName('page_content');
@@ -175,7 +154,7 @@ chrome.runtime.sendMessage(message, function(response) {
 
         addButton = function(chart) {
             function addImg(image, url, label, xAlign) {
-                chart.renderer.image(image, 0, 0, 20, 20)
+                return chart.renderer.image(image, 0, 0, 20, 20)
                     .css({
                         cursor: 'pointer'
                     })
@@ -224,12 +203,30 @@ chrome.runtime.sendMessage(message, function(response) {
                 y: 5
             });
             addImg(itadUrl, response.itadUrl, itadLabel, -85);
-            const hltbLabel = addLabel('View the game on HowLongToBeat').align({
-                align: 'right',
-                x: -180,
-                y: 5
-            });
-            addImg(hltbUrl, response.hltbUrl, hltbLabel, -55);
+            // const hltbLabel = addLabel('View the game on HowLongToBeat').align({
+            //     align: 'right',
+            //     x: -180,
+            //     y: 5
+            // });
+            // const hltbImg = addImg(hltbUrl, response.hltbUrl, hltbLabel, -55);
+            if (response.hltbUrl == 'https://howlongtobeat.com/') {
+                const hltbLabel = addLabel("Can't find the game on HowLongToBeat").align({
+                    align: 'right',
+                    x: -180,
+                    y: 5
+                });
+                addImg(hltbUrl, response.hltbUrl, hltbLabel, -55)
+                    .css({
+                        opacity: 0.3,
+                    });
+            } else {
+                const hltbLabel = addLabel('View the game on HowLongToBeat').align({
+                    align: 'right',
+                    x: -180,
+                    y: 5
+                });
+                addImg(hltbUrl, response.hltbUrl, hltbLabel, -55);
+            }
 
             // chart.yAxis[1].update({
             //     min: chart.yAxis[1].min - (chart.yAxis[1].max - chart.yAxis[1].min) * 0.4,

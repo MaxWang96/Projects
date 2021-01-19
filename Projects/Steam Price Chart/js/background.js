@@ -48,7 +48,7 @@ chrome.runtime.onMessage.addListener(
 					dashIdx = name.lastIndexOf('-');
 				if (colonIdx < dashIdx) altRequest(dashIdx);
 				else if (colonIdx > dashIdx) altRequest(colonIdx);
-			}
+			} else receivedAlt = 1;
 		} else hltbReady = 1;
 
 		return true;

@@ -55,10 +55,7 @@ if (!supportedRegion.includes(region)) {
         'Region not supported');
 }
 
-// console.log(document.getElementById('game_area_purchase').getElementsByTagName('div')[0].getAttribute('class') == 'game_area_purchase_game ');
-
 //check for free game
-// if (document.getElementsByClassName('game_area_purchase_game_wrapper').length == 0) throw new Error('This game is free, stopped drawing the chart');
 if (document.getElementById('game_area_purchase').getElementsByTagName('div')[0].getAttribute('class') == 'game_area_purchase_game ') {
     throw new Error('This game is free, stopped drawing the chart');
 }
@@ -125,17 +122,61 @@ const localePrice = {
         valueDecimals: 0,
     }
 }
-// chrome.storage.sync.get('region', (value) => console.log(value));
 // console.time('t');
-// console.log(window.navigator.languages[0]);
 const sysLang = window.navigator.languages[0];
-let langSetting = locale['US'];
-if (sysLang == 'zh-CN') {
-    langSetting = locale['CN'];
-}
+const langSetting = (sysLang == 'zh-CN') ? locale['CN'] : locale['US'];
 const priceSetting = localePrice[region];
 const gameName = document.getElementsByClassName('apphub_AppName')[0].textContent;
-// const lang = config.LANGUAGE;
+
+const userChart = {
+    full: {
+        chart: {
+            height: '400px',
+        },
+
+        scrollbar: {
+            enabled: true
+        },
+
+        rangeSelector: {
+            enabled: true
+        },
+
+        navigator: {
+            margin: 25,
+        },
+
+        tooltip: {
+            animation: true
+        }
+    },
+    simp: {
+        chart: {
+            animation: false,
+            height: '350px',
+        },
+
+        scrollbar: {
+            enabled: false
+        },
+
+        rangeSelector: {
+            enabled: false
+        },
+
+        navigator: {
+            margin: 20,
+        },
+
+        tooltip: {
+            animation: false
+        }
+    }
+};
+Object.freeze(userChart.full);
+Object.freeze(userChart.simp);
+let chartSetting;
+
 const message = {
     id: id,
     storeRegion: region.toLowerCase(),
@@ -143,6 +184,7 @@ const message = {
     name: gameName,
     bundle: isBundle
 }
+let bgResponse;
 let chart;
 
 // console.time('t');
@@ -157,10 +199,12 @@ chrome.runtime.sendMessage(message, function(response) {
     const price = curPrice.textContent.match(/[\d.]+/)[0];
     // console.log(price);
     if (price != response.data.points[response.data.points.length - 1][1]) {
-        // console.log('this price is wrong');
-        // errorModal('price_data_error_modal', 'Price History Data Error', `Sorry, there is something wrong with ${gameName}'s price history data, Steam Price Chart won't draw the chart.`, 'Price data error');
         dataError(gameName);
     }
+
+    bgResponse = response;
+
+
 
     const elements = document.getElementsByClassName('page_content');
     let loc;
@@ -239,12 +283,7 @@ chrome.runtime.sendMessage(message, function(response) {
                 y: 5
             });
             addImgUrl(addImg(itadImgUrl, itadLabel, -85), response.itadUrl);
-            // const hltbLabel = addLabel('View the game on HowLongToBeat').align({
-            //     align: 'right',
-            //     x: -180,
-            //     y: 5
-            // });
-            // const hltbImg = addImg(hltbUrl, response.hltbUrl, hltbLabel, -55);
+
             if (response.hltbUrl == 'https://howlongtobeat.com/') {
                 const hltbLabel = addLabel("Can't find the game on HowLongToBeat").align({
                     align: 'right',
@@ -449,66 +488,20 @@ chrome.runtime.sendMessage(message, function(response) {
     // console.timeEnd('chartTime');
 });
 
-chrome.storage.sync.get('simplified', function(value) {
-    swit.checked = value.simplified;
-    let initSpeed = '0.4s';
-    if (value.simplified) initSpeed = '0s';
-    const init = new Switchery(swit, {
-        size: 'small',
-        color: '#377096',
-        speed: initSpeed
+const getSetting = new Promise(function(resolve, reject) {
+    chrome.storage.sync.get('simplified', function(value) {
+        // swit.checked = value.simplified;
+        resolve();
     });
-    if (value.simplified) init.options.speed = '0.4s';
 });
 
 chrome.runtime.onMessage.addListener(
     function(request, sender) {
         if (request.simplified) {
             document.getElementById('chart_container').style.height = '350px';
-            chart.update({
-                chart: {
-                    animation: false,
-                    height: '350px',
-                },
-
-                rangeSelector: {
-                    enabled: false
-                },
-
-                navigator: {
-                    margin: 20,
-                },
-
-                scrollbar: {
-                    enabled: false
-                },
-
-                tooltip: {
-                    animation: false
-                }
-            });
+            chart.update(userChart.simp);
         } else {
             document.getElementById('chart_container').style.height = '400px';
-            chart.update({
-                chart: {
-                    height: '400px',
-                },
-
-                rangeSelector: {
-                    enabled: true
-                },
-
-                navigator: {
-                    margin: 25,
-                },
-
-                scrollbar: {
-                    enabled: true
-                },
-
-                tooltip: {
-                    animation: true
-                }
-            });
+            chart.update(userChart.full);
         }
     });

@@ -1,6 +1,6 @@
 'use strict';
 
-console.time('t');
+// console.time('t');
 // console.log(window.navigator.languages[0]);
 // console.log(document.readyState);
 function errorModal(id, header, text, error) {
@@ -188,24 +188,38 @@ let bgResponse;
 let chart;
 
 // console.time('t');
-chrome.runtime.sendMessage(message, function(response) {
-    if (response.data.points[0][1] == 0) {
-        dataError(gameName);
-    }
-
-    let curPrice;
-    if (firstPurchaseOption.getElementsByClassName('discount_final_price').length != 0) curPrice = firstPurchaseOption.getElementsByClassName('discount_final_price')[0];
-    else curPrice = firstPurchaseOption.getElementsByClassName('game_purchase_price')[0];
-    const price = curPrice.textContent.match(/[\d.]+/)[0];
-    // console.log(price);
-    if (price != response.data.points[response.data.points.length - 1][1]) {
-        dataError(gameName);
-    }
-
-    bgResponse = response;
 
 
+const getData = new Promise(function(resolve, reject) {
+    chrome.runtime.sendMessage(message, function(response) {
+        if (response.data.points[0][1] == 0) {
+            dataError(gameName);
+        }
 
+        let curPrice;
+        if (firstPurchaseOption.getElementsByClassName('discount_final_price').length != 0) curPrice = firstPurchaseOption.getElementsByClassName('discount_final_price')[0];
+        else curPrice = firstPurchaseOption.getElementsByClassName('game_purchase_price')[0];
+        const price = curPrice.textContent.match(/[\d.]+/)[0];
+        // console.log(price);
+        if (price != response.data.points[response.data.points.length - 1][1]) {
+            dataError(gameName);
+        }
+
+        bgResponse = response;
+        resolve();
+        // console.timeEnd('t');
+        // console.timeEnd('chartTime');
+    });
+});
+
+const getSetting = new Promise(function(resolve, reject) {
+    chrome.storage.sync.get('simplified', function(value) {
+        chartSetting = value.simplified ? userChart.simp : userChart.full;
+        resolve();
+    });
+});
+
+Promise.all([getData, getSetting]).then(function() {
     const elements = document.getElementsByClassName('page_content');
     let loc;
     for (let i = 0; i < elements.length; i++) {
@@ -216,11 +230,11 @@ chrome.runtime.sendMessage(message, function(response) {
     }
     loc.insertAdjacentHTML('afterbegin', `
     <div class="steam_price_chart">
-        <div id="chart_container" style="height: 400px; min-width: 310px"></div>
+        <div id="chart_container" style="height: ${chartSetting.chart.height}; min-width: 310px"></div>
     </div>
     `);
 
-    const title = isBundle ? response.bundleTitle : gameName;
+    const title = isBundle ? bgResponse.bundleTitle : gameName;
 
     let addButton = function(chart) {};
     if (langSetting.siteButton) {
@@ -282,9 +296,9 @@ chrome.runtime.sendMessage(message, function(response) {
                 x: -215,
                 y: 5
             });
-            addImgUrl(addImg(itadImgUrl, itadLabel, -85), response.itadUrl);
+            addImgUrl(addImg(itadImgUrl, itadLabel, -85), bgResponse.itadUrl);
 
-            if (response.hltbUrl == 'https://howlongtobeat.com/') {
+            if (bgResponse.hltbUrl == 'https://howlongtobeat.com/') {
                 const hltbLabel = addLabel("Can't find the game on HowLongToBeat").align({
                     align: 'right',
                     x: -190,
@@ -299,12 +313,15 @@ chrome.runtime.sendMessage(message, function(response) {
                     x: -180,
                     y: 5
                 });
-                addImgUrl(addImg(hltbImgUrl, hltbLabel, -55), response.hltbUrl);
+                addImgUrl(addImg(hltbImgUrl, hltbLabel, -55), bgResponse.hltbUrl);
             }
         }
     }
 
     Highcharts.setOptions(langSetting.chartLang);
+    Highcharts.setOptions(chartSetting);
+
+    console.log(bgResponse);
 
     // console.time('chartTime');
 
@@ -325,7 +342,7 @@ chrome.runtime.sendMessage(message, function(response) {
 
         series: [{
             name: chrome.i18n.getMessage('lineName'),
-            data: response.data.points,
+            data: bgResponse.data.points,
             color: '#67c1f5',
             step: true,
             tooltip: {
@@ -392,7 +409,7 @@ chrome.runtime.sendMessage(message, function(response) {
                 gridLineColor: '#626366',
             },
             yAxis: {
-                min: response.data.range[0] - (response.data.range[1] - response.data.range[0]) * 0.6,
+                min: bgResponse.data.range[0] - (bgResponse.data.range[1] - bgResponse.data.range[0]) * 0.6,
                 // minPadding: 0.7,
             },
             outlineColor: 'rgba( 0, 0, 0, 0 )',
@@ -483,16 +500,6 @@ chrome.runtime.sendMessage(message, function(response) {
         },
 
     }, addButton);
-
-    console.timeEnd('t');
-    // console.timeEnd('chartTime');
-});
-
-const getSetting = new Promise(function(resolve, reject) {
-    chrome.storage.sync.get('simplified', function(value) {
-        // swit.checked = value.simplified;
-        resolve();
-    });
 });
 
 chrome.runtime.onMessage.addListener(

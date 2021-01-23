@@ -1,43 +1,34 @@
-// const regionUser = chrome.storage.sync.get('region');
-// document.body.insertAdjacentHTML('afterbegin', `
-// 	Region: <select id="region" selected=>
-//         <option value="US">US</option>
-//         <option value="CN">CN</option>
-//     </select>
-//     `);
+'use strict';
 
-chrome.storage.sync.get('region', function(value) {
-	const regionArr = ['US', 'CN'];
-	console.log(value.region);
-	let regionUser = value.region;
-	let idx = 0;
-	for (let i = 0; i < regionArr.length; i++) {
-		if (regionArr[i] == regionUser) {
-			idx = i;
-		}
-	}
-	document.getElementsByTagName('option')[idx].setAttribute('selected', true);
+const swit = document.querySelector('.js-switch');
+
+chrome.storage.sync.get('simplified', function(value) {
+	swit.checked = value.simplified;
+	let initSpeed = '0.4s';
+	if (value.simplified) initSpeed = '0s';
+	const init = new Switchery(swit, {
+		size: 'small',
+		color: '#377096',
+		speed: initSpeed
+	});
+	if (value.simplified) init.options.speed = '0.4s';
 });
 
+function funcs() {
+	saveOptions();
+	changeChart();
+}
 
-// function getRegion(value) {
-// 	regionUser = value.region;
-// }
-
-const regionOpt = document.getElementById('region');
-
-function save_options() {
-	const regionVal = regionOpt.value;
-	console.log('hello');
+function saveOptions() {
 	chrome.storage.sync.set({
-		region: regionVal
-	}, function() {
-		const status = document.getElementById('status');
-		status.textContent = 'Options saved.';
-		setTimeout(() => {
-			status.textContent = '';
-		}, 1000);
+		simplified: swit.checked
 	});
 }
 
-document.addEventListener('change', save_options);
+function changeChart() {
+	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+		chrome.tabs.sendMessage(tabs[0].id, {simplified: swit.checked});
+	});
+}
+
+document.addEventListener('change', funcs);

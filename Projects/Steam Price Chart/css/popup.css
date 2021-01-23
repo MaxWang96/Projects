@@ -1,4 +1,14 @@
 body {
-    min-width: 200px;
+    min-width: 150px;
     margin: 20px;
+}
+
+label {
+    color: rgb(79, 148, 188);
+    font-size: 15px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 45px auto;
 }

@@ -2,6 +2,7 @@
 
 console.time('t');
 // console.log(window.navigator.languages[0]);
+// console.log(document.readyState);
 function errorModal(id, header, text, error) {
     document.body.insertAdjacentHTML('beforeend', `
             <div class="spc_modal_container">
@@ -39,6 +40,11 @@ function errorModal(id, header, text, error) {
 
     throw new Error(error);
 }
+
+function dataError(gameName) {
+    errorModal('price_data_error_modal', 'Price History Data Error', `Sorry, there is something wrong with ${gameName}'s price history data, Steam Price Chart can't draw the chart.`, 'Price data error');
+}
+
 const config = JSON.parse(document.getElementById('application_config').getAttribute('data-config'));
 const region = config.COUNTRY;
 const supportedRegion = ['US', 'CN'];
@@ -49,15 +55,33 @@ if (!supportedRegion.includes(region)) {
         'Region not supported');
 }
 
-// console.log(document.getElementsByClassName('game_area_purchase_game_wrapper'));
-if (document.getElementsByClassName('game_area_purchase_game_wrapper').length == 0) throw new Error('This game is free, stopped drawing the chart');
-const firstCartOption = document.getElementsByClassName('game_area_purchase_game_wrapper')[0];
-let id, isBundle = false;
-if (firstCartOption.classList.length == 1) id = location.href.split('/')[4];
-else if (firstCartOption.classList.length == 3) {
-    isBundle = true;
-    // const config = JSON.parse(document.getElementById('application_config').getAttribute('data-config'));
-    id = firstCartOption.getAttribute('data-ds-bundleid');
+// console.log(document.getElementById('game_area_purchase').getElementsByTagName('div')[0].getAttribute('class') == 'game_area_purchase_game ');
+
+//check for free game
+// if (document.getElementsByClassName('game_area_purchase_game_wrapper').length == 0) throw new Error('This game is free, stopped drawing the chart');
+if (document.getElementById('game_area_purchase').getElementsByTagName('div')[0].getAttribute('class') == 'game_area_purchase_game ') {
+    throw new Error('This game is free, stopped drawing the chart');
+}
+
+//find the price to search for
+let foundFirstOption = false,
+    i = 0,
+    isBundle = false,
+    id,
+    firstPurchaseOption;
+const wrappers = document.getElementsByClassName('game_area_purchase_game_wrapper');
+while (!foundFirstOption) {
+    if (wrappers[i].classList.length == 1) {
+        firstPurchaseOption = wrappers[i];
+        id = location.href.split('/')[4];
+        foundFirstOption = true;
+    } else if (wrappers[i].classList.length == 3) {
+        firstPurchaseOption = wrappers[i];
+        isBundle = true;
+        id = firstPurchaseOption.getAttribute('data-ds-bundleid');
+        foundFirstOption = true;
+    }
+    i++;
 }
 
 const locale = {
@@ -119,19 +143,23 @@ const message = {
     name: gameName,
     bundle: isBundle
 }
+let chart;
+
 // console.time('t');
 chrome.runtime.sendMessage(message, function(response) {
-    // if (response.data.points[response.data.points.length - 1][1] == 0) {
-    //     return;
-    // }
+    if (response.data.points[0][1] == 0) {
+        dataError(gameName);
+    }
+
     let curPrice;
-    if (firstCartOption.getElementsByClassName('discount_final_price').length != 0) curPrice = firstCartOption.getElementsByClassName('discount_final_price')[0];
-    else curPrice = firstCartOption.getElementsByClassName('game_purchase_price')[0];
+    if (firstPurchaseOption.getElementsByClassName('discount_final_price').length != 0) curPrice = firstPurchaseOption.getElementsByClassName('discount_final_price')[0];
+    else curPrice = firstPurchaseOption.getElementsByClassName('game_purchase_price')[0];
     const price = curPrice.textContent.match(/[\d.]+/)[0];
-    console.log(price);
+    // console.log(price);
     if (price != response.data.points[response.data.points.length - 1][1]) {
         // console.log('this price is wrong');
-        errorModal('price_data_error_modal', 'Price History Data Error', `Sorry, there is something wrong with ${gameName}'s price history data, Steam Price Chart won't draw the chart.`, 'Price data error');
+        // errorModal('price_data_error_modal', 'Price History Data Error', `Sorry, there is something wrong with ${gameName}'s price history data, Steam Price Chart won't draw the chart.`, 'Price data error');
+        dataError(gameName);
     }
 
     const elements = document.getElementsByClassName('page_content');
@@ -147,20 +175,19 @@ chrome.runtime.sendMessage(message, function(response) {
         <div id="chart_container" style="height: 400px; min-width: 310px"></div>
     </div>
     `);
+
+    const title = isBundle ? response.bundleTitle : gameName;
+
     let addButton = function(chart) {};
     if (langSetting.siteButton) {
-        const itadUrl = chrome.extension.getURL('../images/isthereanydeal_icon.svg');
-        const hltbUrl = chrome.extension.getURL('../images/howlongtobeat_logo.png');
+        const itadImgUrl = chrome.extension.getURL('../images/isthereanydeal_icon.svg');
+        const hltbImgUrl = chrome.extension.getURL('../images/howlongtobeat_logo.png');
 
         addButton = function(chart) {
-            function addImg(image, url, label, xAlign) {
+
+            //add images
+            function addImg(image, label, xAlign) {
                 return chart.renderer.image(image, 0, 0, 20, 20)
-                    .css({
-                        cursor: 'pointer'
-                    })
-                    .on('click', function() {
-                        window.open(url, "_blank");
-                    })
                     .on('mouseover', function() {
                         label.css({
                             display: 'inline'
@@ -177,6 +204,15 @@ chrome.runtime.sendMessage(message, function(response) {
                         y: 10
                     }, false, 'chart')
                     .add();
+            }
+
+            function addImgUrl(imgObj, url) {
+                imgObj.css({
+                        cursor: 'pointer'
+                    })
+                    .on('click', function() {
+                        window.open(url, "_blank");
+                    });
             }
 
             function addLabel(text) {
@@ -202,7 +238,7 @@ chrome.runtime.sendMessage(message, function(response) {
                 x: -215,
                 y: 5
             });
-            addImg(itadUrl, response.itadUrl, itadLabel, -85);
+            addImgUrl(addImg(itadImgUrl, itadLabel, -85), response.itadUrl);
             // const hltbLabel = addLabel('View the game on HowLongToBeat').align({
             //     align: 'right',
             //     x: -180,
@@ -212,25 +248,20 @@ chrome.runtime.sendMessage(message, function(response) {
             if (response.hltbUrl == 'https://howlongtobeat.com/') {
                 const hltbLabel = addLabel("Can't find the game on HowLongToBeat").align({
                     align: 'right',
-                    x: -180,
+                    x: -190,
                     y: 5
                 });
-                addImg(hltbUrl, response.hltbUrl, hltbLabel, -55)
-                    .css({
-                        opacity: 0.3,
-                    });
+                addImg(hltbImgUrl, hltbLabel, -55).css({
+                    opacity: 0.3
+                });
             } else {
                 const hltbLabel = addLabel('View the game on HowLongToBeat').align({
                     align: 'right',
                     x: -180,
                     y: 5
                 });
-                addImg(hltbUrl, response.hltbUrl, hltbLabel, -55);
+                addImgUrl(addImg(hltbImgUrl, hltbLabel, -55), response.hltbUrl);
             }
-
-            // chart.yAxis[1].update({
-            //     min: chart.yAxis[1].min - (chart.yAxis[1].max - chart.yAxis[1].min) * 0.4,
-            // });
         }
     }
 
@@ -238,7 +269,7 @@ chrome.runtime.sendMessage(message, function(response) {
 
     // console.time('chartTime');
 
-    const chart = Highcharts.stockChart('chart_container', {
+    chart = Highcharts.stockChart('chart_container', {
         chart: {
             backgroundColor: 'rgba( 0, 0, 0, 0.2 )',
             style: {
@@ -247,7 +278,7 @@ chrome.runtime.sendMessage(message, function(response) {
         },
 
         title: {
-            text: gameName + chrome.i18n.getMessage('priceHistory'),
+            text: title + chrome.i18n.getMessage('priceHistory'),
             style: {
                 color: '#FFFFFF'
             }
@@ -417,3 +448,67 @@ chrome.runtime.sendMessage(message, function(response) {
     console.timeEnd('t');
     // console.timeEnd('chartTime');
 });
+
+chrome.storage.sync.get('simplified', function(value) {
+    swit.checked = value.simplified;
+    let initSpeed = '0.4s';
+    if (value.simplified) initSpeed = '0s';
+    const init = new Switchery(swit, {
+        size: 'small',
+        color: '#377096',
+        speed: initSpeed
+    });
+    if (value.simplified) init.options.speed = '0.4s';
+});
+
+chrome.runtime.onMessage.addListener(
+    function(request, sender) {
+        if (request.simplified) {
+            document.getElementById('chart_container').style.height = '350px';
+            chart.update({
+                chart: {
+                    animation: false,
+                    height: '350px',
+                },
+
+                rangeSelector: {
+                    enabled: false
+                },
+
+                navigator: {
+                    margin: 20,
+                },
+
+                scrollbar: {
+                    enabled: false
+                },
+
+                tooltip: {
+                    animation: false
+                }
+            });
+        } else {
+            document.getElementById('chart_container').style.height = '400px';
+            chart.update({
+                chart: {
+                    height: '400px',
+                },
+
+                rangeSelector: {
+                    enabled: true
+                },
+
+                navigator: {
+                    margin: 25,
+                },
+
+                scrollbar: {
+                    enabled: true
+                },
+
+                tooltip: {
+                    animation: true
+                }
+            });
+        }
+    });

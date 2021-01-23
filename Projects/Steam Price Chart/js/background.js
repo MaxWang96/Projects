@@ -11,6 +11,8 @@ chrome.runtime.onMessage.addListener(
 			hltbUrl: 'https://howlongtobeat.com/'
 		};
 
+		// console.log(sender.tab.url);
+
 		// console.time('t');
 		if (!message.bundle) {
 			const idRequest = new XMLHttpRequest;
@@ -69,7 +71,7 @@ chrome.runtime.onMessage.addListener(
 			const name = gameName.replace(/[^\w\s]/gi, '');
 			const xhr = new XMLHttpRequest;
 			const url = 'https://howlongtobeat.com/search_results.php';
-			const params = `queryString=${name}&t=games`;
+			const params = `queryString=${name}&t=games&sorthead=popular&sortd='Normal Order'`;
 			xhr.open('POST', url, true);
 			xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 			xhr.onload = onloadFunc;
@@ -83,6 +85,7 @@ chrome.runtime.onMessage.addListener(
 			xhr.open('GET', url);
 			// xhr.timeout = 10;
 			// xhr.ontimeout = function() {alert('cat!!')};
+			console.log(url);
 			xhr.onload = function(data) {
 				try {
 					// console.time('t');
@@ -90,9 +93,12 @@ chrome.runtime.onMessage.addListener(
 					// console.timeEnd('a');
 					// console.timeEnd('t');
 					const dataArr = JSON.parse(this.response.match(/"Steam","data":(\[\[.+?\]\])/)[1]);
+					// console.log(dataArr);
 					// console.time('t');
+
 					let min = dataArr[dataArr.length - 2][1];
 					let max = dataArr[dataArr.length - 2][1];
+					const lastPoint = dataArr[dataArr.length - 1];
 					for (let i = dataArr.length - 3; i >= 0; i--) {
 						if (dataArr[i][1] == null) {
 							dataArr.splice(i, 1);
@@ -120,13 +126,19 @@ chrome.runtime.onMessage.addListener(
 							min = dataArr[j][1];
 						}
 					}
+					if (lastPoint[0] != dataArr[dataArr.length - 1][0]) dataArr.push(lastPoint);
 					// console.timeEnd('t');
 					// console.timeEnd('a');
+
 					response.data = {
 						points: dataArr,
 						range: [min, max]
 					};
 					response.itadUrl = `https://isthereanydeal.com/game/${name}/info/${message.storeRegion}`;
+					if (message.bundle) {
+						response.bundleTitle = this.response.match(/<h1 id='gameTitle'>.+?>(.+?)</)[1];
+						// console.log(response.bundleTitle);
+					}
 					tryRespond();
 				} catch (error) {}
 			}
@@ -144,18 +156,18 @@ chrome.runtime.onMessage.addListener(
 	}
 );
 
-// chrome.runtime.onInstalled.addListener(function() {
-// 	chrome.storage.sync.set({
-// 		region: 'us',
-// 	});
-// 	chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
-// 		chrome.declarativeContent.onPageChanged.addRules([{
-// 			conditions: [new chrome.declarativeContent.PageStateMatcher({
-// 				pageUrl: {
-// 					urlContains: 'store.steampowered.com/app'
-// 				},
-// 			})],
-// 			actions: [new chrome.declarativeContent.ShowPageAction()]
-// 		}]);
-// 	});
-// });
+chrome.runtime.onInstalled.addListener(function() {
+	chrome.storage.sync.set({
+		simplified: false,
+	});
+	chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
+		chrome.declarativeContent.onPageChanged.addRules([{
+			conditions: [new chrome.declarativeContent.PageStateMatcher({
+				pageUrl: {
+					urlContains: 'store.steampowered.com/app'
+				},
+			})],
+			actions: [new chrome.declarativeContent.ShowPageAction()]
+		}]);
+	});
+});

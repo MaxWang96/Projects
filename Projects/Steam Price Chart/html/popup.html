@@ -3,13 +3,14 @@
 <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../css/popup.css" />
+    <link rel="stylesheet" href="../css/switchery.min.css" />
+    <script src="../js/switchery.min.js"></script>
 </head>
 <body>
-    Region: <select id="region">
-        <option value="US">US</option>
-        <option value="CN">CN</option>
-    </select>
-    <div id="status"></div>
+    <div class="grid-container">
+        <input type="checkbox" class="js-switch" />
+        <label>Simplify chart</label>
+    </div>
     <script src="../js/popup.js"></script>
 </body>
 </html>

@@ -3,7 +3,7 @@
         "message": "Steam价格历史图"
     },
     "extensionDescription": {
-        "message": "在Steam网页内插入游戏价格历史图。"
+        "message": "在Steam网页内插入商品价格历史图。"
     },
     "extensionTitle": {
         "message": "Steam价格历史图会在Steam网页内自动加载"
@@ -13,5 +13,30 @@
     },
     "lineName": {
         "message": "价格"
+    },
+    "priceDataErrorHeader": {
+        "message": "历史数据错误"
+    },
+    "priceDataErrorText": {
+        "message": "对不起，$NAME$的价格历史数据有些问题, Steam价格历史图无法作图。",
+        "placeholders": {
+            "name": {
+                "content": "$1"
+            }
+        }
+    },
+    "regionErrorHeader": {
+        "message": "地区不支持"
+    },
+    "regionErrorText": {
+        "message": "对不起，Steam价格历史图不支持您所在的地区（$REGION$）。",
+        "placeholders": {
+            "region": {
+                "content": "$1"
+            }
+        }
+    },
+    "simplify": {
+        "message": "简化图表"
     }
 }

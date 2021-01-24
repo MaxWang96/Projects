@@ -13,5 +13,44 @@
     },
     "lineName": {
         "message": "Price"
+    },
+    "priceDataErrorHeader": {
+        "message": "Price History Data Error"
+    },
+    "priceDataErrorText": {
+        "message": "Sorry, there is something wrong with $NAME$'s price history data, Steam Price Chart can't draw the chart.",
+        "placeholders": {
+            "name": {
+                "content": "$1"
+            }
+        }
+    },
+    "regionErrorHeader": {
+        "message": "Region Not Supported"
+    },
+    "regionErrorText": {
+        "message": "Sorry, Steam Price Chart doesn't support the store region ($REGION$) you are in.",
+        "placeholders": {
+            "region": {
+                "content": "$1"
+            }
+        }
+    },
+    "bundleHeader": {
+        "message": "Shown Bundle Price History"
+    },
+    "bundleText": {
+        "message": "$NAME$ is only sold in a bundle, displayed the bundle price history.",
+        "placeholders": {
+            "name": {
+                "content": "$1"
+            }
+        }
+    },
+    "freeItemHeader": {
+        "message": ""
+    }
+    "simplify": {
+        "message": "Simplify chart"
     }
 }

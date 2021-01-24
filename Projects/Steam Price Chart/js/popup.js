@@ -14,6 +14,8 @@ chrome.storage.sync.get('simplified', function(value) {
 	if (value.simplified) init.options.speed = '0.4s';
 });
 
+document.querySelector('label').innerText = chrome.i18n.getMessage('simplify');
+
 function funcs() {
 	saveOptions();
 	changeChart();

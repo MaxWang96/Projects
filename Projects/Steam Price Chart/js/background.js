@@ -12,7 +12,6 @@ chrome.runtime.onMessage.addListener(
 		};
 
 		// console.log(sender.tab.url);
-
 		// console.time('t');
 		if (!message.bundle) {
 			const idRequest = new XMLHttpRequest;
@@ -26,14 +25,13 @@ chrome.runtime.onMessage.addListener(
 			const idRequest = new XMLHttpRequest;
 			idRequest.open('HEAD', `https://isthereanydeal.com/steam/bundle/${message.id}/`);
 			idRequest.onload = function() {
-				// console.log('cat');
 				const bundleName = this.responseURL.split('/')[4];
 				request(bundleName);
 			}
 			idRequest.send();
 		}
 
-		if (message.lang.startsWith('en')) {
+		if (!message.lang.startsWith('zh')) {
 			hltbRequest(name, function() {
 				receivedReg = 1;
 				const getId = this.response.match(/href="(.+?)"/);

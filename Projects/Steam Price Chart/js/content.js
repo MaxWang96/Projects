@@ -1,6 +1,6 @@
 'use strict';
 
-// console.time('t');
+console.time('t');
 // console.log(window.navigator.languages[0]);
 // console.log(document.readyState);
 function errorModal(id, header, text, error) {
@@ -25,7 +25,6 @@ function errorModal(id, header, text, error) {
         $(`#${id}`)
             .css({
                 'font-size': '13px',
-                // 'color': '#ffffff'
                 'color': '#25282a',
                 'line-height': '19px',
             })
@@ -35,7 +34,7 @@ function errorModal(id, header, text, error) {
     }
 
     if (document.readyState != 'complete') {
-        $(window).on('load', showModal);
+        setTimeout(showModal, 3000);
     } else showModal();
 
     throw new Error(error);
@@ -134,20 +133,82 @@ const userChart = {
             height: '400px',
         },
 
-        scrollbar: {
-            enabled: true
-        },
-
-        rangeSelector: {
-            enabled: true
-        },
-
         navigator: {
             margin: 25,
         },
 
+        scrollbar: {
+            enabled: true
+        },
+
         tooltip: {
             animation: true
+        },
+
+        // rangeSelector: {
+        //     buttonTheme: {
+        //         fill: "rgba( 103, 193, 245, 0.2 )",
+        //         style: {
+        //             color: "#67c1f5",
+        //         },
+        //         states: {
+        //             select: {
+        //                 fill: "rgb(84, 165, 212)",
+        //                 style: {
+        //                     color: "#ffffff"
+        //                 },
+        //                 select: {
+        //                     fill: "rgb(84, 165, 212)",
+        //                     style: {
+        //                         color: "#ffffff"
+        //                     }
+        //                 },
+        //             }
+        //         }
+        //     },
+        //     inputStyle: {
+        //         backgroundColor: "#18222e",
+        //         color: "#acb2b8",
+        //     },
+        //     inputDateFormat: langSetting.inputDateFormat,
+        //     inputEditDateFormat: '%m/%d/%Y',
+        //     inputBoxWidth: langSetting.inputBoxWidth,
+        //     labelStyle: {
+        //         color: "#acb2b8"
+        //     },
+        //     selected: 1,
+        //     buttons: [{
+        //         type: "month",
+        //         count: 1,
+        //         text: langSetting.buttonText[0],
+        //     }, {
+        //         type: "month",
+        //         count: 3,
+        //         text: langSetting.buttonText[1],
+        //     }, {
+        //         type: "month",
+        //         count: 6,
+        //         text: langSetting.buttonText[2],
+        //     }, {
+        //         type: "year",
+        //         count: 1,
+        //         text: langSetting.buttonText[3],
+        //     }, {
+        //         type: "year",
+        //         count: 3,
+        //         text: langSetting.buttonText[4],
+        //     }, {
+        //         type: "all",
+        //         text: langSetting.buttonText[5],
+        //     }],
+        //     // enabled: true,
+        // },
+        rangeSelector: {
+            enabled: true,
+        },
+
+        xAxis: {
+            range: undefined
         }
     },
     simp: {
@@ -156,20 +217,30 @@ const userChart = {
             height: '350px',
         },
 
-        scrollbar: {
-            enabled: false
-        },
-
-        rangeSelector: {
-            enabled: false
+        plotOptions: {
+            series: {
+                animation: false,
+            },
         },
 
         navigator: {
             margin: 20,
         },
 
+        scrollbar: {
+            enabled: false
+        },
+
         tooltip: {
             animation: false
+        },
+
+        // rangeSelector: {
+        //     enabled: false
+        // },
+
+        xAxis: {
+            range: 7776000000
         }
     }
 };
@@ -235,6 +306,15 @@ Promise.all([getData, getSetting]).then(function() {
     `);
 
     const title = isBundle ? bgResponse.bundleTitle : gameName;
+
+
+
+    Highcharts.setOptions(langSetting.chartLang);
+    Highcharts.setOptions(chartSetting);
+
+    console.log(bgResponse);
+
+    // console.time('chartTime');
 
     let addButton = function(chart) {};
     if (langSetting.siteButton) {
@@ -317,13 +397,6 @@ Promise.all([getData, getSetting]).then(function() {
             }
         }
     }
-
-    Highcharts.setOptions(langSetting.chartLang);
-    Highcharts.setOptions(chartSetting);
-
-    console.log(bgResponse);
-
-    // console.time('chartTime');
 
     chart = Highcharts.stockChart('chart_container', {
         chart: {
@@ -498,17 +571,34 @@ Promise.all([getData, getSetting]).then(function() {
                 x: -40,
             },
         },
-
     }, addButton);
+    if (chartSetting.chart.height == '350px') {
+        chart.update({
+            rangeSelector: {
+                enabled: false
+            }
+        });
+    }
+    console.timeEnd('t');
 });
 
 chrome.runtime.onMessage.addListener(
     function(request, sender) {
         if (request.simplified) {
             document.getElementById('chart_container').style.height = '350px';
+            chart.update({
+                rangeSelector: {
+                    enabled: false
+                }
+            }, false);
             chart.update(userChart.simp);
         } else {
             document.getElementById('chart_container').style.height = '400px';
             chart.update(userChart.full);
+            chart.update({
+                chart: {
+                    animation: true
+                }
+            });
         }
     });

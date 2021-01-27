@@ -1,24 +1,31 @@
 ﻿{
     "extensionName": {
-        "message": "Steam价格历史图"
+        "message": "Steam价格历史图",
+        "description": "扩展名称"
     },
     "extensionDescription": {
-        "message": "在Steam网页内插入商品价格历史图。"
+        "message": "在Steam网页内插入商品价格历史图。",
+        "description": "扩展简介"
     },
     "extensionTitle": {
-        "message": "Steam价格历史图会在Steam网页内自动加载"
+        "message": "Steam价格历史图会在Steam网页内自动加载",
+        "description": "鼠标停留在扩展图标上时显示的文字"
     },
     "priceHistory": {
-        "message": "价格历史"
+        "message": "价格历史",
+        "description": "图表标题部分后半段"
     },
     "lineName": {
-        "message": "价格"
+        "message": "价格",
+        "description": "折线名称，会在价格框中显示"
     },
     "priceDataErrorHeader": {
-        "message": "历史数据错误"
+        "message": "历史数据错误",
+        "description": "数据错误弹窗的标题"
     },
     "priceDataErrorText": {
         "message": "对不起，$NAME$的价格历史数据有些问题, Steam价格历史图无法作图。",
+        "description": "数据错误弹窗的主体文字，$NAME$是商品名称",
         "placeholders": {
             "name": {
                 "content": "$1"
@@ -26,17 +33,46 @@
         }
     },
     "regionErrorHeader": {
-        "message": "地区不支持"
+        "message": "地区不支持",
+        "description": "地区不支持弹窗的标题"
     },
     "regionErrorText": {
         "message": "对不起，Steam价格历史图不支持您所在的地区（$REGION$）。",
+        "description": "地区不支持弹窗的主体文字，$REGION$是不支持的地区的名称",
         "placeholders": {
             "region": {
                 "content": "$1"
             }
         }
     },
+    "bundleHeader": {
+        "message": "显示捆绑包价格历史",
+        "description": "捆绑包弹窗的标题"
+    },
+    "bundleText": {
+        "message": "$NAME$只在捆绑包中出售，显示捆绑包价格历史。",
+        "description": "捆绑包弹窗的主体文字，$NAME$是商品名称",
+        "placeholders": {
+            "name": {
+                "content": "$1"
+            }
+        }
+    },
+    "freeItemHeader": {
+        "message": "免费商品",
+        "description": "免费商品弹窗标题"
+    },
+    "freeItemText": {
+        "message": "$NAME$是免费商品，不显示图表。",
+        "description": "免费商品弹窗的主体文字，$NAME$是商品名称",
+        "placeholders": {
+            "name": {
+                "content": "$1"
+            }
+        }
+    },
     "simplify": {
-        "message": "简化图表"
+        "message": "简化图表",
+        "description": "简化图表选项的文字（点击扩展图标时显示）"
     }
 }

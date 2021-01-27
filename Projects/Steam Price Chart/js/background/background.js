@@ -2,7 +2,7 @@
 
 chrome.runtime.onMessage.addListener(
 	(message, sender, sendResponse) => {
-		const name = message.name;
+		let name = message.name;
 		let itadReady = 0,
 			hltbReady = 0,
 			receivedReg = 0,
@@ -32,6 +32,25 @@ chrome.runtime.onMessage.addListener(
 		}
 
 		if (!message.lang.startsWith('zh')) {
+			if (message.lang.startsWith('en')) {
+				sendHltbRequest();
+			} else {
+				const enNameRequest = new XMLHttpRequest;
+				enNameRequest.open('GET', `https://store.steampowered.com/api/appdetails/?appids=${message.id}`);
+				enNameRequest.onload = function() {
+					const test = this.response.match(/"option_text":"(.+?)"/)[1];
+					// console.log(test);
+					name = test.slice(0, test.lastIndexOf('-') - 1);
+					console.log(name);
+					sendHltbRequest();
+				}
+				enNameRequest.send();
+			}
+		} else hltbReady = 1;
+
+		return true;
+
+		function sendHltbRequest() {
 			hltbRequest(name, function() {
 				receivedReg = 1;
 				const getId = this.response.match(/href="(.+?)"/);
@@ -49,9 +68,7 @@ chrome.runtime.onMessage.addListener(
 				if (colonIdx < dashIdx) altRequest(dashIdx);
 				else if (colonIdx > dashIdx) altRequest(colonIdx);
 			} else receivedAlt = 1;
-		} else hltbReady = 1;
-
-		return true;
+		}
 
 		function altRequest(idx) {
 			hltbRequest(name.slice(0, idx), function() {
@@ -83,7 +100,7 @@ chrome.runtime.onMessage.addListener(
 			xhr.open('GET', url);
 			// xhr.timeout = 10;
 			// xhr.ontimeout = function() {alert('cat!!')};
-			console.log(url);
+			// console.log(url);
 			xhr.onload = function(data) {
 				try {
 					// console.time('t');

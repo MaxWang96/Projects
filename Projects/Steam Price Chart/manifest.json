@@ -15,7 +15,13 @@
     "content_scripts": [
         {
             "css": [ "css/bootstrap.css" ],
-            "js": [ "js/highstock.js", "js/jquery.min.js", "js/bootstrap.min.js", "js/content.js" ],
+            "js": [
+                "js/content/highstock.js",
+                "js/content/jquery.min.js",
+                "js/content/bootstrap.min.js",
+                "js/content/modal.js",
+                "js/content/content.js"
+            ],
             "matches": [ "*://store.steampowered.com/app/*" ],
             "run_at": "document_end"
         }
@@ -32,5 +38,5 @@
         "48": "images/icon_48.png",
         "96": "images/icon_96.png"
     },
-    "web_accessible_resources": [ "images/isthereanydeal_icon.svg", "images/howlongtobeat_logo.png" ]
+    "web_accessible_resources": [ "images/icon_48.png", "images/isthereanydeal_icon.svg", "images/howlongtobeat_icon.png" ]
 }

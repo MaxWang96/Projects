@@ -2,48 +2,6 @@
 
 console.time('t');
 // console.log(window.navigator.languages[0]);
-// function for creating modals that display various error messages
-function modal(id, header, text, error) {
-    document.body.insertAdjacentHTML('beforeend', `
-            <div class="spc_modal_container">
-                <div class="modal right fade" id="${id}" role="dialog">
-                    <div class="modal-dialog" style='width:230px;'>
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <p>${header}<p>
-                            </div>
-                            <div class="modal-body">
-                                <p style="margin:0px;">${text}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>`);
-
-    function showModal() {
-        $(`#${id}`)
-            .css({
-                'font-size': '13px',
-                'color': '#25282a',
-                'line-height': '19px',
-            })
-            .modal({
-                backdrop: false
-            });
-    }
-
-    if (document.readyState != 'complete') {
-        setTimeout(showModal, 1000);
-    } else showModal();
-
-    if (error) throw new Error(error);
-}
-
-function dataError(gameName) {
-    modal('price_data_error_modal', chrome.i18n.getMessage('priceDataErrorHeader'), chrome.i18n.getMessage('priceDataErrorText', gameName), 'Price data error');
-}
-
 // check whether the store region is supported
 const config = JSON.parse(document.getElementById('application_config').getAttribute('data-config'));
 let region = config.COUNTRY;
@@ -57,10 +15,10 @@ if (!supportedRegion.includes(region)) {
         'Region not supported');
 }
 
+const name = document.getElementsByClassName('apphub_AppName')[0].textContent;
 //check for free game
 if (document.getElementById('game_area_purchase').getElementsByTagName('div')[0].getAttribute('class') == 'game_area_purchase_game ') {
-    modal('free_game_modal', )
-    throw new Error('This game is free, stopped drawing the chart');
+    modal('free_game_modal', chrome.i18n.getMessage('freeItemHeader'), chrome.i18n.getMessage('freeItemText', name), 'This item is free, stopped drawing the chart');
 }
 
 //find the price to search for
@@ -72,9 +30,13 @@ let foundFirstOption = false,
 const wrappers = document.getElementsByClassName('game_area_purchase_game_wrapper');
 while (!foundFirstOption) {
     if (wrappers[i].classList.length == 1) {
-        firstPurchaseOption = wrappers[i];
-        id = location.href.split('/')[4];
-        foundFirstOption = true;
+        const p = wrappers[i].querySelector('p');
+        if (p == undefined || p.querySelector('a') == undefined) {
+            firstPurchaseOption = wrappers[i];
+            id = location.href.split('/')[4];
+            foundFirstOption = true;
+        }
+        // console.log(wrappers[i].querySelectorAll('a'));
     } else if (wrappers[i].classList.length == 3) {
         firstPurchaseOption = wrappers[i];
         isBundle = true;
@@ -100,7 +62,7 @@ const locale = {
     US: new localeOptions(),
     CN: new localeOptions({
         siteButton: false,
-        dateFormat: '%m月%d日 %A %Y',
+        dateFormat: '%Y年%m月%d日 %A',
         inputDateFormat: '%Y年%m月%d日',
         inputBoxWidth: 100,
         buttonText: ['1月', '3月', '6月', '1年', '3年', '全部'],
@@ -149,7 +111,6 @@ const sysLang = window.navigator.languages[0];
 // console.log(sysLang);
 const langSetting = (sysLang == 'zh-CN' || sysLang == 'zh-TW') ? locale['CN'] : (sysLang == 'en' || sysLang == 'en-US') ? locale['US'] : locale['EU1'];
 const priceSetting = localePrice[region];
-const gameName = document.getElementsByClassName('apphub_AppName')[0].textContent;
 
 const userChart = {
     full: {
@@ -214,7 +175,7 @@ const message = {
     id: id,
     storeRegion: region.toLowerCase(),
     lang: sysLang,
-    name: gameName,
+    name: name,
     bundle: isBundle
 }
 let bgResponse;
@@ -226,7 +187,7 @@ let chart;
 const getData = new Promise(function(resolve, reject) {
     chrome.runtime.sendMessage(message, function(response) {
         if (response.data.points[0][1] == 0) {
-            dataError(gameName);
+            dataError(name);
         }
 
         let curPrice;
@@ -235,7 +196,7 @@ const getData = new Promise(function(resolve, reject) {
         const price = curPrice.textContent.match(/[\d.,]+/)[0].replace(',', '.');
         // console.log(price);
         if (price != response.data.points[response.data.points.length - 1][1]) {
-            dataError(gameName);
+            dataError(name);
         }
 
         bgResponse = response;
@@ -267,7 +228,7 @@ Promise.all([getData, getSetting]).then(function() {
     </div>
     `);
 
-    const title = isBundle ? bgResponse.bundleTitle : gameName;
+    const title = isBundle ? bgResponse.bundleTitle : name;
 
     Highcharts.setOptions(langSetting.chartLang);
     Highcharts.setOptions(chartSetting);
@@ -283,8 +244,8 @@ Promise.all([getData, getSetting]).then(function() {
 
     let addButton = function(chart) {};
     if (langSetting.siteButton) {
-        const itadImgUrl = chrome.extension.getURL('../images/isthereanydeal_icon.svg');
-        const hltbImgUrl = chrome.extension.getURL('../images/howlongtobeat_logo.png');
+        const itadImgUrl = chrome.runtime.getURL('../images/isthereanydeal_icon.svg');
+        const hltbImgUrl = chrome.runtime.getURL('../images/howlongtobeat_icon.png');
 
         addButton = function(chart) {
 
@@ -546,7 +507,7 @@ Promise.all([getData, getSetting]).then(function() {
             }
         });
     }
-    if (isBundle) modal('display_bundle_modal', chrome.i18n.getMessage('bundleHeader'), chrome.i18n.getMessage('bundleText', gameName), false);
+    if (isBundle) modal('display_bundle_modal', chrome.i18n.getMessage('bundleHeader'), chrome.i18n.getMessage('bundleText', name), false);
     console.timeEnd('t');
 });
 

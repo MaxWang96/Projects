@@ -37,7 +37,7 @@
         }
     },
     "bundleHeader": {
-        "message": "Shown Bundle Price History"
+        "message": "Shown Bundle Price"
     },
     "bundleText": {
         "message": "$NAME$ is only sold in a bundle, displayed the bundle price history.",
@@ -48,8 +48,16 @@
         }
     },
     "freeItemHeader": {
-        "message": ""
-    }
+        "message": "Free Item"
+    },
+    "freeItemText": {
+        "message": "$NAME$ is free, no chart will be displayed.",
+        "placeholders": {
+            "name": {
+                "content": "$1"
+            }
+        }
+    },
     "simplify": {
         "message": "Simplify chart"
     }

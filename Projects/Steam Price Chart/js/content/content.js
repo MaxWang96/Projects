@@ -17,7 +17,7 @@ if (!supportedRegion.includes(region)) {
 
 const name = document.getElementsByClassName('apphub_AppName')[0].textContent;
 //check for free game
-if (document.getElementById('game_area_purchase').getElementsByTagName('div')[0].getAttribute('class') == 'game_area_purchase_game ') {
+if (document.getElementById('game_area_purchase').querySelector("div.game_area_purchase_game").getAttribute('class') == 'game_area_purchase_game ') {
     modal('free_game_modal', chrome.i18n.getMessage('freeItemHeader'), chrome.i18n.getMessage('freeItemText', name), 'This item is free, stopped drawing the chart');
 }
 
@@ -508,6 +508,7 @@ Promise.all([getData, getSetting]).then(function() {
         });
     }
     if (isBundle) modal('display_bundle_modal', chrome.i18n.getMessage('bundleHeader'), chrome.i18n.getMessage('bundleText', name), false);
+    // console.log(chart);
     console.timeEnd('t');
 });
 

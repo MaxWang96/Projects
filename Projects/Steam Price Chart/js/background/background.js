@@ -32,16 +32,15 @@ chrome.runtime.onMessage.addListener(
 		}
 
 		if (!message.lang.startsWith('zh')) {
-			if (message.lang.startsWith('en')) {
+			if (message.lang.startsWith('en') || message.bundle) {
 				sendHltbRequest();
 			} else {
 				const enNameRequest = new XMLHttpRequest;
-				enNameRequest.open('GET', `https://store.steampowered.com/api/appdetails/?appids=${message.id}`);
+				enNameRequest.open('GET', `https://steamspy.com/api.php?request=appdetails&appid=${message.id}`);
 				enNameRequest.onload = function() {
-					const test = this.response.match(/"option_text":"(.+?)"/)[1];
+					name = this.response.match(/"name":"(.+?)"/)[1];
 					// console.log(test);
-					name = test.slice(0, test.lastIndexOf('-') - 1);
-					console.log(name);
+					// console.log(name);
 					sendHltbRequest();
 				}
 				enNameRequest.send();

@@ -15,9 +15,18 @@
         "message": "价格历史",
         "description": "图表标题部分后半段"
     },
-    "lineName": {
-        "message": "价格",
+    "linePrefix": {
+        "message": "价格：",
         "description": "折线名称，会在价格框中显示"
+    },
+    "noDiscount": {
+        "message": "没有折扣"
+    },
+    "discountPrefix": {
+        "message": "折扣："
+    },
+    "freeItem": {
+        "message": "免费"
     },
     "priceDataErrorHeader": {
         "message": "历史数据错误",

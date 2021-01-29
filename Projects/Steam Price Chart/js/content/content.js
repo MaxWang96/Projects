@@ -190,21 +190,95 @@ const getData = new Promise(function(resolve, reject) {
 			dataError(name);
 		}
 
-		let curPrice;
-		let discountData = response.data.discount;
+		let price;
+		const points = response.data.points;
+		let priceArr = [];
+		let isDiscount = true;
+		for (let i = 0; i < points.length; i++) {
+			priceArr.push(points[i][1]);
+		}
+		// let discountData = response.data.discount;
 		const discount = firstPurchaseOption.getElementsByClassName('discount_block');
 		if (discount.length != 0) {
-			curPrice = discount.getElementsByClassName('discount_final_price')[0];
-			discountData[discountData.length - 1] = discount.getElementsByClassName('discount_pct')[0].textContent.match(/[\d]+/)[0];
+			price = discount[0].getElementsByClassName('discount_final_price')[0].textContent.match(/[\d.,]+/)[0].replace(',', '.');
+			priceArr[priceArr.length - 1] = discount[0].getElementsByClassName('discount_original_price')[0].textContent.match(/[\d.,]+/)[0].replace(',', '.');
+			// discountData[discountData.length - 1] = discount[0].getElementsByClassName('discount_pct')[0].textContent.match(/[\d]+/)[0];
 		} else {
-			curPrice = firstPurchaseOption.getElementsByClassName('game_purchase_price')[0];
-			discountData[discountData.length - 1] = 0;
+			price = firstPurchaseOption.getElementsByClassName('game_purchase_price')[0].textContent.match(/[\d.,]+/)[0].replace(',', '.');
+			priceArr[priceArr.length - 1] = price / 2;
+			priceArr.push(price);
+			isDiscount = false;
+			// discountData[discountData.length - 1] = 0;
 		}
-		const price = curPrice.textContent.match(/[\d.,]+/)[0].replace(',', '.');
 		// console.log(price);
 		if (price != response.data.points[response.data.points.length - 1][1]) {
 			dataError(name);
 		}
+
+		let base = [];
+		let k;
+		let count = 0;
+		
+		if (priceArr[0] >= priceArr[1]) {
+			base.push(priceArr[0]);
+			k = 0;
+		} else {
+			base.push(priceArr[1], priceArr[1]);
+			k = 1;
+		}
+		while (k < priceArr.length - 2) {
+			count++;
+			if (count > 1000) throw new Error('something is wrong');
+			let curBase = priceArr[k];
+			if (curBase < priceArr[k + 1]) {
+				base.push(priceArr[k + 1]);
+				k++;
+			} else {
+				if (curBase == priceArr[k + 2]) {
+					base.push(curBase, curBase);
+					k += 2;
+				} else if (curBase > priceArr[k + 2]) {
+					if (curBase == priceArr[k + 3]) {
+						base.push(curBase, curBase, curBase);
+						k += 3;
+					} else if (curBase == priceArr[k + 4]) {
+						base.push(curBase, curBase, curBase, curBase);
+						k += 4;
+					} else if (priceArr[k + 1] == priceArr[k + 3]) {
+						base.push(priceArr[k + 1], priceArr[k + 1], priceArr[k + 1]);
+						k += 3;
+					} else if (priceArr[k + 1] < priceArr[k + 2]) { // E
+						base.push(curBase, priceArr[k + 2]);
+						k += 2;
+					} else if (priceArr[k + 2] > priceArr[k + 3]) {
+						base.push(curBase, priceArr[k + 2], priceArr[k + 2], priceArr[k + 2]);
+						k += 4;
+					} else if (priceArr[k + 2] < priceArr[k + 3]) {
+						base.push(priceArr[k + 1]);
+						k++;
+					}
+				} else {
+					base.push(curBase, priceArr[k + 2]);
+					k += 2;
+				}
+			}
+		}
+
+		// for (let i = base.length; i < dataArr.length; i++) {
+		// 	base.push(9999);
+		// }
+		if (isDiscount) {
+			priceArr[priceArr.length - 1] = priceArr[priceArr.length - 2];
+		} else {
+			priceArr[priceArr.length - 2] = priceArr[priceArr.length - 3];
+		}
+
+		let discountArr = [];
+		for (let j = 0; j < response.data.points.length; j++) {
+			discountArr.push(Math.round((1 - priceArr[j] / base[j]) * 100));
+		}
+
+		response.data.discount = discountArr;
 
 		bgResponse = response;
 		resolve();
@@ -358,6 +432,12 @@ Promise.all([getData, getSetting]).then(function() {
 			}
 		}],
 
+		plotOptions: {
+			series: {
+				findNearestPointBy: 'xy',
+			}
+		},
+
 		xAxis: {
 			ordinal: false,
 			labels: {
@@ -401,9 +481,17 @@ Promise.all([getData, getSetting]).then(function() {
 			// xDateFormat: langSetting.dateFormat,
 			formatter: function() {
 				// console.log(this.points[0].point.index);
-				let htmlStr = `<b>${Highcharts.dateFormat(langSetting.dateFormat, this.x)}</b>`;
+				let htmlStr = `<span style="font-size:90%">${Highcharts.dateFormat(langSetting.dateFormat, this.x)}</span>`;
 				const point = this.points[0].point;
-				htmlStr += `<br/>Price: <b>${point.y}</b><br/>Discount: <b>-${bgResponse.data.discount[point.index]}%</b>`;
+				const price = priceSetting.currency[0] + point.y + priceSetting.currency[1];
+				htmlStr += `<br/>${chrome.i18n.getMessage('linePrefix')}<b>${price}</b><br/>`;
+				if (bgResponse.data.discount[point.index] == 0) {
+					htmlStr += chrome.i18n.getMessage('noDiscount');
+				} else if (bgResponse.data.discount[point.index] != 100) {
+					htmlStr += `${chrome.i18n.getMessage('discountPrefix')}<b>${bgResponse.data.discount[point.index]}%</b>`;
+				} else {
+					htmlStr += chrome.i18n.getMessage('freeItem');
+				}
 				return htmlStr;
 			}
 		},

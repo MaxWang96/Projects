@@ -11,8 +11,17 @@
     "priceHistory": {
         "message": " Price History"
     },
-    "lineName": {
-        "message": "Price"
+    "linePrefix": {
+        "message": "Price: "
+    },
+    "noDiscount": {
+        "message": "No discount"
+    },
+    "discountPrefix": {
+        "message": "Discount: "
+    },
+    "freeItem": {
+        "message": "Free"
     },
     "priceDataErrorHeader": {
         "message": "Price History Data Error"

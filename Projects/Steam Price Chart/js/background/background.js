@@ -82,7 +82,7 @@ chrome.runtime.onMessage.addListener(
 		}
 
 		function hltbRequest(gameName, onloadFunc) {
-			const name = gameName.replace(/[^\w\s]/gi, '');
+			const name = gameName.replace(/[^\w\s:-]/gi, '');
 			const xhr = new XMLHttpRequest;
 			const url = 'https://howlongtobeat.com/search_results.php';
 			const params = `queryString=${name}&t=games&sorthead=popular&sortd='Normal Order'`;
@@ -128,7 +128,7 @@ chrome.runtime.onMessage.addListener(
 							} else {
 								dataArr.splice(j, 1);
 							}
-						} else if (dataArr[j + 1][0] - dataArr[j][0] <= 86400000) {
+						} else if (dataArr[j + 1][0] - dataArr[j][0] <= 165600000) {
 							dataArr.splice(j, 1);
 						}
 						if (dataArr[j + 1][1] == dataArr[j][1]) {
@@ -140,13 +140,79 @@ chrome.runtime.onMessage.addListener(
 							min = dataArr[j][1];
 						}
 					}
+
+					// calculate discount
+					console.time('discount');
+					let base = [];
+					let k;
+					let count = 0;
+					if (dataArr[0][1] >= dataArr[1][1]) {
+						base.push(dataArr[0][1]);
+						k = 0;
+					} else {
+						base.push(dataArr[1][1], dataArr[1][1]);
+						k = 1;
+					}
+					while (k < dataArr.length - 5) {
+						count++;
+						if (count > 1000) throw new Error('something is wrong');
+						let curBase = dataArr[k][1];
+						if (curBase < dataArr[k + 1][1]) {
+							base.push(dataArr[k + 1][1]);
+							k++;
+						} else {
+							if (curBase == dataArr[k + 2][1]) {
+								base.push(curBase, curBase);
+								k += 2;
+							} else if (curBase > dataArr[k + 2][1]) {
+								if (curBase == dataArr[k + 3][1]) {
+									base.push(curBase, curBase, curBase);
+									k += 3;
+								} else if (curBase == dataArr[k + 4][1]) {
+									base.push(curBase, curBase, curBase, curBase);
+									k += 4;
+								} else if (dataArr[k + 1][1] == dataArr[k + 3][1]) {
+									base.push(dataArr[k + 1][1], dataArr[k + 1][1], dataArr[k + 1][1]);
+									k += 3;
+								} else if (dataArr[k + 1][1] < dataArr[k + 2][1]) { // E
+									base.push(curBase, dataArr[k + 2][1]);
+									k += 2;
+								} else if (dataArr[k + 2][1] > dataArr[k + 3][1]) {
+									base.push(curBase, dataArr[k + 2][1], dataArr[k + 2][1], dataArr[k + 2][1]);
+									k += 4;
+								} else if (dataArr[k + 2][1] < dataArr[k + 3][1]) {
+									base.push(dataArr[k + 1][1]);
+									k++;
+								}
+							} else {
+								base.push(curBase, dataArr[k + 2][1]);
+								k += 2;
+							}
+						}
+					}
+
+					// for (let i = base.length; i < dataArr.length; i++) {
+					// 	base.push(9999);
+					// }
+
+					let discount = [];
+					for (let j = 0; j < base.length; j++) {
+						discount.push(Math.round((1 - dataArr[j][1] / base[j]) * 100));
+					}
+
+					for (let i = base.length; i < dataArr.length; i++) {
+						base.push(-1);
+					}
+					console.timeEnd('discount');
+
 					if (lastPoint[0] != dataArr[dataArr.length - 1][0]) dataArr.push(lastPoint);
 					// console.timeEnd('t');
 					// console.timeEnd('a');
 
 					response.data = {
 						points: dataArr,
-						range: [min, max]
+						range: [min, max],
+						discount: discount
 					};
 					response.itadUrl = `https://isthereanydeal.com/game/${name}/info/${message.storeRegion}`;
 					if (message.bundle) {

@@ -11,4 +11,15 @@ label {
 .grid-container {
     display: grid;
     grid-template-columns: 45px auto;
+    grid-row-gap: 10px;
 }
+
+#feedback-btn {
+    grid-area: 2 / 1 / span 1 / span 2;
+}
+
+#report-btn {
+    grid-area: 3 / 1 / span 1 / span 2;
+}
+
+

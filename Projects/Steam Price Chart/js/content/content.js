@@ -186,12 +186,12 @@ let chart;
 
 const getData = new Promise(function(resolve, reject) {
 	chrome.runtime.sendMessage(message, function(response) {
-		if (response.data.points[0][1] == 0) {
+		const points = response.data.points;
+		if (points[0][1] == 0 || points[points.length - 1][1] != points[points.length - 2][1]) {
 			dataError(name);
 		}
 
 		let price;
-		const points = response.data.points;
 		let priceArr = [];
 		let isDiscount = true;
 		for (let i = 0; i < points.length; i++) {
@@ -202,13 +202,11 @@ const getData = new Promise(function(resolve, reject) {
 		if (discount.length != 0) {
 			price = discount[0].getElementsByClassName('discount_final_price')[0].textContent.match(/[\d.,]+/)[0].replace(',', '.');
 			priceArr[priceArr.length - 1] = discount[0].getElementsByClassName('discount_original_price')[0].textContent.match(/[\d.,]+/)[0].replace(',', '.');
-			// discountData[discountData.length - 1] = discount[0].getElementsByClassName('discount_pct')[0].textContent.match(/[\d]+/)[0];
 		} else {
 			price = firstPurchaseOption.getElementsByClassName('game_purchase_price')[0].textContent.match(/[\d.,]+/)[0].replace(',', '.');
 			priceArr[priceArr.length - 1] = price / 2;
 			priceArr.push(price);
 			isDiscount = false;
-			// discountData[discountData.length - 1] = 0;
 		}
 		// console.log(price);
 		if (price != response.data.points[response.data.points.length - 1][1]) {
@@ -218,12 +216,14 @@ const getData = new Promise(function(resolve, reject) {
 		let base = [];
 		let k;
 		let count = 0;
-		
+		let priceIncrease = [];
+
 		if (priceArr[0] >= priceArr[1]) {
 			base.push(priceArr[0]);
 			k = 0;
 		} else {
 			base.push(priceArr[1], priceArr[1]);
+			priceIncrease.push(1);
 			k = 1;
 		}
 		while (k < priceArr.length - 2) {
@@ -232,6 +232,7 @@ const getData = new Promise(function(resolve, reject) {
 			let curBase = priceArr[k];
 			if (curBase < priceArr[k + 1]) {
 				base.push(priceArr[k + 1]);
+				priceIncrease.push(k + 1);
 				k++;
 			} else {
 				if (curBase == priceArr[k + 2]) {
@@ -264,9 +265,18 @@ const getData = new Promise(function(resolve, reject) {
 			}
 		}
 
-		// for (let i = base.length; i < dataArr.length; i++) {
-		// 	base.push(9999);
-		// }
+		// check abnormal high price
+		for (let i = priceIncrease.length - 1; i >= 0; i--) {
+			const tmp = priceIncrease[i];
+			if (base[tmp] != base[tmp + 1]) {
+				base[tmp - 1] = base[tmp + 1];
+				base.splice(priceIncrease[i], 2);
+				priceArr.splice(priceIncrease[i], 2);
+				points.splice(priceIncrease[i], 2);
+			}
+		}
+
+
 		if (isDiscount) {
 			priceArr[priceArr.length - 1] = priceArr[priceArr.length - 2];
 		} else {
@@ -275,7 +285,7 @@ const getData = new Promise(function(resolve, reject) {
 
 		let discountArr = [];
 		let j = 0;
-		for (; j < response.data.points.length - 2; j++) {
+		for (; j < points.length - 2; j++) {
 			const curDiscount = Math.round((1 - priceArr[j] / base[j]) * 100);
 			discountArr.push(curDiscount, curDiscount);
 		}

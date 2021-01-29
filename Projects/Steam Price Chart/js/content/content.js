@@ -274,11 +274,23 @@ const getData = new Promise(function(resolve, reject) {
 		}
 
 		let discountArr = [];
-		for (let j = 0; j < response.data.points.length; j++) {
-			discountArr.push(Math.round((1 - priceArr[j] / base[j]) * 100));
+		let j = 0;
+		for (; j < response.data.points.length - 2; j++) {
+			const curDiscount = Math.round((1 - priceArr[j] / base[j]) * 100);
+			discountArr.push(curDiscount, curDiscount);
 		}
+		discountArr.push(Math.round((1 - priceArr[j] / base[j]) * 100), Math.round((1 - priceArr[j + 1] / base[j + 1]) * 100));
 
 		response.data.discount = discountArr;
+
+		let plotArr = [];
+		let i = 0;
+		for (; i < points.length - 2; i++) {
+			plotArr.push(points[i]);
+			plotArr.push([points[i + 1][0] - 3600000, points[i][1]]);
+		}
+		plotArr.push(points[i], points[i + 1]);
+		response.data.points = plotArr;
 
 		bgResponse = response;
 		resolve();

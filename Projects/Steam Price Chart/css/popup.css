@@ -16,10 +16,32 @@ label {
 
 #feedback-btn {
     grid-area: 2 / 1 / span 1 / span 2;
+    padding: 0.4em 1.6em;
+    border: 0.1em solid rgb(79, 148, 188);
+    margin: 0 0.2em 0.2em 0;
+    border-radius: 0.12em;
+    box-sizing: border-box;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 300;
+    color: rgb(79, 148, 188);
+    background-color: #FFFFFF;
+    text-align: center;
+    transition: all 0.15s;
+    width: 100%;
+    cursor: pointer;
+    outline: none;
 }
 
-#report-btn {
-    grid-area: 3 / 1 / span 1 / span 2;
+#feedback-btn:hover {
+    background-color: rgb(84, 165, 212);
+    border: 0.1em solid rgb(84, 165, 212);
+    color: #FFFFFF;
 }
 
-
+@media all and (max-width:30em) {
+#feedback-btn {
+    display: block;
+    margin: 0.4em auto;
+}
+}

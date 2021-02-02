@@ -567,12 +567,6 @@ Promise.all([getData, getSetting]).then(function() {
 						style: {
 							color: "#ffffff"
 						},
-						select: {
-							fill: "rgb(84, 165, 212)",
-							style: {
-								color: "#ffffff"
-							}
-						},
 					}
 				}
 			},

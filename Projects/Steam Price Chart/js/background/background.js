@@ -108,7 +108,7 @@ chrome.runtime.onMessage.addListener(
 					// console.timeEnd('t');
 					const dataArr = JSON.parse(this.response.match(/"Steam","data":(\[\[.+?\]\])/)[1]);
 					// console.log(dataArr);
-					// console.time('t');
+					console.time('t');
 
 					let min = dataArr[dataArr.length - 2][1];
 					let max = dataArr[dataArr.length - 2][1];
@@ -142,7 +142,7 @@ chrome.runtime.onMessage.addListener(
 					}
 
 					if (lastPoint[0] != dataArr[dataArr.length - 1][0]) dataArr.push(lastPoint);
-					// console.timeEnd('t');
+					console.timeEnd('t');
 					// console.timeEnd('a');
 
 					response.data = {

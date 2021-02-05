@@ -24,36 +24,34 @@ const gameName = (!isDlc && !isMusic) ?
 	purchaseArea.getElementsByClassName('game_area_bubble')[0].querySelector('a').textContent;
 //check for free game
 if (purchaseArea.querySelector("div.game_area_purchase_game")
-	.getAttribute('class') ==
-	'game_area_purchase_game ') {
-	modal('free_game_modal',
+	.getAttribute('class') == 'game_area_purchase_game ') {
+	modal('free_item_modal',
 		chrome.i18n.getMessage('freeItemHeader'),
 		chrome.i18n.getMessage('freeItemText', itemName),
 		'This item is free, stopped drawing the chart');
 }
 
 //find the price to search for
-let foundFirstOption = false,
-	i = 0,
+let i = 0,
 	isBundle = false,
 	id,
 	firstPurchaseOption;
 const wrappers = purchaseArea.getElementsByClassName('game_area_purchase_game_wrapper');
-while (!foundFirstOption) {
+while (true) {
 	if (wrappers[i].classList.length == 1) {
 		if (isMusic || wrappers[i].getElementsByClassName('music').length == 0) {
 			const p = wrappers[i].querySelector('p');
 			if (p == undefined || p.querySelector('a') == undefined) {
 				firstPurchaseOption = wrappers[i];
 				id = location.href.split('/')[4];
-				foundFirstOption = true;
+				break;
 			}
 		}
 	} else if (wrappers[i].classList.length == 3) {
 		firstPurchaseOption = wrappers[i];
 		isBundle = true;
 		id = firstPurchaseOption.getAttribute('data-ds-bundleid');
-		foundFirstOption = true;
+		break;
 	}
 	i++;
 }
@@ -201,8 +199,22 @@ let chart;
 // console.time('t');
 
 
-const getData = new Promise(function(resolve, reject) {
+const getData = new Promise((resolve, reject) => {
+	// console.time('bg');
+	const noResponse = setTimeout(() => {
+		reject('timeout');
+	}, 10000);
 	chrome.runtime.sendMessage(message, function(response) {
+		// console.timeEnd('bg');
+		clearTimeout(noResponse);
+
+		if (response.error && response.error[0] == 0) {
+			modal("cant_connect_to_itad_modal",
+				"Can't Connect to ITAD",
+				"Sorry, Steam Price Chart fail to connect to IsThereAnyDeal.com to get the price history data.",
+				"Can't Connect: ITAD");
+		}
+
 		const points = response.data.points;
 		if (points[0][1] == 0 || points[points.length - 1][1] != points[points.length - 2][1]) {
 			dataError(itemName);
@@ -250,14 +262,14 @@ const getData = new Promise(function(resolve, reject) {
 				isDiscount = false;
 			}
 		}
+
 		if (price != response.data.points[response.data.points.length - 1][1]) {
 			dataError(itemName);
 		}
 
-		let base = [];
-		let k;
-		let count = 0;
-		let priceIncrease = [];
+		let k,
+			base = [],
+			priceIncrease = [];
 
 		if (priceArr[0] >= priceArr[1]) {
 			base.push(priceArr[0]);
@@ -268,8 +280,6 @@ const getData = new Promise(function(resolve, reject) {
 			k = 1;
 		}
 		while (k < priceArr.length - 2) {
-			count++;
-			if (count > 1000) throw new Error('something is wrong');
 			let curBase = priceArr[k];
 			if (curBase < priceArr[k + 1]) {
 				base.push(priceArr[k + 1]);
@@ -298,6 +308,11 @@ const getData = new Promise(function(resolve, reject) {
 					} else if (priceArr[k + 2] < priceArr[k + 3]) {
 						base.push(priceArr[k + 1]);
 						k++;
+					} else {
+						modal('unknown_discount_type_modal',
+							'Unknown Discount Error',
+							'Sorry, something went wrong when calculating the discount. Please consider reporting the issue to help improve the extension.',
+							'Unknown Discount Type');
 					}
 				} else {
 					base.push(curBase, priceArr[k + 2]);
@@ -306,7 +321,7 @@ const getData = new Promise(function(resolve, reject) {
 			}
 		}
 
-		// check abnormal high price
+		// check abnormally high price
 		for (let i = priceIncrease.length - 1; i >= 0; i--) {
 			const tmp = priceIncrease[i];
 			if (tmp < priceArr.length - 1 && base[tmp] != base[tmp + 1]) {
@@ -316,7 +331,6 @@ const getData = new Promise(function(resolve, reject) {
 				points.splice(priceIncrease[i], 2);
 			}
 		}
-
 
 		if (isDiscount) {
 			priceArr[priceArr.length - 1] = priceArr[priceArr.length - 2];
@@ -357,7 +371,7 @@ const getSetting = new Promise(function(resolve, reject) {
 	});
 });
 
-Promise.all([getData, getSetting]).then(function() {
+function drawChart() {
 	const elements = document.getElementsByClassName('page_content');
 	let loc;
 	for (let i = 0; i < elements.length; i++) {
@@ -450,9 +464,13 @@ Promise.all([getData, getSetting]).then(function() {
 			addImgUrl(addImg(itadImgUrl, itadLabel, -85), bgResponse.itadUrl);
 
 			if (bgResponse.hltbUrl == 'https://howlongtobeat.com/') {
-				const hltbLabel = addLabel("Can't find the game on HowLongToBeat").align({
+				const cantConnect = bgResponse.error && bgResponse.error[1] == 0;
+				const errorMessage = cantConnect ?
+					"Can't connect to HowLongToBeat" :
+					"Can't find the game on HowLongToBeat";
+				const hltbLabel = addLabel(errorMessage).align({
 					align: 'right',
-					x: -193,
+					x: cantConnect ? -173 : -193,
 					y: 5
 				});
 				addImg(hltbImgUrl, hltbLabel, -55).css({
@@ -667,10 +685,26 @@ Promise.all([getData, getSetting]).then(function() {
 			}
 		});
 	}
-	if (isBundle) modal('display_bundle_modal', chrome.i18n.getMessage('bundleHeader'), chrome.i18n.getMessage('bundleText', itemName), false);
+	if (isBundle) {
+		modal('display_bundle_modal',
+			chrome.i18n.getMessage('bundleHeader'),
+			chrome.i18n.getMessage('bundleText', itemName),
+			false);
+	}
 	// console.log(chart);
 	console.timeEnd('t');
-});
+}
+
+Promise.all([getData, getSetting])
+	.then(drawChart)
+	.catch(error => {
+		if (error == 'timeout') {
+			modal('no_response_from_background_modal',
+				'Background Error',
+				'Sorry, something went wrong when fetching the price data.',
+				'Background Error');
+		}
+	});
 
 chrome.runtime.onMessage.addListener(
 	function(request, sender) {

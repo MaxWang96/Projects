@@ -15,10 +15,21 @@ if (!supportedRegion.includes(region)) {
 		'Region not supported');
 }
 
-const name = document.getElementsByClassName('apphub_AppName')[0].textContent;
+const purchaseArea = document.getElementById('game_area_purchase');
+const isMusic = purchaseArea.getElementsByClassName('game_area_soundtrack_bubble').length != 0;
+const isDlc = purchaseArea.getElementsByClassName('game_area_dlc_bubble').length != 0;
+const itemName = document.getElementsByClassName('apphub_AppName')[0].textContent;
+const gameName = (!isDlc && !isMusic) ?
+	itemName :
+	purchaseArea.getElementsByClassName('game_area_bubble')[0].querySelector('a').textContent;
 //check for free game
-if (document.getElementById('game_area_purchase').querySelector("div.game_area_purchase_game").getAttribute('class') == 'game_area_purchase_game ') {
-	modal('free_game_modal', chrome.i18n.getMessage('freeItemHeader'), chrome.i18n.getMessage('freeItemText', name), 'This item is free, stopped drawing the chart');
+if (purchaseArea.querySelector("div.game_area_purchase_game")
+	.getAttribute('class') ==
+	'game_area_purchase_game ') {
+	modal('free_game_modal',
+		chrome.i18n.getMessage('freeItemHeader'),
+		chrome.i18n.getMessage('freeItemText', itemName),
+		'This item is free, stopped drawing the chart');
 }
 
 //find the price to search for
@@ -27,16 +38,17 @@ let foundFirstOption = false,
 	isBundle = false,
 	id,
 	firstPurchaseOption;
-const wrappers = document.getElementsByClassName('game_area_purchase_game_wrapper');
+const wrappers = purchaseArea.getElementsByClassName('game_area_purchase_game_wrapper');
 while (!foundFirstOption) {
 	if (wrappers[i].classList.length == 1) {
-		const p = wrappers[i].querySelector('p');
-		if (p == undefined || p.querySelector('a') == undefined) {
-			firstPurchaseOption = wrappers[i];
-			id = location.href.split('/')[4];
-			foundFirstOption = true;
+		if (isMusic || wrappers[i].getElementsByClassName('music').length == 0) {
+			const p = wrappers[i].querySelector('p');
+			if (p == undefined || p.querySelector('a') == undefined) {
+				firstPurchaseOption = wrappers[i];
+				id = location.href.split('/')[4];
+				foundFirstOption = true;
+			}
 		}
-		// console.log(wrappers[i].querySelectorAll('a'));
 	} else if (wrappers[i].classList.length == 3) {
 		firstPurchaseOption = wrappers[i];
 		isBundle = true;
@@ -132,6 +144,7 @@ const userChart = {
 
 		rangeSelector: {
 			enabled: true,
+			selected: 1,
 		},
 
 		xAxis: {
@@ -162,6 +175,10 @@ const userChart = {
 			animation: false
 		},
 
+		rangeSelector: {
+			selected: 1
+		},
+
 		xAxis: {
 			range: 7776000000
 		}
@@ -175,7 +192,7 @@ const message = {
 	id: id,
 	storeRegion: region.toLowerCase(),
 	lang: sysLang,
-	name: name,
+	name: gameName,
 	bundle: isBundle
 }
 let bgResponse;
@@ -188,7 +205,7 @@ const getData = new Promise(function(resolve, reject) {
 	chrome.runtime.sendMessage(message, function(response) {
 		const points = response.data.points;
 		if (points[0][1] == 0 || points[points.length - 1][1] != points[points.length - 2][1]) {
-			dataError(name);
+			dataError(itemName);
 		}
 
 		let price;
@@ -199,18 +216,42 @@ const getData = new Promise(function(resolve, reject) {
 		}
 		// let discountData = response.data.discount;
 		const discount = firstPurchaseOption.getElementsByClassName('discount_block');
-		if (discount.length != 0) {
+		if (isBundle) {
 			price = discount[0].getElementsByClassName('discount_final_price')[0].textContent.match(/[\d.,]+/)[0].replace(',', '.');
-			priceArr[priceArr.length - 1] = discount[0].getElementsByClassName('discount_original_price')[0].textContent.match(/[\d.,]+/)[0].replace(',', '.');
+			if (discount.length != 0) {
+				const searchRange = priceArr.length < 5 ? priceArr.length - 1 : 4;
+				let max = price,
+					k;
+				for (k = 0; k < searchRange; k++) {
+					if (priceArr[priceArr.length - k - 2] > max) {
+						max = priceArr[priceArr.length - k - 2];
+					}
+				}
+				if (max != price) {
+					priceArr[priceArr.length - 1] = max;
+				} else {
+					priceArr[priceArr.length - 1] = price / 2;
+					priceArr.push(price);
+					isDiscount = false;
+				}
+			} else {
+				priceArr[priceArr.length - 1] = price / 2;
+				priceArr.push(price);
+				isDiscount = false;
+			}
 		} else {
-			price = firstPurchaseOption.getElementsByClassName('game_purchase_price')[0].textContent.match(/[\d.,]+/)[0].replace(',', '.');
-			priceArr[priceArr.length - 1] = price / 2;
-			priceArr.push(price);
-			isDiscount = false;
+			if (discount.length != 0) {
+				price = discount[0].getElementsByClassName('discount_final_price')[0].textContent.match(/[\d.,]+/)[0].replace(',', '.');
+				priceArr[priceArr.length - 1] = discount[0].getElementsByClassName('discount_original_price')[0].textContent.match(/[\d.,]+/)[0].replace(',', '.');
+			} else {
+				price = firstPurchaseOption.getElementsByClassName('game_purchase_price')[0].textContent.match(/[\d.,]+/)[0].replace(',', '.');
+				priceArr[priceArr.length - 1] = price / 2;
+				priceArr.push(price);
+				isDiscount = false;
+			}
 		}
-		// console.log(price);
 		if (price != response.data.points[response.data.points.length - 1][1]) {
-			dataError(name);
+			dataError(itemName);
 		}
 
 		let base = [];
@@ -268,7 +309,7 @@ const getData = new Promise(function(resolve, reject) {
 		// check abnormal high price
 		for (let i = priceIncrease.length - 1; i >= 0; i--) {
 			const tmp = priceIncrease[i];
-			if (base[tmp] != base[tmp + 1]) {
+			if (tmp < priceArr.length - 1 && base[tmp] != base[tmp + 1]) {
 				base[tmp - 1] = base[tmp + 1];
 				base.splice(priceIncrease[i], 2);
 				priceArr.splice(priceIncrease[i], 2);
@@ -331,7 +372,7 @@ Promise.all([getData, getSetting]).then(function() {
     </div>
     `);
 
-	const title = isBundle ? bgResponse.bundleTitle : name;
+	const title = isBundle ? bgResponse.bundleTitle : itemName;
 
 	Highcharts.setOptions(langSetting.chartLang);
 	Highcharts.setOptions(chartSetting);
@@ -400,9 +441,10 @@ Promise.all([getData, getSetting]).then(function() {
 					.add();
 			}
 
-			const itadLabel = addLabel('View the game on IsThereAnyDeal').align({
+			const itemType = isMusic ? 'soundtrack' : isDlc ? 'DLC' : 'game';
+			const itadLabel = addLabel(`View the ${itemType} on IsThereAnyDeal`).align({
 				align: 'right',
-				x: -215,
+				x: isMusic ? -230 : isDlc ? -205 : -215,
 				y: 5
 			});
 			addImgUrl(addImg(itadImgUrl, itadLabel, -85), bgResponse.itadUrl);
@@ -410,7 +452,7 @@ Promise.all([getData, getSetting]).then(function() {
 			if (bgResponse.hltbUrl == 'https://howlongtobeat.com/') {
 				const hltbLabel = addLabel("Can't find the game on HowLongToBeat").align({
 					align: 'right',
-					x: -190,
+					x: -193,
 					y: 5
 				});
 				addImg(hltbImgUrl, hltbLabel, -55).css({
@@ -419,7 +461,7 @@ Promise.all([getData, getSetting]).then(function() {
 			} else {
 				const hltbLabel = addLabel('View the game on HowLongToBeat').align({
 					align: 'right',
-					x: -180,
+					x: -183,
 					y: 5
 				});
 				addImgUrl(addImg(hltbImgUrl, hltbLabel, -55), bgResponse.hltbUrl);
@@ -625,7 +667,7 @@ Promise.all([getData, getSetting]).then(function() {
 			}
 		});
 	}
-	if (isBundle) modal('display_bundle_modal', chrome.i18n.getMessage('bundleHeader'), chrome.i18n.getMessage('bundleText', name), false);
+	if (isBundle) modal('display_bundle_modal', chrome.i18n.getMessage('bundleHeader'), chrome.i18n.getMessage('bundleText', itemName), false);
 	// console.log(chart);
 	console.timeEnd('t');
 });

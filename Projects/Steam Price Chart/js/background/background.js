@@ -66,6 +66,10 @@ chrome.runtime.onMessage.addListener(
 					dashIdx = name.lastIndexOf('-');
 				if (colonIdx < dashIdx) altRequest(dashIdx);
 				else if (colonIdx > dashIdx) altRequest(colonIdx);
+				else {
+					const spaceIdx = name.lastIndexOf(' ', name.lastIndexOf(' ') - 1);
+					altRequest(spaceIdx);
+				}
 			} else receivedAlt = 1;
 		}
 
@@ -82,7 +86,7 @@ chrome.runtime.onMessage.addListener(
 		}
 
 		function hltbRequest(gameName, onloadFunc) {
-			const name = gameName.replace(/[^\w\s:-]/gi, '');
+			const name = gameName.replace('’', "'").replace(/[^\w\s:'-]/gi, '');
 			const xhr = new XMLHttpRequest;
 			const url = 'https://howlongtobeat.com/search_results.php';
 			const params = `queryString=${name}&t=games&sorthead=popular&sortd='Normal Order'`;
@@ -106,43 +110,65 @@ chrome.runtime.onMessage.addListener(
 					itadReady = 1;
 					// console.timeEnd('a');
 					// console.timeEnd('t');
-					const dataArr = JSON.parse(this.response.match(/"Steam","data":(\[\[.+?\]\])/)[1]);
+					let dataArr = JSON.parse(this.response.match(/"Steam","data":(\[\[.+?\]\])/)[1]);
 					// console.log(dataArr);
-					console.time('t');
+					// console.time('bg');
 
-					let min = dataArr[dataArr.length - 2][1];
-					let max = dataArr[dataArr.length - 2][1];
-					const lastPoint = dataArr[dataArr.length - 1];
-					for (let i = dataArr.length - 3; i >= 0; i--) {
+					let len = dataArr.length;
+					let newArr = [];
+					let i = 0;
+					while (i < len - 2) {
 						if (dataArr[i][1] == null) {
-							dataArr.splice(i, 1);
+							i++;
+							continue;
 						}
-						if (dataArr[i + 1][1] == dataArr[i][1]) {
-							dataArr.splice(i + 1, 1);
+						newArr.push(dataArr[i]);
+						if (dataArr[i][1] == dataArr[i + 1][1]) {
+							i++;
 						}
+						i++;
 					}
-					for (let j = dataArr.length - 3; j >= 0; j--) {
-						if (dataArr[j + 1][0] - dataArr[j][0] <= 7200000) {
-							if (dataArr[j + 1][1] >= dataArr[j][1]) {
-								dataArr.splice(j - 1, 2);
-							} else {
-								dataArr.splice(j, 1);
+					newArr.push(dataArr[i], dataArr[i + 1]);
+					dataArr = newArr;
+					newArr = [], len = dataArr.length, i = 0;
+					let toCompare, [min, max] = [dataArr[0][1], dataArr[0][1]];
+					while (i < len - 2) {
+						if (dataArr[i + 1][0] - dataArr[i][0] <= 7200000 &&
+							i + 3 < len &&
+							dataArr[i + 3][0] - dataArr[i + 2][0] <= 7200000) {
+							newArr.push(dataArr[i], dataArr[i + 3]);
+							toCompare = dataArr[i][1];
+							i += 4;
+						} else if (dataArr[i + 1][0] - dataArr[i][0] <= 165600000 &&
+							i + 3 < len &&
+							dataArr[i + 2][0] - dataArr[i + 1][0] <= 165600000 &&
+							dataArr[i + 2][1] < dataArr[i + 1][1]) {
+							newArr.push(dataArr[i + 2]);
+							toCompare = dataArr[i + 2][1];
+							i += 3;
+						} else if (dataArr[i + 1][0] - dataArr[i][0] <= 165600000) {
+							if (dataArr[i - 1][1] != dataArr[i + 1][1]) {
+								newArr.push(dataArr[i + 1]);
+								toCompare = dataArr[i + 1][1];
 							}
-						} else if (dataArr[j + 1][0] - dataArr[j][0] <= 165600000) {
-							dataArr.splice(j, 1);
+							i += 2;
+						} else {
+							newArr.push(dataArr[i]);
+							toCompare = dataArr[i][1];
+							i++;
 						}
-						if (dataArr[j + 1][1] == dataArr[j][1]) {
-							dataArr.splice(j + 1, 1);
-						}
-						if (dataArr[j][1] > max) {
-							max = dataArr[j][1];
-						} else if (dataArr[j][1] < min) {
-							min = dataArr[j][1];
+						if (toCompare > max) {
+							max = toCompare;
+						} else if (toCompare < min) {
+							min = toCompare;
 						}
 					}
 
-					if (lastPoint[0] != dataArr[dataArr.length - 1][0]) dataArr.push(lastPoint);
-					console.timeEnd('t');
+					newArr.push(dataArr[i]);
+					if (i + 1 == len - 1) newArr.push(dataArr[i + 1]);
+					dataArr = newArr;
+
+					// console.timeEnd('bg');
 					// console.timeEnd('a');
 
 					response.data = {

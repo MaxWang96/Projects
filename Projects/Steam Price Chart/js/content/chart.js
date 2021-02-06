@@ -2,7 +2,17 @@
 
 function makeChart() {
 	const getData = new Promise(dataRequest);
-	settingRequest();
+	const getSetting = new Promise(settingRequest);
+	Promise.all([getData, getSetting])
+		.then(drawChart)
+		.catch(error => {
+			if (error == 'timeout') {
+				modal('no_response_from_background_modal',
+					'Background Error',
+					'Sorry, something went wrong when fetching the price data.',
+					'Background Error');
+			}
+		});
 }
 
 function drawChart() {

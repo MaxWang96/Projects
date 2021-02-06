@@ -1,6 +1,6 @@
 'use strict';
 
-console.time('t');
+// console.time('t');
 // console.log(window.navigator.languages[0]);
 // check whether the store region is supported
 const config = JSON.parse(document.getElementById('application_config').getAttribute('data-config'));
@@ -72,8 +72,6 @@ const message = {
 }
 let bgResponse;
 let chart;
-
-// console.time('t');
 
 makeChart();
 

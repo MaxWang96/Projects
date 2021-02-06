@@ -36,6 +36,7 @@
                 "js/content/constants.js",
                 "js/content/chart.js",
                 "js/content/requests.js",
+                "js/content/data.js",
                 "js/content/content.js"
             ],
             "matches": [

@@ -21,27 +21,28 @@ document.getElementById('feedback-btn').onclick = function() {
 	window.open('https://chrome.google.com/webstore/detail/stayfocusd/laankejkbhbdhmipfmgcngdelahlfoji/support');
 };
 
+
 // save setting and change the chart
 function funcs() {
 	saveOptions();
 	changeChart();
+}
 
-	function saveOptions() {
-		chrome.storage.sync.set({
+function saveOptions() {
+	chrome.storage.sync.set({
+		simplified: swit.checked
+	});
+}
+
+function changeChart() {
+	chrome.tabs.query({
+		active: true,
+		currentWindow: true
+	}, function(tabs) {
+		chrome.tabs.sendMessage(tabs[0].id, {
 			simplified: swit.checked
 		});
-	}
-
-	function changeChart() {
-		chrome.tabs.query({
-			active: true,
-			currentWindow: true
-		}, function(tabs) {
-			chrome.tabs.sendMessage(tabs[0].id, {
-				simplified: swit.checked
-			});
-		});
-	}
+	});
 }
 
 document.addEventListener('change', funcs);

@@ -14,7 +14,8 @@
     "author": "gingerax",
     "background": {
         "scripts": [
-            "js/background/xhr_utils.js",
+            "js/background/init.js",
+            "js/background/xhr.js",
             "js/background/background.js"
         ],
         "persistent": false
@@ -28,10 +29,13 @@
                 "css/bootstrap.css" 
             ],
             "js": [
-                "js/content/highstock.js",
-                "js/content/jquery.min.js",
-                "js/content/bootstrap.min.js",
+                "js/content/libs/highstock.js",
+                "js/content/libs/jquery.min.js",
+                "js/content/libs/bootstrap.min.js",
                 "js/content/modal.js",
+                "js/content/constants.js",
+                "js/content/chart.js",
+                "js/content/requests.js",
                 "js/content/content.js"
             ],
             "matches": [

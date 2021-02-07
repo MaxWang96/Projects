@@ -1,10 +1,8 @@
 'use strict';
 
 // console.time('t');
-// console.log(window.navigator.languages[0]);
 // check whether the store region is supported
-const config = JSON.parse(document.getElementById('application_config').getAttribute('data-config'));
-let region = config.COUNTRY;
+let region = JSON.parse(document.getElementById('application_config').getAttribute('data-config')).COUNTRY;
 const eu1 = ['AL', 'AD', 'AT', 'BE', 'FI', 'FR', 'DK', 'DE', 'IE', 'LI', 'LU', 'MK', 'NL', 'SE', 'CH'];
 if (eu1.includes(region)) region = 'EU1';
 if (!supportedRegion.includes(region)) {

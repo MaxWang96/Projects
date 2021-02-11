@@ -2,6 +2,8 @@
 
 const supportedRegion = ['US', 'CN', 'EU1'];
 
+const eu1 = ['AL', 'AD', 'AT', 'BE', 'FI', 'FR', 'DK', 'DE', 'IE', 'LI', 'LU', 'MK', 'NL', 'SE', 'CH'];
+
 class localeOptions {
 	constructor(options = {}) {
 		this.siteButton = options.hasOwnProperty('siteButton') ? options.siteButton : true;
@@ -125,3 +127,7 @@ const userChart = {
 };
 Object.freeze(userChart.full);
 Object.freeze(userChart.simp);
+
+const itemInfo = {
+	isBundle: false
+};

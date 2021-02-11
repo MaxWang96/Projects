@@ -7,19 +7,28 @@ function makeChart() {
 		.then(drawChart)
 		.catch(error => {
 			if (error == 'timeout') {
-				modal('no_response_from_background_modal',
-					'Background Error',
-					'Sorry, something went wrong when fetching the price data.',
-					'Background Error');
+				timeoutModal();
 			}
 		});
 }
 
-function drawChart() {
-	const title = isBundle ? bgResponse.bundleTitle : itemName;
+function drawChart(results) {
+	const chartData = results[0].chartData,
+		info = results[0].info,
+		chartSetting = results[1],
+		title = itemInfo.isBundle ? chartData.bundleTitle : info.itemName,
+		priceSetting = localePrice[info.region],
+		sysLang = info.sysLang,
+		langSetting = (sysLang == 'zh-CN' || sysLang == 'zh-TW') ? locale['CN'] : (sysLang == 'en' || sysLang == 'en-US') ? locale['US'] : locale['EU1'];
+		
 	const chartOptions = {
 		chart: {
 			backgroundColor: 'rgba( 0, 0, 0, 0.2 )',
+			events: {
+				load: function() {
+					if (langSetting.siteButton) addButtons(this, chartData);
+				}
+			},
 			style: {
 				fontFamily: '"Motiva Sans", sans-serif'
 			}
@@ -34,7 +43,7 @@ function drawChart() {
 
 		series: [{
 			name: chrome.i18n.getMessage('lineName'),
-			data: bgResponse.data.points,
+			data: chartData.data.points,
 			color: '#67c1f5',
 			step: true,
 			tooltip: {
@@ -90,17 +99,15 @@ function drawChart() {
 			shared: true,
 			useHTML: true,
 			borderColor: '#171a21',
-			// xDateFormat: langSetting.dateFormat,
 			formatter: function() {
-				// console.log(this.points[0].point.index);
 				let htmlStr = `<span style="font-size:90%">${Highcharts.dateFormat(langSetting.dateFormat, this.x)}</span>`;
 				const point = this.points[0].point;
 				const price = priceSetting.currency[0] + point.y + priceSetting.currency[1];
 				htmlStr += `<br/>${chrome.i18n.getMessage('linePrefix')}<b>${price}</b><br/>`;
-				if (bgResponse.data.discount[point.index] == 0) {
+				if (chartData.data.discount[point.index] == 0) {
 					htmlStr += chrome.i18n.getMessage('noDiscount');
-				} else if (bgResponse.data.discount[point.index] != 100) {
-					htmlStr += `${chrome.i18n.getMessage('discountPrefix')}<b>${bgResponse.data.discount[point.index]}%</b>`;
+				} else if (chartData.data.discount[point.index] != 100) {
+					htmlStr += `${chrome.i18n.getMessage('discountPrefix')}<b>${chartData.data.discount[point.index]}%</b>`;
 				} else {
 					htmlStr += chrome.i18n.getMessage('freeItem');
 				}
@@ -124,7 +131,7 @@ function drawChart() {
 				dateTimeLabelFormats: langSetting.navigatorDateFormats,
 			},
 			yAxis: {
-				min: bgResponse.data.range[0] - (bgResponse.data.range[1] - bgResponse.data.range[0]) * 0.6,
+				min: chartData.data.range[0] - (chartData.data.range[1] - chartData.data.range[0]) * 0.6,
 				// minPadding: 0.7,
 			},
 			outlineColor: 'rgba( 0, 0, 0, 0 )',
@@ -208,9 +215,8 @@ function drawChart() {
 			},
 		},
 	};
-	const addBttn = langSetting.siteButton ? addButtons : function(chart) {};
 
-	insertChart();
+	insertChart(chartSetting.chart.height);
 
 	Highcharts.setOptions(langSetting.chartLang);
 	Highcharts.setOptions(chartSetting);
@@ -220,7 +226,7 @@ function drawChart() {
 		}
 	});
 
-	chart = Highcharts.stockChart('chart_container', chartOptions, addBttn);
+	const chart = Highcharts.stockChart('chart_container', chartOptions);
 	if (chartSetting.chart.height == '350px') {
 		chart.update({
 			rangeSelector: {
@@ -228,16 +234,13 @@ function drawChart() {
 			}
 		});
 	}
-	if (isBundle) {
-		modal('display_bundle_modal',
-			chrome.i18n.getMessage('bundleHeader'),
-			chrome.i18n.getMessage('bundleText', itemName),
-			false);
+
+	if (itemInfo.isBundle) {
+		bundleModal(info.itemName);
 	}
-	// console.timeEnd('t');
 }
 
-function insertChart() {
+function insertChart(height) {
 	const elements = document.getElementsByClassName('page_content');
 	let loc;
 	for (let i = 0; i < elements.length; i++) {
@@ -248,7 +251,7 @@ function insertChart() {
 	}
 	loc.insertAdjacentHTML('afterbegin', `
     <div class="steam_price_chart">
-        <div id="chart_container" style="height: ${chartSetting.chart.height}; min-width: 310px"></div>
+        <div id="chart_container" style="height: ${height}; min-width: 310px"></div>
     </div>
     `);
 }
@@ -300,19 +303,21 @@ function addLabel(chart, text) {
 		.add();
 }
 
-function addButtons(chart) {
-	const itadImgUrl = chrome.runtime.getURL('../images/isthereanydeal_icon.svg');
-	const hltbImgUrl = chrome.runtime.getURL('../images/howlongtobeat_icon.png');
-	const itemType = isMusic ? 'soundtrack' : isDlc ? 'DLC' : 'game';
-	const itadLabel = addLabel(chart, `View the ${itemType} on IsThereAnyDeal`).align({
-		align: 'right',
-		x: isMusic ? -230 : isDlc ? -205 : -215,
-		y: 5
-	});
-	addImgUrl(addImg(chart, itadImgUrl, itadLabel, -85), bgResponse.itadUrl);
+function addButtons(chart, chartData) {
+	const itadImgUrl = chrome.runtime.getURL('../images/isthereanydeal_icon.svg'),
+		hltbImgUrl = chrome.runtime.getURL('../images/howlongtobeat_icon.png'),
+		isDlc = document.getElementsByClassName('game_area_dlc_bubble').length != 0,
+		isMusic = document.getElementsByClassName('game_area_soundtrack_bubble').length != 0,
+		itemType = isMusic ? 'soundtrack' : isDlc ? 'DLC' : 'game',
+		itadLabel = addLabel(chart, `View the ${itemType} on IsThereAnyDeal`).align({
+			align: 'right',
+			x: isMusic ? -230 : isDlc ? -205 : -215,
+			y: 5
+		});
+	addImgUrl(addImg(chart, itadImgUrl, itadLabel, -85), chartData.itadUrl);
 
-	if (bgResponse.hltbUrl == 'https://howlongtobeat.com/') {
-		const cantConnect = bgResponse.error && bgResponse.error[1] == 0;
+	if (chartData.hltbUrl == 'https://howlongtobeat.com/') {
+		const cantConnect = chartData.error && chartData.error[1] == 0;
 		const errorMessage = cantConnect ?
 			"Can't connect to HowLongToBeat" :
 			"Can't find the game on HowLongToBeat";
@@ -330,13 +335,15 @@ function addButtons(chart) {
 			x: -183,
 			y: 5
 		});
-		addImgUrl(addImg(chart, hltbImgUrl, hltbLabel, -55), bgResponse.hltbUrl);
+		addImgUrl(addImg(chart, hltbImgUrl, hltbLabel, -55), chartData.hltbUrl);
 	}
 }
 
 function updateChart(request) {
+	const container = $('#chart_container');
+	const chart = container.highcharts();
 	if (request.simplified) {
-		document.getElementById('chart_container').style.height = '350px';
+		container.css('height', '350px');
 		chart.update({
 			rangeSelector: {
 				enabled: false
@@ -344,7 +351,7 @@ function updateChart(request) {
 		}, false);
 		chart.update(userChart.simp);
 	} else {
-		document.getElementById('chart_container').style.height = '400px';
+		container.css('height', '400px');
 		chart.update(userChart.full);
 		chart.update({
 			chart: {

@@ -93,7 +93,6 @@ function requests(message, sender, sendResponse) {
 	}
 
 	function request(name) {
-		// console.time('a');
 		const xhr = new XMLHttpRequest;
 		const url = `https://isthereanydeal.com/game/${name}/history/${message.storeRegion}/?shop%5B%5D=steam&generate=Select+Stores`;
 		xhr.open('GET', url);
@@ -143,7 +142,7 @@ function abnormal(arr) {
 	let i = 1,
 		len = arr.length,
 		toCompare, [min, max] = [arr[0][1], arr[0][1]];
-	const tmpArr = [],
+	const tmpArr = [arr[0]],
 		lastPoint = arr[len - 1].slice(),
 		twoHours = 7200000,
 		fourtySixHours = 165600000;

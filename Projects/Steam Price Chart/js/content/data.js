@@ -1,12 +1,15 @@
 'use strict';
 
-function calculateDiscount(points) {
-	if (points[0][1] == 0 || points[points.length - 1][1] != points[points.length - 2][1]) {
-		dataError(itemName);
+function calculateDiscount(points, firstPurchaseOption) {
+	const itemName = document.getElementsByClassName('apphub_AppName')[0].textContent;
+	if ((points[0][1] == 0 &&
+		points[1][0] - points[0][0] > 31536000000) || 
+		points[points.length - 1][1] != points[points.length - 2][1]) {
+		dataModal(itemName);
 	}
 
 	const priceArr = [],
-		isDiscount = setup(points, priceArr),
+		isDiscount = setup(points, priceArr, firstPurchaseOption),
 		base = calculateBase(points, priceArr);
 
 	restorePriceArr(isDiscount, priceArr);
@@ -14,7 +17,7 @@ function calculateDiscount(points) {
 	return makeDiscountArr(points.length, priceArr, base)
 }
 
-function setup(points, priceArr) {
+function setup(points, priceArr, firstPurchaseOption) {
 	for (let i = 0; i < points.length; i++) {
 		priceArr.push(points[i][1]);
 	}
@@ -22,7 +25,7 @@ function setup(points, priceArr) {
 	let price,
 		isDiscount = true;
 	const discount = firstPurchaseOption.getElementsByClassName('discount_block');
-	if (isBundle) {
+	if (itemInfo.isBundle) {
 		price = discount[0].getElementsByClassName('discount_final_price')[0].textContent.match(/[\d.,]+/)[0].replace(',', '.');
 		if (discount.length != 0) {
 			const searchRange = priceArr.length < 5 ? priceArr.length - 1 : 4;
@@ -57,8 +60,9 @@ function setup(points, priceArr) {
 		}
 	}
 
+	const itemName = document.getElementsByClassName('apphub_AppName')[0].textContent;
 	if (price != points[points.length - 1][1]) {
-		dataError(itemName);
+		dataModal(itemName);
 	}
 
 	return isDiscount;

@@ -1,5 +1,6 @@
 'use strict';
 
-makeChart();
-
-chrome.runtime.onMessage.addListener(updateChart);
+try {
+	makeChart();
+	chrome.runtime.onMessage.addListener(updateChart);
+} catch {}

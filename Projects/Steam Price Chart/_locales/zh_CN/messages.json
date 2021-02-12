@@ -41,6 +41,14 @@
             }
         }
     },
+    "timeoutErrorHeader": {
+        "message": "后台错误",
+        "description": "后台错误弹窗的标题"
+    },
+    "timeoutErrorText": {
+        "message": "对不起，获取数据时出了错误。",
+        "description": "后台错误弹窗的主体文字"
+    },
     "regionErrorHeader": {
         "message": "地区不支持",
         "description": "地区不支持弹窗的标题"
@@ -53,6 +61,14 @@
                 "content": "$1"
             }
         }
+    },
+    "connectErrorHeader": {
+        "message": "无法连接到数据来源",
+        "description": "无法连接弹窗的标题"
+    },
+    "connectErrorText": {
+        "message": "对不起，Steam价格历史图无法连接到数据来源以获取数据。",
+        "description": "无法连接弹窗的主体文字"
     },
     "bundleHeader": {
         "message": "显示捆绑包价格历史",
@@ -69,7 +85,7 @@
     },
     "freeItemHeader": {
         "message": "免费商品",
-        "description": "免费商品弹窗标题"
+        "description": "免费商品弹窗的标题"
     },
     "freeItemText": {
         "message": "$NAME$是免费商品，不显示图表。",
@@ -79,6 +95,14 @@
                 "content": "$1"
             }
         }
+    },
+    "discountErrorHeader": {
+        "message": "未知折扣",
+        "description": "未知折扣弹窗的标题"
+    },
+    "discountErrorText": {
+        "message": "对不起，计算折扣时出了错误。请报告错误来帮助改进Steam价格历史图。",
+        "description": "未知折扣弹窗的主体文字"
     },
     "simplify": {
         "message": "简化图表",

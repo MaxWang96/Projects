@@ -13,7 +13,7 @@ class localeOptions {
 		this.buttonText = options.buttonText || ['1m', '3m', '6m', '1y', '3y', 'All'];
 		this.dateTimeLabelFormats = options.dateTimeLabelFormats || {};
 		this.navigatorDateFormats = options.navigatorDateFormats || {};
-		this.chartLang = options.chartLang || {};
+		this.lang = options.lang || {};
 	}
 }
 const locale = {
@@ -31,14 +31,11 @@ const locale = {
 		navigatorDateFormats: {
 			month: '%Y.%m',
 		},
-		chartLang: {
-			lang: {
-				months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
-				weekdays: ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'],
-				rangeSelectorZoom: '缩放',
-				rangeSelectorFrom: '从',
-				rangeSelectorTo: '到',
-			}
+		lang: {
+			weekdays: ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'],
+			rangeSelectorZoom: '缩放',
+			rangeSelectorFrom: '从',
+			rangeSelectorTo: '到',
 		}
 	}),
 	EU1: new localeOptions({

@@ -5,16 +5,16 @@ function dataRequest(resolve, reject) {
 		reject('timeout');
 	}, 10000);
 
-	const info = findInfo();
-	const message = {
-		id: info.id,
-		storeRegion: info.region.toLowerCase(),
-		lang: info.sysLang,
-		name: info.gameName,
-		bundle: itemInfo.isBundle
-	}
+	const info = findInfo(),
+		message = {
+			id: info.id,
+			storeRegion: info.region.toLowerCase(),
+			lang: info.sysLang,
+			name: info.gameName,
+			bundle: itemInfo.isBundle
+		};
 
-	chrome.runtime.sendMessage(message, function(response) {
+	chrome.runtime.sendMessage(message, (response) => {
 		clearTimeout(noResponse);
 
 		if (response.error && response.error[0] == 0) {
@@ -22,7 +22,6 @@ function dataRequest(resolve, reject) {
 		}
 
 		const points = response.data.points;
-
 		response.data.discount = calculateDiscount(points, info.firstPurchaseOption);
 		response.data.points = addIntermediatePoints(points);
 		resolve({
@@ -33,7 +32,7 @@ function dataRequest(resolve, reject) {
 }
 
 function settingRequest(resolve, reject) {
-	chrome.storage.sync.get('simplified', function(value) {
+	chrome.storage.sync.get('simplified', (value) => {
 		resolve(value.simplified ? userChart.simp : userChart.full);
 	});
 }

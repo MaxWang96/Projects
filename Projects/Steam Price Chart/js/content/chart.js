@@ -15,18 +15,23 @@ function makeChart() {
 function drawChart(results) {
 	const chartData = results[0].chartData,
 		info = results[0].info,
-		chartSetting = results[1],
 		title = itemInfo.isBundle ? chartData.bundleTitle : info.itemName,
-		priceSetting = localePrice[info.region],
 		sysLang = info.sysLang,
-		langSetting = (sysLang == 'zh-CN' || sysLang == 'zh-TW') ? locale['CN'] : (sysLang == 'en' || sysLang == 'en-US') ? locale['US'] : locale['EU1'];
-		
+		setting = {
+			chart: results[1],
+			price: localePrice[info.region],
+			lang: (sysLang == 'zh-CN' || sysLang == 'zh-TW') ? locale['CN'] : (sysLang == 'en' || sysLang == 'en-US') ? locale['US'] : locale['EU1']
+		},
+		globalSetting = {
+			lang: setting.lang.lang
+		};
+
 	const chartOptions = {
 		chart: {
 			backgroundColor: 'rgba( 0, 0, 0, 0.2 )',
 			events: {
 				load: function() {
-					if (langSetting.siteButton) addButtons(this, chartData);
+					if (setting.lang.siteButton) addButtons(this, chartData);
 				}
 			},
 			style: {
@@ -47,9 +52,9 @@ function drawChart(results) {
 			color: '#67c1f5',
 			step: true,
 			tooltip: {
-				valueDecimals: priceSetting.valueDecimals,
-				valuePrefix: priceSetting.currency[0],
-				valueSuffix: priceSetting.currency[1]
+				valueDecimals: setting.price.valueDecimals,
+				valuePrefix: setting.price.currency[0],
+				valueSuffix: setting.price.currency[1]
 			}
 		}],
 
@@ -71,7 +76,7 @@ function drawChart(results) {
 			tickColor: '#626366',
 			crosshair: false,
 			tickPixelInterval: 200,
-			dateTimeLabelFormats: langSetting.dateTimeLabelFormats,
+			dateTimeLabelFormats: setting.lang.dateTimeLabelFormats,
 		},
 
 		yAxis: {
@@ -83,7 +88,7 @@ function drawChart(results) {
 					fontSize: '12px',
 				},
 				formatter: function() {
-					return priceSetting.currency[0] + Math.round(this.value) + priceSetting.currency[1];
+					return setting.price.currency[0] + Math.round(this.value) + setting.price.currency[1];
 				}
 			},
 			offset: 30,
@@ -100,9 +105,9 @@ function drawChart(results) {
 			useHTML: true,
 			borderColor: '#171a21',
 			formatter: function() {
-				let htmlStr = `<span style="font-size:90%">${Highcharts.dateFormat(langSetting.dateFormat, this.x)}</span>`;
-				const point = this.points[0].point;
-				const price = priceSetting.currency[0] + point.y + priceSetting.currency[1];
+				let htmlStr = `<span style="font-size:90%">${Highcharts.dateFormat(setting.lang.dateFormat, this.x)}</span>`;
+				const point = this.points[0].point,
+					price = setting.price.currency[0] + point.y.toFixed(2) + setting.price.currency[1];
 				htmlStr += `<br/>${chrome.i18n.getMessage('linePrefix')}<b>${price}</b><br/>`;
 				if (chartData.data.discount[point.index] == 0) {
 					htmlStr += chrome.i18n.getMessage('noDiscount');
@@ -128,11 +133,10 @@ function drawChart(results) {
 			},
 			xAxis: {
 				gridLineColor: '#626366',
-				dateTimeLabelFormats: langSetting.navigatorDateFormats,
+				dateTimeLabelFormats: setting.lang.navigatorDateFormats,
 			},
 			yAxis: {
 				min: chartData.data.range[0] - (chartData.data.range[1] - chartData.data.range[0]) * 0.6,
-				// minPadding: 0.7,
 			},
 			outlineColor: 'rgba( 0, 0, 0, 0 )',
 			maskFill: 'rgba(102,133,194,0.2)',
@@ -171,9 +175,9 @@ function drawChart(results) {
 				backgroundColor: "#18222e",
 				color: "#acb2b8",
 			},
-			inputDateFormat: langSetting.inputDateFormat,
+			inputDateFormat: setting.lang.inputDateFormat,
 			inputEditDateFormat: '%m/%d/%Y',
-			inputBoxWidth: langSetting.inputBoxWidth,
+			inputBoxWidth: setting.lang.inputBoxWidth,
 			labelStyle: {
 				color: "#acb2b8"
 			},
@@ -181,26 +185,26 @@ function drawChart(results) {
 			buttons: [{
 				type: "month",
 				count: 1,
-				text: langSetting.buttonText[0],
+				text: setting.lang.buttonText[0],
 			}, {
 				type: "month",
 				count: 3,
-				text: langSetting.buttonText[1],
+				text: setting.lang.buttonText[1],
 			}, {
 				type: "month",
 				count: 6,
-				text: langSetting.buttonText[2],
+				text: setting.lang.buttonText[2],
 			}, {
 				type: "year",
 				count: 1,
-				text: langSetting.buttonText[3],
+				text: setting.lang.buttonText[3],
 			}, {
 				type: "year",
 				count: 3,
-				text: langSetting.buttonText[4],
+				text: setting.lang.buttonText[4],
 			}, {
 				type: "all",
-				text: langSetting.buttonText[5],
+				text: setting.lang.buttonText[5],
 			}],
 		},
 
@@ -216,18 +220,14 @@ function drawChart(results) {
 		},
 	};
 
-	insertChart(chartSetting.chart.height);
+	globalSetting.lang.decimalPoint = setting.price.valueSymbol;
+	Object.assign(globalSetting, setting.chart);
+	Highcharts.setOptions(globalSetting);
 
-	Highcharts.setOptions(langSetting.chartLang);
-	Highcharts.setOptions(chartSetting);
-	Highcharts.setOptions({
-		lang: {
-			decimalPoint: priceSetting.valueSymbol
-		}
-	});
+	insertChart(setting.chart.chart.height);
 
 	const chart = Highcharts.stockChart('chart_container', chartOptions);
-	if (chartSetting.chart.height == '350px') {
+	if (setting.chart.chart.height == '350px') {
 		chart.update({
 			rangeSelector: {
 				enabled: false
@@ -316,16 +316,16 @@ function addButtons(chart, chartData) {
 		});
 	addImgUrl(addImg(chart, itadImgUrl, itadLabel, -85), chartData.itadUrl);
 
-	if (chartData.hltbUrl == 'https://howlongtobeat.com/') {
-		const cantConnect = chartData.error && chartData.error[1] == 0;
-		const errorMessage = cantConnect ?
+	if (chartData.hltbUrl == undefined) {
+		const cantConnect = chartData.error && chartData.error[1] == 0,
+			errorMessage = cantConnect ?
 			"Can't connect to HowLongToBeat" :
-			"Can't find the game on HowLongToBeat";
-		const hltbLabel = addLabel(chart, errorMessage).align({
-			align: 'right',
-			x: cantConnect ? -173 : -193,
-			y: 5
-		});
+			"Can't find the game on HowLongToBeat",
+			hltbLabel = addLabel(chart, errorMessage).align({
+				align: 'right',
+				x: cantConnect ? -173 : -193,
+				y: 5
+			});
 		addImg(chart, hltbImgUrl, hltbLabel, -55).css({
 			opacity: 0.3
 		});
@@ -340,8 +340,8 @@ function addButtons(chart, chartData) {
 }
 
 function updateChart(request) {
-	const container = $('#chart_container');
-	const chart = container.highcharts();
+	const container = $('#chart_container'),
+		chart = container.highcharts();
 	if (request.simplified) {
 		container.css('height', '350px');
 		chart.update({

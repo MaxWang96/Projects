@@ -15,10 +15,10 @@ function findInfo() {
 	}
 
 	info.gameName = (!isDlc && !isMusic) ?
-		info.itemName : purchaseArea.getElementsByClassName('game_area_bubble')[0].querySelector('a').textContent;
+		info.itemName : 
+		purchaseArea.getElementsByClassName('game_area_bubble')[0].querySelector('a').textContent;
 	info.region = findRegion();
 	Object.assign(info, findIdAndOption(purchaseArea, isMusic));
-
 	return info;
 }
 
@@ -35,17 +35,18 @@ function findIdAndOption(purchaseArea, isMusic) {
 		firstPurchaseOption;
 	const wrappers = purchaseArea.getElementsByClassName('game_area_purchase_game_wrapper');
 	while (true) {
-		if (wrappers[i].classList.length == 1) {
-			if (isMusic || wrappers[i].getElementsByClassName('music').length == 0) {
-				const p = wrappers[i].querySelector('p');
+		const wrap = wrappers[i];
+		if (wrap.classList.length == 1) {
+			if (isMusic || wrap.getElementsByClassName('music').length == 0) {
+				const p = wrap.querySelector('p');
 				if (p == undefined || p.querySelector('a') == undefined) {
-					firstPurchaseOption = wrappers[i];
+					firstPurchaseOption = wrap;
 					id = location.href.split('/')[4];
 					break;
 				}
 			}
-		} else if (wrappers[i].classList.length == 3) {
-			firstPurchaseOption = wrappers[i];
+		} else if (wrap.classList.length == 3) {
+			firstPurchaseOption = wrap;
 			itemInfo.isBundle = true;
 			id = firstPurchaseOption.getAttribute('data-ds-bundleid');
 			break;

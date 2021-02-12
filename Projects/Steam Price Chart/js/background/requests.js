@@ -7,13 +7,8 @@ function requests(message, sender, sendResponse) {
 	}, 9000);
 
 	let name = message.name,
-		itadReady = 0,
-		hltbReady = 0,
-		receivedReg = 0,
-		receivedAlt = 0;
-	const response = {
-		hltbUrl: 'https://howlongtobeat.com/'
-	};
+		[itadReady, hltbReady, receivedReg, receivedAlt] = [0, 0, 0, 0];
+	const response = {};
 
 	itad();
 	hltb();

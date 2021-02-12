@@ -15,7 +15,7 @@
     "background": {
         "scripts": [
             "js/background/init.js",
-            "js/background/xhr.js",
+            "js/background/requests.js",
             "js/background/background.js"
         ],
         "persistent": false

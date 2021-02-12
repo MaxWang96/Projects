@@ -3,7 +3,7 @@
 function calculateDiscount(points, firstPurchaseOption) {
 	const itemName = document.getElementsByClassName('apphub_AppName')[0].textContent;
 	if ((points[0][1] == 0 &&
-		points[1][0] - points[0][0] > 31536000000) || 
+			points[1][0] - points[0][0] > 31536000000) ||
 		points[points.length - 1][1] != points[points.length - 2][1]) {
 		dataModal(itemName);
 	}
@@ -11,7 +11,6 @@ function calculateDiscount(points, firstPurchaseOption) {
 	const priceArr = [],
 		isDiscount = setup(points, priceArr, firstPurchaseOption),
 		base = calculateBase(points, priceArr);
-
 	restorePriceArr(isDiscount, priceArr);
 
 	return makeDiscountArr(points.length, priceArr, base)
@@ -24,37 +23,45 @@ function setup(points, priceArr, firstPurchaseOption) {
 
 	let price,
 		isDiscount = true;
-	const discount = firstPurchaseOption.getElementsByClassName('discount_block');
+	const discount = firstPurchaseOption.getElementsByClassName('discount_block'),
+		len = priceArr.length;
+	HTMLElement.prototype.findPrice = function() {
+		return this.textContent
+			.match(/[\d.,]+/)[0]
+			.replace(',', '.');
+	}
+
 	if (itemInfo.isBundle) {
-		price = discount[0].getElementsByClassName('discount_final_price')[0].textContent.match(/[\d.,]+/)[0].replace(',', '.');
-		if (discount.length != 0) {
-			const searchRange = priceArr.length < 5 ? priceArr.length - 1 : 4;
-			let max = price,
-				k;
-			for (k = 0; k < searchRange; k++) {
-				if (priceArr[priceArr.length - k - 2] > max) {
-					max = priceArr[priceArr.length - k - 2];
-				}
+		price = discount[0]
+			.getElementsByClassName('discount_final_price')[0]
+			.findPrice();
+		let max = price;
+		const searchRange = len < 5 ? len - 1 : 4;
+		for (let j = 0; j < searchRange; j++) {
+			if (priceArr[len - j - 2] > max) {
+				max = priceArr[len - j - 2];
 			}
-			if (max != price) {
-				priceArr[priceArr.length - 1] = max;
-			} else {
-				priceArr[priceArr.length - 1] = price / 2;
-				priceArr.push(price);
-				isDiscount = false;
-			}
-		} else {
-			priceArr[priceArr.length - 1] = price / 2;
+		}
+		if (max == price) {
+			priceArr[len - 1] = price / 2;
 			priceArr.push(price);
 			isDiscount = false;
+		} else {
+			priceArr[len - 1] = max;
 		}
 	} else {
 		if (discount.length != 0) {
-			price = discount[0].getElementsByClassName('discount_final_price')[0].textContent.match(/[\d.,]+/)[0].replace(',', '.');
-			priceArr[priceArr.length - 1] = discount[0].getElementsByClassName('discount_original_price')[0].textContent.match(/[\d.,]+/)[0].replace(',', '.');
+			price = discount[0]
+				.getElementsByClassName('discount_final_price')[0]
+				.findPrice();
+			priceArr[len - 1] = discount[0]
+				.getElementsByClassName('discount_original_price')[0]
+				.findPrice();
 		} else {
-			price = firstPurchaseOption.getElementsByClassName('game_purchase_price')[0].textContent.match(/[\d.,]+/)[0].replace(',', '.');
-			priceArr[priceArr.length - 1] = price / 2;
+			price = firstPurchaseOption
+				.getElementsByClassName('game_purchase_price')[0]
+				.findPrice();
+			priceArr[len - 1] = price / 2;
 			priceArr.push(price);
 			isDiscount = false;
 		}
@@ -106,7 +113,7 @@ function makeBase(priceArr, base, priceIncrease) {
 				} else if (priceArr[k + 1] == priceArr[k + 3]) {
 					base.push(priceArr[k + 1], priceArr[k + 1], priceArr[k + 1]);
 					k += 3;
-				} else if (priceArr[k + 1] < priceArr[k + 2]) { // E
+				} else if (priceArr[k + 1] < priceArr[k + 2]) {
 					base.push(curBase, priceArr[k + 2]);
 					k += 2;
 				} else if (priceArr[k + 2] > priceArr[k + 3]) {
@@ -115,11 +122,8 @@ function makeBase(priceArr, base, priceIncrease) {
 				} else if (priceArr[k + 2] < priceArr[k + 3]) {
 					base.push(priceArr[k + 1]);
 					k++;
-				} else {
-					modal('unknown_discount_type_modal',
-						'Unknown Discount Error',
-						'Sorry, something went wrong when calculating the discount. Please consider reporting the issue to help improve the extension.',
-						'Unknown Discount Type');
+				} else { // in case there are cases not covered. Should never be called
+					unknownDiscountModal();
 				}
 			} else {
 				base.push(curBase, priceArr[k + 2]);
@@ -144,20 +148,20 @@ function checkAbnormalHigh(points, priceArr, base, priceIncrease) {
 function restorePriceArr(isDiscount, priceArr) {
 	const len = priceArr.length;
 	if (isDiscount) {
-		priceArr[priceArr.length - 1] = priceArr[priceArr.length - 2];
+		priceArr[len - 1] = priceArr[len - 2];
 	} else {
-		priceArr[priceArr.length - 2] = priceArr[priceArr.length - 3];
+		priceArr[len - 2] = priceArr[len - 3];
 	}
 }
 
 function makeDiscountArr(len, priceArr, base) {
 	const discountArr = [];
-	let j = 0;
-	for (; j < len - 2; j++) {
-		const curDiscount = Math.round((1 - priceArr[j] / base[j]) * 100);
+	let i = 0;
+	for (; i < len - 2; i++) {
+		const curDiscount = Math.round((1 - priceArr[i] / base[i]) * 100);
 		discountArr.push(curDiscount, curDiscount);
 	}
-	discountArr.push(Math.round((1 - priceArr[j] / base[j]) * 100), Math.round((1 - priceArr[j + 1] / base[j + 1]) * 100));
+	discountArr.push(Math.round((1 - priceArr[i] / base[i]) * 100), Math.round((1 - priceArr[i + 1] / base[i + 1]) * 100));
 	return discountArr;
 }
 

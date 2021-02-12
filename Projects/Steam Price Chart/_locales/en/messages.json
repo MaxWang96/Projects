@@ -34,6 +34,12 @@
             }
         }
     },
+    "timeoutErrorHeader": {
+        "message": "Background Error"
+    },
+    "timeoutErrorText": {
+        "message": "Sorry, something went wrong when fetching the price data."
+    },
     "regionErrorHeader": {
         "message": "Region Not Supported"
     },
@@ -44,6 +50,12 @@
                 "content": "$1"
             }
         }
+    },
+    "connectErrorHeader": {
+        "message": "Can't Connect to ITAD"
+    },
+    "connectErrorText": {
+        "message": "Sorry, Steam Price Chart fail to connect to IsThereAnyDeal.com to get the price history data."
     },
     "bundleHeader": {
         "message": "Shown Bundle Price"
@@ -66,6 +78,12 @@
                 "content": "$1"
             }
         }
+    },
+    "discountErrorHeader": {
+        "message": "Unknown Discount Error"
+    },
+    "discountErrorText": {
+        "message": "Sorry, something went wrong when calculating the discount. Please consider reporting the issue to help improve the extension."
     },
     "simplify": {
         "message": "Simplify chart"

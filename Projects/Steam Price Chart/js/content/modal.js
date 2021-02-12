@@ -1,7 +1,7 @@
 'use strict';
 
-// function for creating modals that display various error messages
-function modal(id, header, text, error) {
+// function for creating modals that display various user messages
+function modal(id, header, text, error = true) {
     document.body.insertAdjacentHTML('beforeend', `
             <div class="spc_modal_container">
                 <div class="modal right fade" id="${id}" role="dialog">
@@ -19,11 +19,10 @@ function modal(id, header, text, error) {
                 </div>
             </div>`);
 
-    if (document.readyState != 'complete') {
-        setTimeout(showModal.bind(null, id), 1000);
-    } else showModal(id);
+    if (document.readyState != 'complete') setTimeout(showModal.bind(null, id), 1000);
+    else showModal(id);
 
-    if (error) throw new Error(error);
+    if (error) throw new Error();
 }
 
 function showModal(id) {
@@ -41,36 +40,31 @@ function showModal(id) {
 function regionModal(region) {
     modal('not_supported_modal',
         chrome.i18n.getMessage('regionErrorHeader'),
-        chrome.i18n.getMessage('regionErrorText', region),
-        'Region not supported');
+        chrome.i18n.getMessage('regionErrorText', region));
 }
 
 function freeItemModal(name) {
     modal('free_item_modal',
         chrome.i18n.getMessage('freeItemHeader'),
-        chrome.i18n.getMessage('freeItemText', name),
-        'This item is free, stopped drawing the chart');
+        chrome.i18n.getMessage('freeItemText', name));
 }
 
 function dataModal(name) {
     modal('price_data_error_modal',
         chrome.i18n.getMessage('priceDataErrorHeader'),
-        chrome.i18n.getMessage('priceDataErrorText', name),
-        'Price data error');
+        chrome.i18n.getMessage('priceDataErrorText', name));
 }
 
 function timeoutModal() {
     modal('no_response_from_background_modal',
-        'Background Error',
-        'Sorry, something went wrong when fetching the price data.',
-        'Background Error');
+        chrome.i18n.getMessage('timeoutErrorHeader'),
+        chrome.i18n.getMessage('timeoutErrorText'));
 }
 
 function cantConnectModal() {
     modal("cant_connect_to_itad_modal",
-        "Can't Connect to ITAD",
-        "Sorry, Steam Price Chart fail to connect to IsThereAnyDeal.com to get the price history data.",
-        "Can't Connect: ITAD");
+        chrome.i18n.getMessage('connectErrorHeader'),
+        chrome.i18n.getMessage('connectErrorText'));
 }
 
 function bundleModal(name) {
@@ -78,4 +72,10 @@ function bundleModal(name) {
         chrome.i18n.getMessage('bundleHeader'),
         chrome.i18n.getMessage('bundleText', name),
         false);
+}
+
+function unknownDiscountModal() {
+    modal('unknown_discount_type_modal',
+        chrome.i18n.getMessage('discountErrorHeader'),
+        chrome.i18n.getMessage('discountErrorText'));
 }

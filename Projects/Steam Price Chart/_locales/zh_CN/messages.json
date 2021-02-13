@@ -107,5 +107,9 @@
     "simplify": {
         "message": "简化图表",
         "description": "简化图表选项的文字（点击扩展图标时显示）"
+    },
+    "feedback": {
+        "message": "反馈",
+        "description": "反馈选项的文字（点击扩展图标时显示）"
     }
 }

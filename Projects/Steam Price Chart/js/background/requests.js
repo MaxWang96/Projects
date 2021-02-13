@@ -4,7 +4,7 @@ function requests(message, sender, sendResponse) {
 	const cantConnect = setTimeout(() => {
 		response.error = [itadReady, hltbReady];
 		sendResponse(response);
-	}, 9000);
+	}, 5000);
 
 	let name = message.name,
 		[itadReady, hltbReady, receivedReg, receivedAlt] = [0, 0, 0, 0];
@@ -12,27 +12,43 @@ function requests(message, sender, sendResponse) {
 
 	itad();
 	hltb();
+
 	return true;
 
 
 	function itad() {
 		if (!message.bundle) {
-			const idRequest = new XMLHttpRequest;
-			idRequest.open('GET', `https://api.isthereanydeal.com/v02/game/plain/?key=2a0a6baa1713e7be64e451ab1b863b988ce63455&shop=steam&game_id=app%2F${message.id}`);
-			idRequest.onload = function() {
-				const gameName = this.response.match(/"plain":"(.+?)"/)[1];
-				request(gameName);
-			}
-			idRequest.send();
+			fetch(`https://api.isthereanydeal.com/v02/game/plain/?key=2a0a6baa1713e7be64e451ab1b863b988ce63455&shop=steam&game_id=app%2F${message.id}`)
+				.then(response => response.text())
+				.then(text => {
+					const gameName = text.match(/"plain":"(.+?)"/)[1];
+					sendItadRequest(gameName);
+				});
 		} else {
-			const idRequest = new XMLHttpRequest;
-			idRequest.open('HEAD', `https://isthereanydeal.com/steam/bundle/${message.id}/`);
-			idRequest.onload = function() {
-				const bundleName = this.responseURL.split('/')[4];
-				request(bundleName);
-			}
-			idRequest.send();
+			fetch(`https://isthereanydeal.com/steam/bundle/${message.id}/`, {
+					method: 'HEAD'
+				})
+				.then(response => {
+					const bundleName = response.url.split('/')[4];
+					sendItadRequest(bundleName);
+				});
 		}
+	}
+
+	function sendItadRequest(name) {
+		fetch(`https://isthereanydeal.com/game/${name}/history/${message.storeRegion}/?shop%5B%5D=steam&generate=Select+Stores`)
+			.then(response => response.text())
+			.then(text => {
+				itadReady = 1;
+				let dataArr = JSON.parse(text.match(/"Steam","data":(\[\[.+?\]\])/)[1]);
+				dataArr = duplicate(dataArr);
+				response.data = abnormal(dataArr);
+				response.itadUrl = `https://isthereanydeal.com/game/${name}/info/${message.storeRegion}`;
+				if (message.bundle) {
+					response.bundleTitle = text.match(/<h1 id='gameTitle'>.+?>(.+?)</)[1];
+				}
+				tryRespond();
+			})
 	}
 
 	function hltb() {
@@ -40,69 +56,55 @@ function requests(message, sender, sendResponse) {
 			if (message.lang.startsWith('en') || message.bundle) {
 				sendHltbRequest();
 			} else {
-				const enNameRequest = new XMLHttpRequest;
-				enNameRequest.open('GET', `https://steamspy.com/api.php?request=appdetails&appid=${message.id}`);
-				enNameRequest.onload = function() {
-					name = this.response.match(/"name":"(.+?)"/)[1];
-					sendHltbRequest();
-				}
-				enNameRequest.send();
+				fetch(`https://steamspy.com/api.php?request=appdetails&appid=${message.id}`)
+					.then(response => response.text())
+					.then(text => {
+						name = text.match(/"name":"(.+?)"/)[1];
+						sendHltbRequest();
+					})
 			}
 		} else hltbReady = 1;
 	}
 
 	function sendHltbRequest() {
-		hltbRequest(name, function() {
+		hltbRequest(name, data => {
 			receivedReg = 1;
-			const getId = this.response.match(/href="(.+?)"/);
+			const getId = data.match(/href="(.+?)"/);
 			if (getId != null) {
 				response.hltbUrl = 'http://howlongtobeat.com/' + getId[1];
 				hltbReady = 1;
 			}
-			if (receivedAlt) hltbReady = 1;
+			if (receivedAlt) {
+				hltbReady = 1;
+			}
 			tryRespond();
 		});
-
 		if (name.includes('Edition')) {
 			const colonIdx = name.lastIndexOf(':'),
 				dashIdx = name.lastIndexOf('-');
-			if (colonIdx < dashIdx) altRequest(dashIdx);
-			else if (colonIdx > dashIdx) altRequest(colonIdx);
-			else {
+			if (colonIdx < dashIdx) {
+				altRequest(dashIdx);
+			} else if (colonIdx > dashIdx) {
+				altRequest(colonIdx);
+			} else {
 				const spaceIdx = name.lastIndexOf(' ', name.lastIndexOf(' ') - 1);
 				altRequest(spaceIdx);
 			}
-		} else receivedAlt = 1;
+		} else {
+			receivedAlt = 1;
+		}
 	}
 
 	function altRequest(idx) {
-		hltbRequest(name.slice(0, idx), function() {
+		hltbRequest(name.slice(0, idx), data => {
 			receivedAlt = 1;
-			const getId = this.response.match(/href="(.+?)"/);
+			const getId = data.match(/href="(.+?)"/);
 			if (getId != null) {
 				response.hltbUrl = 'http://howlongtobeat.com/' + getId[1];
 				if (receivedReg) hltbReady = 1;
 			}
 			tryRespond();
 		})
-	}
-
-	function request(name) {
-		const xhr = new XMLHttpRequest;
-		const url = `https://isthereanydeal.com/game/${name}/history/${message.storeRegion}/?shop%5B%5D=steam&generate=Select+Stores`;
-		xhr.open('GET', url);
-		xhr.onload = function(data) {
-			itadReady = 1;
-			let dataArr = JSON.parse(this.response.match(/"Steam","data":(\[\[.+?\]\])/)[1]);
-			dataArr = duplicate(dataArr);
-			response.data = abnormal(dataArr);
-			response.itadUrl = `https://isthereanydeal.com/game/${name}/info/${message.storeRegion}`;
-			if (message.bundle) {
-				response.bundleTitle = this.response.match(/<h1 id='gameTitle'>.+?>(.+?)</)[1];
-			}
-			tryRespond();
-		}
-		xhr.send();
 	}
 
 	function tryRespond() {
@@ -178,7 +180,6 @@ function abnormal(arr) {
 			min = toCompare;
 		}
 	}
-
 	tmpArr.push(arr[i]);
 	if (i == len - 2) tmpArr.push(lastPoint);
 	return {
@@ -187,13 +188,14 @@ function abnormal(arr) {
 	};
 }
 
-function hltbRequest(gameName, onloadFunc) {
+function hltbRequest(gameName, callback) {
 	const name = gameName.replace('’', "'").replace(/[^\w\s:'-]/gi, '');
-	const xhr = new XMLHttpRequest;
-	const url = 'https://howlongtobeat.com/search_results.php';
-	const params = `queryString=${name}&t=games&sorthead=popular&sortd='Normal Order'`;
-	xhr.open('POST', url, true);
-	xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	xhr.onload = onloadFunc;
-	xhr.send(params);
+	fetch('https://howlongtobeat.com/search_results.php', {
+			method: 'POST',
+			headers: {
+				'Content-type': 'application/x-www-form-urlencoded'
+			},
+			body: `queryString=${name}&t=games&sorthead=popular&sortd='Normal Order'`
+		}).then(response => response.text())
+		.then(text => callback(text));
 }

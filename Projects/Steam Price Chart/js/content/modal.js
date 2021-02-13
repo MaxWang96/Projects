@@ -22,7 +22,7 @@ function modal(id, header, text, error = true) {
     if (document.readyState != 'complete') setTimeout(showModal.bind(null, id), 1000);
     else showModal(id);
 
-    if (error) throw new Error();
+    if (error) throw 'error';
 }
 
 function showModal(id) {

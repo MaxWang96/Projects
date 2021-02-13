@@ -87,5 +87,8 @@
     },
     "simplify": {
         "message": "Simplify chart"
+    },
+    "feedback": {
+        "message": "Feedback"
     }
 }

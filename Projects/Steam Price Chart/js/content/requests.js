@@ -3,7 +3,7 @@
 function dataRequest(resolve, reject) {
 	const noResponse = setTimeout(() => {
 		reject('timeout');
-	}, 10000);
+	}, 6000);
 
 	const info = findInfo(),
 		message = {
@@ -14,7 +14,7 @@ function dataRequest(resolve, reject) {
 			bundle: itemInfo.isBundle
 		};
 
-	chrome.runtime.sendMessage(message, (response) => {
+	chrome.runtime.sendMessage(message, response => {
 		clearTimeout(noResponse);
 
 		if (response.error && response.error[0] == 0) {
@@ -32,7 +32,7 @@ function dataRequest(resolve, reject) {
 }
 
 function settingRequest(resolve, reject) {
-	chrome.storage.sync.get('simplified', (value) => {
+	chrome.storage.sync.get('simplified', value => {
 		resolve(value.simplified ? userChart.simp : userChart.full);
 	});
 }

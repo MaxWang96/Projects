@@ -1,6 +1,7 @@
 'use strict';
 
 function makeChart() {
+	console.time('t');
 	const getData = new Promise(dataRequest);
 	const getSetting = new Promise(settingRequest);
 	Promise.all([getData, getSetting])
@@ -238,6 +239,7 @@ function drawChart(results) {
 	if (itemInfo.isBundle) {
 		bundleModal(info.itemName);
 	}
+	console.timeEnd('t');
 }
 
 function insertChart(height) {

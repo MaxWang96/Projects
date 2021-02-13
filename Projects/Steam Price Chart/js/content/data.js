@@ -122,7 +122,7 @@ function makeBase(priceArr, base, priceIncrease) {
 				} else if (priceArr[k + 2] < priceArr[k + 3]) {
 					base.push(priceArr[k + 1]);
 					k++;
-				} else { // in case there are cases not covered. Should never be called
+				} else {
 					unknownDiscountModal();
 				}
 			} else {
@@ -138,9 +138,9 @@ function checkAbnormalHigh(points, priceArr, base, priceIncrease) {
 		const tmp = priceIncrease[i];
 		if (tmp < priceArr.length - 1 && base[tmp] != base[tmp + 1]) {
 			base[tmp - 1] = base[tmp + 1];
-			base.splice(priceIncrease[i], 2);
-			priceArr.splice(priceIncrease[i], 2);
-			points.splice(priceIncrease[i], 2);
+			base.splice(tmp, 2);
+			priceArr.splice(tmp, 2);
+			points.splice(tmp, 2);
 		}
 	}
 }

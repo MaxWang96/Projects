@@ -13,11 +13,11 @@
     },
     "priceHistory": {
         "message": "价格历史",
-        "description": "图表标题部分后半段"
+        "description": "图表标题后半段"
     },
     "linePrefix": {
         "message": "价格：",
-        "description": "折线名称，会在价格框中显示"
+        "description": "折线名称，会在价格弹框中显示"
     },
     "noDiscount": {
         "message": "没有折扣"
@@ -29,7 +29,7 @@
         "message": "免费"
     },
     "priceDataErrorHeader": {
-        "message": "历史数据错误",
+        "message": "数据错误",
         "description": "数据错误弹窗的标题"
     },
     "priceDataErrorText": {

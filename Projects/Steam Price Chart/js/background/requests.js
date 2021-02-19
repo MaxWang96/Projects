@@ -53,6 +53,12 @@ function requests(message, sender, sendResponse) {
 
 	function hltb() {
 		if (!message.lang.startsWith('zh')) {
+			const hltbCantConnect = setTimeout(() => {
+				if (itadReady) {
+					response.error = [itadReady, hltbReady];
+					sendResponse(response);
+				}
+			}, 2000);
 			if (message.lang.startsWith('en') || message.bundle) {
 				sendHltbRequest();
 			} else {
@@ -105,6 +111,18 @@ function requests(message, sender, sendResponse) {
 			}
 			tryRespond();
 		})
+	}
+
+	function hltbRequest(gameName, callback) {
+		const nameSend = gameName.replace('’', "'").replace(/[^\w\s:'-]/gi, '');
+		fetch('https://howlongtobeat.com/search_results.php', {
+				method: 'POST',
+				headers: {
+					'Content-type': 'application/x-www-form-urlencoded'
+				},
+				body: `queryString=${nameSend}&t=games&sorthead=popular&sortd='Normal Order'`
+			}).then(response => response.text())
+			.then(text => callback(text));
 	}
 
 	function tryRespond() {
@@ -186,16 +204,4 @@ function abnormal(arr) {
 		points: tmpArr,
 		range: [min, max],
 	};
-}
-
-function hltbRequest(gameName, callback) {
-	const name = gameName.replace('’', "'").replace(/[^\w\s:'-]/gi, '');
-	fetch('https://howlongtobeat.com/search_results.php', {
-			method: 'POST',
-			headers: {
-				'Content-type': 'application/x-www-form-urlencoded'
-			},
-			body: `queryString=${name}&t=games&sorthead=popular&sortd='Normal Order'`
-		}).then(response => response.text())
-		.then(text => callback(text));
 }

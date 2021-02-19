@@ -106,9 +106,10 @@ function drawChart(results) {
 			useHTML: true,
 			borderColor: '#171a21',
 			formatter: function() {
-				let htmlStr = `<span style="font-size:90%">${Highcharts.dateFormat(setting.lang.dateFormat, this.x)}</span>`;
-				const point = this.points[0].point,
+				const point = this.points[0].point;
+				let htmlStr = `<span style="font-size:90%">${Highcharts.dateFormat(setting.lang.dateFormat, this.x)}</span>`,
 					price = setting.price.currency[0] + point.y.toFixed(2) + setting.price.currency[1];
+				price = price.replace('.', setting.price.valueSymbol);
 				htmlStr += `<br/>${chrome.i18n.getMessage('linePrefix')}<b>${price}</b><br/>`;
 				if (chartData.data.discount[point.index] == 0) {
 					htmlStr += chrome.i18n.getMessage('noDiscount');
@@ -177,7 +178,7 @@ function drawChart(results) {
 				color: "#acb2b8",
 			},
 			inputDateFormat: setting.lang.inputDateFormat,
-			inputEditDateFormat: '%m/%d/%Y',
+			inputEditDateFormat: setting.lang.inputEditDateFormat,
 			inputBoxWidth: setting.lang.inputBoxWidth,
 			labelStyle: {
 				color: "#acb2b8"
@@ -221,7 +222,6 @@ function drawChart(results) {
 		},
 	};
 
-	globalSetting.lang.decimalPoint = setting.price.valueSymbol;
 	Object.assign(globalSetting, setting.chart);
 	Highcharts.setOptions(globalSetting);
 

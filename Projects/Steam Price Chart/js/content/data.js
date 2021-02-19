@@ -17,9 +17,15 @@ function calculateDiscount(points, firstPurchaseOption) {
 }
 
 function setup(points, priceArr, firstPurchaseOption) {
-	for (let i = 0; i < points.length; i++) {
+	let i;
+	const itemName = document.getElementsByClassName('apphub_AppName')[0].textContent;
+	for (i = 0; i < points.length - 1; i++) {
+		if (points[i + 1][0] - points[i][0] <= 14400000) {
+			dataModal(itemName);
+		}
 		priceArr.push(points[i][1]);
 	}
+	priceArr.push(points[i][1]);
 
 	let price,
 		isDiscount = true;
@@ -67,7 +73,6 @@ function setup(points, priceArr, firstPurchaseOption) {
 		}
 	}
 
-	const itemName = document.getElementsByClassName('apphub_AppName')[0].textContent;
 	if (price != points[points.length - 1][1]) {
 		dataModal(itemName);
 	}
@@ -94,7 +99,7 @@ function makeBase(priceArr, base, priceIncrease) {
 		k = 1;
 	}
 	while (k < priceArr.length - 2) {
-		let curBase = priceArr[k];
+		const curBase = priceArr[k];
 		if (curBase < priceArr[k + 1]) {
 			base.push(priceArr[k + 1]);
 			priceIncrease.push(k + 1);
@@ -110,12 +115,17 @@ function makeBase(priceArr, base, priceIncrease) {
 				} else if (curBase == priceArr[k + 4]) {
 					base.push(curBase, curBase, curBase, curBase);
 					k += 4;
-				} else if (priceArr[k + 1] == priceArr[k + 3]) {
-					base.push(priceArr[k + 1], priceArr[k + 1], priceArr[k + 1]);
-					k += 3;
 				} else if (priceArr[k + 1] < priceArr[k + 2]) {
 					base.push(curBase, priceArr[k + 2]);
 					k += 2;
+				} else if (priceArr[k + 1] == priceArr[k + 3]) {
+					if (k >= priceArr.length - 5 || curBase != priceArr[k + 5]) {
+						base.push(priceArr[k + 1], priceArr[k + 1], priceArr[k + 1]);
+						k += 3;
+					} else {
+						base.push(curBase, curBase, curBase, curBase, curBase);
+						k += 5;
+					}
 				} else if (priceArr[k + 2] > priceArr[k + 3]) {
 					base.push(curBase, priceArr[k + 2], priceArr[k + 2], priceArr[k + 2]);
 					k += 4;

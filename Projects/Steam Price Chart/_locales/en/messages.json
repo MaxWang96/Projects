@@ -3,7 +3,7 @@
         "message": "Steam Price Chart"
     },
     "extensionDescription": {
-        "message": "Adds price history charts to the Steam site."
+        "message": "Adds item price history charts to the Steam store pages."
     },
     "extensionTitle": {
         "message": "Steam Price Chart automatically loads on supported Steam store pages"
@@ -24,7 +24,7 @@
         "message": "Free"
     },
     "priceDataErrorHeader": {
-        "message": "Price History Data Error"
+        "message": "Data Error"
     },
     "priceDataErrorText": {
         "message": "Sorry, there is something wrong with $NAME$'s price history data, Steam Price Chart can't draw the chart.",

@@ -9,6 +9,7 @@ class localeOptions {
 		this.siteButton = options.hasOwnProperty('siteButton') ? options.siteButton : true;
 		this.dateFormat = options.dateFormat || '%A, %b %e, %Y';
 		this.inputDateFormat = options.inputDateFormat || '%b %e, %Y';
+		this.inputEditDateFormat = options.inputEditDateFormat || '%m/%d/%Y';
 		this.inputBoxWidth = options.inputBoxWidth || 90;
 		this.buttonText = options.buttonText || ['1m', '3m', '6m', '1y', '3y', 'All'];
 		this.dateTimeLabelFormats = options.dateTimeLabelFormats || {};
@@ -41,6 +42,7 @@ const locale = {
 	EU1: new localeOptions({
 		dateFormat: '%e %b %Y',
 		inputDateFormat: '%e %b %Y',
+		inputEditDateFormat: '%d/%m/%Y'
 	})
 }
 

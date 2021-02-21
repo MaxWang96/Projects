@@ -3,7 +3,7 @@
 function dataRequest(resolve, reject) {
 	const noResponse = setTimeout(() => {
 		reject('timeout');
-	}, 6000);
+	}, 3000);
 
 	const info = findInfo(),
 		message = {
@@ -16,9 +16,20 @@ function dataRequest(resolve, reject) {
 
 	chrome.runtime.sendMessage(message, response => {
 		clearTimeout(noResponse);
-
-		if (response.error && response.error[0] == 0) {
+		if (response.itadError) {
 			cantConnectModal();
+		}
+
+		if (!response.hltbReady) {
+			chrome.runtime.onMessage.addListener(message => {
+				if (message.hltbError) {
+					updateButton('error');
+				} else if (message.hltbUrl) {
+					updateButton(message.hltbUrl);
+				} else if (message.hltbCantFind) {
+					updateButton('cantFind');
+				}
+			})
 		}
 
 		const points = response.data.points;

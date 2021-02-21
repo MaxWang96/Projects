@@ -1,13 +1,18 @@
 'use strict';
 
 function requests(message, sender, sendResponse) {
-	const cantConnect = setTimeout(() => {
-		response.error = [itadReady, hltbReady];
-		sendResponse(response);
-	}, 5000);
+	const itadCantConnect = setTimeout(() => {
+			response.itadError = true;
+			sendResponse(response);
+		}, 3000),
+		hltbCantConnect = setTimeout(() => {
+			chrome.tabs.sendMessage(sender.tab.id, {
+				hltbError: true
+			});
+		}, 5000);
 
 	let name = message.name,
-		[itadReady, hltbReady, receivedReg, receivedAlt] = [0, 0, 0, 0];
+		[itadSent, hltbReady, receivedReg, receivedAlt] = [0, 0, 0, 0];
 	const response = {};
 
 	itad();
@@ -39,7 +44,7 @@ function requests(message, sender, sendResponse) {
 		fetch(`https://isthereanydeal.com/game/${name}/history/${message.storeRegion}/?shop%5B%5D=steam&generate=Select+Stores`)
 			.then(response => response.text())
 			.then(text => {
-				itadReady = 1;
+				clearTimeout(itadCantConnect);
 				let dataArr = JSON.parse(text.match(/"Steam","data":(\[\[.+?\]\])/)[1]);
 				dataArr = duplicate(dataArr);
 				response.data = abnormal(dataArr);
@@ -47,26 +52,33 @@ function requests(message, sender, sendResponse) {
 				if (message.bundle) {
 					response.bundleTitle = text.match(/<h1 id='gameTitle'>.+?>(.+?)</)[1];
 				}
-				tryRespond();
+				response.hltbReady = hltbReady ? true : false;
+				itadSent = 1;
+				sendResponse(response);
 			})
 	}
 
 	function hltb() {
 		if (!message.lang.startsWith('zh')) {
-			const hltbCantConnect = setTimeout(() => {
-				if (itadReady) {
-					response.error = [itadReady, hltbReady];
-					sendResponse(response);
-				}
-			}, 2000);
 			if (message.lang.startsWith('en') || message.bundle) {
 				sendHltbRequest();
 			} else {
 				fetch(`https://steamspy.com/api.php?request=appdetails&appid=${message.id}`)
 					.then(response => response.text())
 					.then(text => {
-						name = text.match(/"name":"(.+?)"/)[1];
-						sendHltbRequest();
+						const findName = text.match(/"name":"(.+?)"/);
+						if (findName == null) {
+							hltbReady = 1;
+							if (itadSent) {
+								clearTimeout(hltbCantConnect);
+								chrome.tabs.sendMessage(sender.tab.id, {
+									hltbError: true
+								});
+							}
+						} else {
+							name = findName[1];
+							sendHltbRequest();
+						}
 					})
 			}
 		} else hltbReady = 1;
@@ -83,8 +95,9 @@ function requests(message, sender, sendResponse) {
 			if (receivedAlt) {
 				hltbReady = 1;
 			}
-			tryRespond();
+			tryMessage();
 		});
+
 		if (name.includes('Edition')) {
 			const colonIdx = name.lastIndexOf(':'),
 				dashIdx = name.lastIndexOf('-');
@@ -107,9 +120,11 @@ function requests(message, sender, sendResponse) {
 			const getId = data.match(/href="(.+?)"/);
 			if (getId != null) {
 				response.hltbUrl = 'http://howlongtobeat.com/' + getId[1];
-				if (receivedReg) hltbReady = 1;
 			}
-			tryRespond();
+			if (receivedReg) {
+				hltbReady = 1;
+			}
+			tryMessage();
 		})
 	}
 
@@ -125,14 +140,18 @@ function requests(message, sender, sendResponse) {
 			.then(text => callback(text));
 	}
 
-	function tryRespond() {
-		if (itadReady && hltbReady) {
-			clearTimeout(cantConnect);
-			sendResponse(response);
+	function tryMessage() {
+		if (itadSent && hltbReady) {
+			clearTimeout(hltbCantConnect);
+			const hltbMessage = response.hltbUrl ? {
+				hltbUrl: response.hltbUrl
+			} : {
+				hltbCantFind: true
+			};
+			chrome.tabs.sendMessage(sender.tab.id, hltbMessage);
 		}
 	}
 }
-
 
 function duplicate(arr) {
 	const len = arr.length,

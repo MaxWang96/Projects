@@ -1,6 +1,5 @@
 'use strict';
 
-// function for creating modals that display various user messages
 function modal(id, header, text, error = true) {
     document.body.insertAdjacentHTML('beforeend', `
             <div class="spc_modal_container">
@@ -19,7 +18,7 @@ function modal(id, header, text, error = true) {
                 </div>
             </div>`);
 
-    if (document.readyState != 'complete') setTimeout(showModal.bind(null, id), 1000);
+    if (document.readyState !== 'complete') setTimeout(showModal.bind(null, id), 1000);
     else showModal(id);
 
     if (error) throw 'error';

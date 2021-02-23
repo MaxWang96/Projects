@@ -6,11 +6,11 @@ function findInfo() {
 			sysLang: window.navigator.languages[0],
 			itemName: document.getElementsByClassName('apphub_AppName')[0].textContent,
 		},
-		isDlc = purchaseArea.getElementsByClassName('game_area_dlc_bubble').length != 0,
-		isMusic = purchaseArea.getElementsByClassName('game_area_soundtrack_bubble').length != 0;
+		isDlc = purchaseArea.getElementsByClassName('game_area_dlc_bubble').length !== 0,
+		isMusic = purchaseArea.getElementsByClassName('game_area_soundtrack_bubble').length !== 0;
 
 	if (purchaseArea.querySelector("div.game_area_purchase_game")
-		.getAttribute('class') == 'game_area_purchase_game ') {
+		.getAttribute('class') === 'game_area_purchase_game ') {
 		freeItemModal(info.itemName);
 	}
 
@@ -36,16 +36,16 @@ function findIdAndOption(purchaseArea, isMusic) {
 	const wrappers = purchaseArea.getElementsByClassName('game_area_purchase_game_wrapper');
 	while (true) {
 		const wrap = wrappers[i];
-		if (wrap.classList.length == 1) {
-			if (isMusic || wrap.getElementsByClassName('music').length == 0) {
+		if (wrap.classList.length === 1) {
+			if (isMusic || wrap.getElementsByClassName('music').length === 0) {
 				const p = wrap.querySelector('p');
-				if (p == undefined || p.querySelector('a') == undefined) {
+				if (p === null || p.querySelector('a') === null) {
 					firstPurchaseOption = wrap;
 					id = location.href.split('/')[4];
 					break;
 				}
 			}
-		} else if (wrap.classList.length == 3) {
+		} else if (wrap.classList.length === 3) {
 			firstPurchaseOption = wrap;
 			itemInfo.isBundle = true;
 			id = firstPurchaseOption.getAttribute('data-ds-bundleid');

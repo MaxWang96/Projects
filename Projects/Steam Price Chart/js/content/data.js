@@ -2,9 +2,9 @@
 
 function calculateDiscount(points, firstPurchaseOption) {
 	const itemName = document.getElementsByClassName('apphub_AppName')[0].textContent;
-	if ((points[0][1] == 0 &&
+	if ((points[0][1] === 0 &&
 			points[1][0] - points[0][0] > 31536000000) ||
-		points[points.length - 1][1] != points[points.length - 2][1]) {
+		points[points.length - 1][1] !== points[points.length - 2][1]) {
 		dataModal(itemName);
 	}
 
@@ -17,9 +17,10 @@ function calculateDiscount(points, firstPurchaseOption) {
 }
 
 function setup(points, priceArr, firstPurchaseOption) {
-	let i;
+	let i = 0,
+		len = points.length;
 	const itemName = document.getElementsByClassName('apphub_AppName')[0].textContent;
-	for (i = 0; i < points.length - 1; i++) {
+	for (; i < len - 1; i++) {
 		if (points[i + 1][0] - points[i][0] <= 14400000) {
 			dataModal(itemName);
 		}
@@ -29,12 +30,12 @@ function setup(points, priceArr, firstPurchaseOption) {
 
 	let price,
 		isDiscount = true;
-	const discount = firstPurchaseOption.getElementsByClassName('discount_block'),
-		len = priceArr.length;
+	const discount = firstPurchaseOption.getElementsByClassName('discount_block');
+	len = priceArr.length;
 	HTMLElement.prototype.findPrice = function() {
-		return this.textContent
+		return parseFloat(this.textContent
 			.match(/[\d.,]+/)[0]
-			.replace(',', '.');
+			.replace(',', '.'));
 	}
 
 	if (itemInfo.isBundle) {
@@ -48,7 +49,7 @@ function setup(points, priceArr, firstPurchaseOption) {
 				max = priceArr[len - j - 2];
 			}
 		}
-		if (max == price) {
+		if (max === price) {
 			priceArr[len - 1] = price / 2;
 			priceArr.push(price);
 			isDiscount = false;
@@ -56,7 +57,7 @@ function setup(points, priceArr, firstPurchaseOption) {
 			priceArr[len - 1] = max;
 		}
 	} else {
-		if (discount.length != 0) {
+		if (discount.length !== 0) {
 			price = discount[0]
 				.getElementsByClassName('discount_final_price')[0]
 				.findPrice();
@@ -73,7 +74,7 @@ function setup(points, priceArr, firstPurchaseOption) {
 		}
 	}
 
-	if (price != points[points.length - 1][1]) {
+	if (price !== points[points.length - 1][1]) {
 		dataModal(itemName);
 	}
 
@@ -105,21 +106,21 @@ function makeBase(priceArr, base, priceIncrease) {
 			priceIncrease.push(k + 1);
 			k++;
 		} else {
-			if (curBase == priceArr[k + 2]) {
+			if (curBase === priceArr[k + 2]) {
 				base.push(curBase, curBase);
 				k += 2;
 			} else if (curBase > priceArr[k + 2]) {
-				if (curBase == priceArr[k + 3]) {
+				if (curBase === priceArr[k + 3]) {
 					base.push(curBase, curBase, curBase);
 					k += 3;
-				} else if (curBase == priceArr[k + 4]) {
+				} else if (curBase === priceArr[k + 4]) {
 					base.push(curBase, curBase, curBase, curBase);
 					k += 4;
 				} else if (priceArr[k + 1] < priceArr[k + 2]) {
 					base.push(curBase, priceArr[k + 2]);
 					k += 2;
-				} else if (priceArr[k + 1] == priceArr[k + 3]) {
-					if (k >= priceArr.length - 5 || curBase != priceArr[k + 5]) {
+				} else if (priceArr[k + 1] === priceArr[k + 3]) {
+					if (k >= priceArr.length - 5 || curBase !== priceArr[k + 5]) {
 						base.push(priceArr[k + 1], priceArr[k + 1], priceArr[k + 1]);
 						k += 3;
 					} else {
@@ -146,7 +147,7 @@ function makeBase(priceArr, base, priceIncrease) {
 function checkAbnormalHigh(points, priceArr, base, priceIncrease) {
 	for (let i = priceIncrease.length - 1; i >= 0; i--) {
 		const tmp = priceIncrease[i];
-		if (tmp < priceArr.length - 1 && base[tmp] != base[tmp + 1]) {
+		if (tmp < priceArr.length - 1 && base[tmp] !== base[tmp + 1]) {
 			base[tmp - 1] = base[tmp + 1];
 			base.splice(tmp, 2);
 			priceArr.splice(tmp, 2);
@@ -176,9 +177,10 @@ function makeDiscountArr(len, priceArr, base) {
 }
 
 function addIntermediatePoints(points) {
-	const plotArr = [];
+	const plotArr = [],
+		len = points.length;
 	let i = 0;
-	for (; i < points.length - 2; i++) {
+	for (; i < len - 2; i++) {
 		plotArr.push(points[i]);
 		plotArr.push([points[i + 1][0] - 3600000, points[i][1]]);
 	}

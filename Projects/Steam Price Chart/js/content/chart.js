@@ -7,7 +7,7 @@ function makeChart() {
 	Promise.all([getData, getSetting])
 		.then(drawChart)
 		.catch(error => {
-			if (error == 'timeout') {
+			if (error === 'timeout') {
 				timeoutModal();
 			}
 		});
@@ -21,7 +21,7 @@ function drawChart(results) {
 		setting = {
 			chart: results[1],
 			price: localePrice[info.region],
-			lang: (sysLang == 'zh-CN' || sysLang == 'zh-TW') ? locale['CN'] : (sysLang == 'en' || sysLang == 'en-US') ? locale['US'] : locale['EU1']
+			lang: (sysLang === 'zh-CN' || sysLang === 'zh-TW') ? locale['CN'] : (sysLang === 'en' || sysLang === 'en-US') ? locale['US'] : locale['EU1']
 		},
 		globalSetting = {
 			lang: setting.lang.lang
@@ -111,9 +111,9 @@ function drawChart(results) {
 					price = setting.price.currency[0] + point.y.toFixed(2) + setting.price.currency[1];
 				price = price.replace('.', setting.price.valueSymbol);
 				htmlStr += `<br/>${chrome.i18n.getMessage('linePrefix')}<b>${price}</b><br/>`;
-				if (chartData.data.discount[point.index] == 0) {
+				if (chartData.data.discount[point.index] === 0) {
 					htmlStr += chrome.i18n.getMessage('noDiscount');
-				} else if (chartData.data.discount[point.index] != 100) {
+				} else if (chartData.data.discount[point.index] !== 100) {
 					htmlStr += `${chrome.i18n.getMessage('discountPrefix')}<b>${chartData.data.discount[point.index]}%</b>`;
 				} else {
 					htmlStr += chrome.i18n.getMessage('freeItem');
@@ -228,7 +228,7 @@ function drawChart(results) {
 	insertChart(setting.chart.chart.height);
 
 	const chart = Highcharts.stockChart('chart_container', chartOptions);
-	if (setting.chart.chart.height == '350px') {
+	if (setting.chart.chart.height === '350px') {
 		chart.update({
 			rangeSelector: {
 				enabled: false
@@ -243,10 +243,11 @@ function drawChart(results) {
 }
 
 function insertChart(height) {
-	const elements = document.getElementsByClassName('page_content');
+	const elements = document.getElementsByClassName('page_content'),
+		len = elements.length;
 	let loc;
-	for (let i = 0; i < elements.length; i++) {
-		if (elements[i].className == 'page_content') {
+	for (let i = 0; i < len; i++) {
+		if (elements[i].className === 'page_content') {
 			loc = elements[i];
 			break;
 		}
@@ -323,8 +324,8 @@ function setAlign(xAlign) {
 
 function addItadButton(chart, url) {
 	const itadImgUrl = chrome.runtime.getURL('../images/isthereanydeal_icon.svg'),
-		isDlc = document.getElementsByClassName('game_area_dlc_bubble').length != 0,
-		isMusic = document.getElementsByClassName('game_area_soundtrack_bubble').length != 0,
+		isDlc = document.getElementsByClassName('game_area_dlc_bubble').length !== 0,
+		isMusic = document.getElementsByClassName('game_area_soundtrack_bubble').length !== 0,
 		itemType = isMusic ? 'soundtrack' : isDlc ? 'DLC' : 'game',
 		itadLabel = addLabel(chart, `View the ${itemType} on IsThereAnyDeal`).align(setAlign(isMusic ? -230 : isDlc ? -205 : -215));
 
@@ -356,43 +357,20 @@ function addHltbButton(chart, data) {
 function updateButton(message) {
 	if (message === 'error') {
 		redrawButton("Can't connect to HowLongToBeat", -173);
+	} else if (message === 'cantFind') {
+		redrawButton("Can't find the game on HowLongToBeat", -190);
+	} else {
+		redrawButton('View the game on HowLongToBeat', -183, 1);
+		addImgUrl($('#chart_container').highcharts().hltbImg, message);
 	}
 }
 
-function redrawButton(text, align, opacity=0.2) {
+function redrawButton(text, align, opacity = 0.2) {
 	const chart = $('#chart_container').highcharts();
 	chart.hltbLabel.destroy();
 	const hltbLabel = addLabel(chart, text).align(setAlign(align));
 	addEvents(chart.hltbImg, hltbLabel).css({
-		opacity: 0.2
-	});
-}
-
-function hltbError() {
-	const chart = $('#chart_container').highcharts();
-	chart.hltbLabel.destroy();
-	const hltbLabel = addLabel(chart, "Can't connect to HowLongToBeat").align(setAlign(-173));
-	addEvents(chart.hltbImg, hltbLabel).css({
-		opacity: 0.2
-	});
-}
-
-function hltbUrl(url) {
-	const chart = $('#chart_container').highcharts();
-	chart.hltbLabel.destroy();
-	const hltbLabel = addLabel(chart, 'View the game on HowLongToBeat').align(setAlign(-183));
-	addImgUrl(chart.hltbImg, url);
-	addEvents(chart.hltbImg, hltbLabel).css({
-		opacity: 1
-	});
-}
-
-function hltbCantFind() {
-	const chart = $('#chart_container').highcharts();
-	chart.hltbLabel.destroy();
-	const hltbLabel = addLabel(chart, "Can't find the game on HowLongToBeat").align(setAlign(-190));
-	addEvents(chart.hltbImg, hltbLabel).css({
-		opacity: 0.2
+		opacity: opacity
 	});
 }
 

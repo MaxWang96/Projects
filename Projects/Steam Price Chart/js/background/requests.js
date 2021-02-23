@@ -67,7 +67,7 @@ function requests(message, sender, sendResponse) {
 					.then(response => response.text())
 					.then(text => {
 						const findName = text.match(/"name":"(.+?)"/);
-						if (findName == null) {
+						if (findName === null) {
 							hltbReady = 1;
 							if (itadSent) {
 								clearTimeout(hltbCantConnect);
@@ -88,7 +88,7 @@ function requests(message, sender, sendResponse) {
 		hltbRequest(name, data => {
 			receivedReg = 1;
 			const getId = data.match(/href="(.+?)"/);
-			if (getId != null) {
+			if (getId !== null) {
 				response.hltbUrl = 'http://howlongtobeat.com/' + getId[1];
 				hltbReady = 1;
 			}
@@ -118,7 +118,7 @@ function requests(message, sender, sendResponse) {
 		hltbRequest(name.slice(0, idx), data => {
 			receivedAlt = 1;
 			const getId = data.match(/href="(.+?)"/);
-			if (getId != null) {
+			if (getId !== null) {
 				response.hltbUrl = 'http://howlongtobeat.com/' + getId[1];
 			}
 			if (receivedReg) {
@@ -158,12 +158,12 @@ function duplicate(arr) {
 		tmpArr = [];
 	let i = 0;
 	while (i < len - 2) {
-		if (arr[i][1] == null) {
+		if (arr[i][1] === null) {
 			i++;
 			continue;
 		}
 		tmpArr.push(arr[i]);
-		if (arr[i][1] == arr[i + 1][1]) {
+		if (arr[i][1] === arr[i + 1][1]) {
 			i++;
 		}
 		i++;
@@ -180,7 +180,7 @@ function abnormal(arr) {
 		lastPoint = arr[len - 1].slice(),
 		twoHours = 7200000,
 		fourtySixHours = 165600000;
-	if (arr[len - 1][1] != arr[len - 2][1] &&
+	if (arr[len - 1][1] !== arr[len - 2][1] &&
 		arr[len - 1][0] - arr[len - 2][0] <= twoHours) {
 		arr.splice(len - 2, 1);
 		len--;
@@ -200,7 +200,7 @@ function abnormal(arr) {
 				toCompare = arr[i + 2][1];
 				i += 3;
 			} else {
-				if (arr[i - 1][1] != arr[i + 1][1]) {
+				if (arr[i - 1][1] !== arr[i + 1][1]) {
 					tmpArr.push(arr[i + 1]);
 					toCompare = arr[i + 1][1];
 				}
@@ -218,7 +218,7 @@ function abnormal(arr) {
 		}
 	}
 	tmpArr.push(arr[i]);
-	if (i == len - 2) tmpArr.push(lastPoint);
+	if (i === len - 2) tmpArr.push(lastPoint);
 	return {
 		points: tmpArr,
 		range: [min, max],

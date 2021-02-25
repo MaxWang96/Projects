@@ -1,7 +1,19 @@
 'use strict';
 
+function showModal(id) {
+  $(`#${id}`)
+    .css({
+      'font-size': '13px',
+      'line-height': '19px',
+      color: '#25282a',
+    })
+    .modal({
+      backdrop: false,
+    });
+}
+
 function modal(id, header, text, error = true) {
-    document.body.insertAdjacentHTML('beforeend', `
+  document.body.insertAdjacentHTML('beforeend', `
             <div class="spc_modal_container">
                 <div class="modal right fade" id="${id}" role="dialog">
                     <div class="modal-dialog" style='width:230px;'>
@@ -18,63 +30,51 @@ function modal(id, header, text, error = true) {
                 </div>
             </div>`);
 
-    if (document.readyState !== 'complete') setTimeout(showModal.bind(null, id), 1000);
-    else showModal(id);
+  if (document.readyState !== 'complete') setTimeout(showModal.bind(null, id), 1000);
+  else showModal(id);
 
-    if (error) throw 'error';
-}
-
-function showModal(id) {
-    $(`#${id}`)
-        .css({
-            'font-size': '13px',
-            'color': '#25282a',
-            'line-height': '19px',
-        })
-        .modal({
-            backdrop: false
-        });
+  if (error) throw new Error('chart error');
 }
 
 function regionModal(region) {
-    modal('not_supported_modal',
-        chrome.i18n.getMessage('regionErrorHeader'),
-        chrome.i18n.getMessage('regionErrorText', region));
+  modal('not_supported_modal',
+    chrome.i18n.getMessage('regionErrorHeader'),
+    chrome.i18n.getMessage('regionErrorText', region));
 }
 
 function freeItemModal(name) {
-    modal('free_item_modal',
-        chrome.i18n.getMessage('freeItemHeader'),
-        chrome.i18n.getMessage('freeItemText', name));
+  modal('free_item_modal',
+    chrome.i18n.getMessage('freeItemHeader'),
+    chrome.i18n.getMessage('freeItemText', name));
 }
 
 function dataModal(name) {
-    modal('price_data_error_modal',
-        chrome.i18n.getMessage('priceDataErrorHeader'),
-        chrome.i18n.getMessage('priceDataErrorText', name));
+  modal('price_data_error_modal',
+    chrome.i18n.getMessage('priceDataErrorHeader'),
+    chrome.i18n.getMessage('priceDataErrorText', name));
 }
 
 function timeoutModal() {
-    modal('no_response_from_background_modal',
-        chrome.i18n.getMessage('timeoutErrorHeader'),
-        chrome.i18n.getMessage('timeoutErrorText'));
+  modal('no_response_from_background_modal',
+    chrome.i18n.getMessage('timeoutErrorHeader'),
+    chrome.i18n.getMessage('timeoutErrorText'));
 }
 
 function cantConnectModal() {
-    modal("cant_connect_to_itad_modal",
-        chrome.i18n.getMessage('connectErrorHeader'),
-        chrome.i18n.getMessage('connectErrorText'));
+  modal('cant_connect_to_itad_modal',
+    chrome.i18n.getMessage('connectErrorHeader'),
+    chrome.i18n.getMessage('connectErrorText'));
 }
 
 function bundleModal(name) {
-    modal('display_bundle_modal',
-        chrome.i18n.getMessage('bundleHeader'),
-        chrome.i18n.getMessage('bundleText', name),
-        false);
+  modal('display_bundle_modal',
+    chrome.i18n.getMessage('bundleHeader'),
+    chrome.i18n.getMessage('bundleText', name),
+    false);
 }
 
 function unknownDiscountModal() {
-    modal('unknown_discount_type_modal',
-        chrome.i18n.getMessage('discountErrorHeader'),
-        chrome.i18n.getMessage('discountErrorText'));
+  modal('unknown_discount_type_modal',
+    chrome.i18n.getMessage('discountErrorHeader'),
+    chrome.i18n.getMessage('discountErrorText'));
 }

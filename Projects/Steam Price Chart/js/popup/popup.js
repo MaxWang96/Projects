@@ -13,6 +13,8 @@ chrome.storage.sync.get('simplified', (value) => {
   if (swit.checked) init.options.speed = '0.4s';
 });
 
+const lang = window.navigator.languages[0];
+document.body.style['min-width'] = lang.startsWith('zh') ? '120px' : '150px';
 document.getElementsByTagName('label')[0].innerText = chrome.i18n.getMessage('simplify');
 document.getElementById('feedback-btn').innerText = chrome.i18n.getMessage('feedback');
 document.getElementById('feedback-btn').onclick = () => {

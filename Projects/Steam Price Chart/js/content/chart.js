@@ -126,9 +126,9 @@ function drawChart(results) {
     sysLang,
   } = info;
   let lang;
-  if (sysLang === 'zh-CN' || sysLang === 'zh-TW') {
+  if (sysLang.startsWith('zh')) {
     lang = locale.CN;
-  } else if (sysLang === 'en' || sysLang === 'en-US') {
+  } else if (sysLang.startsWith('en')) {
     lang = locale.US;
   } else {
     lang = locale.EU1;
@@ -141,6 +141,7 @@ function drawChart(results) {
   const globalSetting = {
     lang: setting.lang.lang,
   };
+  const text = setting.lang.buttonText;
 
   const chartOptions = {
     chart: {
@@ -167,11 +168,6 @@ function drawChart(results) {
       data: chartData.data.points,
       color: '#67c1f5',
       step: true,
-      tooltip: {
-        valueDecimals: setting.price.valueDecimals,
-        valuePrefix: setting.price.currency[0],
-        valueSuffix: setting.price.currency[1],
-      },
     }],
 
     plotOptions: {
@@ -305,26 +301,26 @@ function drawChart(results) {
       buttons: [{
         type: 'month',
         count: 1,
-        text: setting.lang.buttonText[0],
+        text: text[0],
       }, {
         type: 'month',
         count: 3,
-        text: setting.lang.buttonText[1],
+        text: text[1],
       }, {
         type: 'month',
         count: 6,
-        text: setting.lang.buttonText[2],
+        text: text[2],
       }, {
         type: 'year',
         count: 1,
-        text: setting.lang.buttonText[3],
+        text: text[3],
       }, {
         type: 'year',
         count: 3,
-        text: setting.lang.buttonText[4],
+        text: text[4],
       }, {
         type: 'all',
-        text: setting.lang.buttonText[5],
+        text: text[5],
       }],
     },
 

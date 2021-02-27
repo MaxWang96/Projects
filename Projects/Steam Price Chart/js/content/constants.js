@@ -58,18 +58,22 @@ const locale = {
 const localePrice = {
   US: {
     currency: ['$', ''],
-    valueDecimals: 2,
-    valueSymbol: '.',
+    formatPrice(value) {
+      return `$${value.toFixed(2)}`;
+    },
   },
   CN: {
     currency: ['¥', ''],
-    valueDecimals: 0,
-    valueSymbol: '.',
+    formatPrice(value) {
+      return Number.isSafeInteger(value) ? `¥${value}` : `¥${value.toFixed(2)}`;
+    },
   },
   EU1: {
     currency: ['', '€'],
-    valueDecimals: 2,
-    valueSymbol: ',',
+    formatPrice(value) {
+      const price = `${value.toFixed(2)}€`;
+      return price.replace('.', ',');
+    },
   },
 };
 

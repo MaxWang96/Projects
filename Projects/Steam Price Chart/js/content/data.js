@@ -91,8 +91,14 @@ function makeBase(priceArr, base, priceIncrease) {
         base.push(curBase, curBase, curBase, curBase);
         k += 4;
       } else if (priceArr[k + 1] < priceArr[k + 2]) {
-        base.push(curBase, priceArr[k + 2]);
-        k += 2;
+        if (curBase < priceArr[k + 3]) {
+          base.push(curBase, curBase, priceArr[k + 3]);
+          priceIncrease.push(k + 3);
+          k += 3;
+        } else {
+          base.push(curBase, priceArr[k + 2]);
+          k += 2;
+        }
       } else if (priceArr[k + 1] === priceArr[k + 3]) {
         if (k >= priceArr.length - 5 || curBase !== priceArr[k + 5]) {
           base.push(priceArr[k + 1], priceArr[k + 1], priceArr[k + 1]);
@@ -112,6 +118,7 @@ function makeBase(priceArr, base, priceIncrease) {
       }
     } else {
       base.push(curBase, priceArr[k + 2]);
+      priceIncrease.push(k + 2);
       k += 2;
     }
   }

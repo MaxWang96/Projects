@@ -8,7 +8,7 @@ function findRegion() {
 }
 
 function findIdAndOption(purchaseArea, isMusic) {
-  let id;
+  let id = window.location.href.split('/')[4];
   let firstPurchaseOption;
   let i = 0;
   const wrappers = purchaseArea.getElementsByClassName('game_area_purchase_game_wrapper');
@@ -17,9 +17,10 @@ function findIdAndOption(purchaseArea, isMusic) {
     if (wrap.classList.length === 1) {
       if (isMusic || wrap.getElementsByClassName('music').length === 0) {
         const p = wrap.querySelector('p');
-        if (p === null || p.querySelector('a') === null) {
+        if (p === null
+          || p.querySelector('a') === null
+          || id === p.querySelector('a').href.split('/')[4]) {
           firstPurchaseOption = wrap;
-          id = window.location.href.split('/')[4];
           break;
         }
       }

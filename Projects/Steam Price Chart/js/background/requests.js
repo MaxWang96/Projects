@@ -27,18 +27,18 @@ function abnormal(dataArr) {
   let [min, max] = [arr[0][1], arr[0][1]];
   const tmpArr = [arr[0]];
   const lastPoint = arr[len - 1].slice();
-  const twoHours = 7200000;
+  const fourHours = 14400000;
   const fourtySixHours = 165600000;
   if (arr[len - 1][1] !== arr[len - 2][1]
-    && arr[len - 1][0] - arr[len - 2][0] <= twoHours) {
+    && arr[len - 1][0] - arr[len - 2][0] <= fourHours) {
     arr.splice(len - 2, 1);
     len -= 1;
   }
   arr[len - 1][0] += fourtySixHours;
   arr.push([arr[len - 1][0] + 172800000, arr[len - 1][1]]);
   while (i < len - 2) {
-    if (arr[i + 1][0] - arr[i][0] <= twoHours
-      && arr[i + 3][0] - arr[i + 2][0] <= twoHours) {
+    if (arr[i + 1][0] - arr[i][0] <= fourHours
+      && arr[i + 3][0] - arr[i + 2][0] <= fourHours) {
       tmpArr.push(arr[i], arr[i + 3]);
       toCompare = arr[i][1];
       i += 4;
@@ -141,7 +141,7 @@ function requests(message, sender, sendResponse) {
 
   function hltbRequest(gameName, callback) {
     const nameSend = gameName.replace('’', "'")
-      .replace(/[^\w\s:'-]/gi, '');
+      .replace(/[^\w\s:',-]/gi, '');
     fetch('https://howlongtobeat.com/search_results.php', {
       method: 'POST',
       headers: {

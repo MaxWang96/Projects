@@ -96,14 +96,6 @@
             }
         }
     },
-    "discountErrorHeader": {
-        "message": "未知折扣",
-        "description": "未知折扣弹窗的标题"
-    },
-    "discountErrorText": {
-        "message": "对不起，计算折扣时出了错误。请报告错误来帮助改进Steam价格历史图。",
-        "description": "未知折扣弹窗的主体文字"
-    },
     "simplify": {
         "message": "简化图表",
         "description": "简化图表选项的文字（点击扩展图标时显示）"

@@ -64,62 +64,64 @@ function setup(points, priceArr, firstPurchaseOption) {
   return isDiscount;
 }
 
-function makeBase(priceArr, base, priceIncrease) {
-  let k;
-  if (priceArr[0] >= priceArr[1]) {
-    base.push(priceArr[0]);
-    k = 0;
+function makeBase(priceArr, base, priceIncrease, begin = false, end = false) {
+  let i;
+  let last = priceArr.length - 2;
+  if (!begin) {
+    if (priceArr[0] >= priceArr[1]) {
+      base.push(priceArr[0]);
+      i = 0;
+    } else {
+      base.push(priceArr[1], priceArr[1]);
+      priceIncrease.push(1);
+      i = 1;
+    }
   } else {
-    base.push(priceArr[1], priceArr[1]);
-    priceIncrease.push(1);
-    k = 1;
+    i = begin;
+    last = Math.min(end, last);
   }
-  while (k < priceArr.length - 2) {
-    const curBase = priceArr[k];
-    if (curBase < priceArr[k + 1]) {
-      base.push(priceArr[k + 1]);
-      priceIncrease.push(k + 1);
-      k += 1;
-    } else if (curBase === priceArr[k + 2]) {
+  while (i < last) {
+    const curBase = priceArr[i];
+    if (curBase < priceArr[i + 1]) {
+      base.push(priceArr[i + 1]);
+      priceIncrease.push(i + 1);
+      i += 1;
+    } else if (curBase === priceArr[i + 2]) {
       base.push(curBase, curBase);
-      k += 2;
-    } else if (curBase > priceArr[k + 2]) {
-      if (curBase === priceArr[k + 3]) {
+      i += 2;
+    } else if (curBase > priceArr[i + 2]) {
+      if (curBase === priceArr[i + 3]) {
         base.push(curBase, curBase, curBase);
-        k += 3;
-      } else if (curBase === priceArr[k + 4]) {
+        i += 3;
+      } else if (curBase === priceArr[i + 4]) {
         base.push(curBase, curBase, curBase, curBase);
-        k += 4;
-      } else if (priceArr[k + 1] < priceArr[k + 2]) {
-        if (curBase < priceArr[k + 3]) {
-          base.push(curBase, curBase, priceArr[k + 3]);
-          priceIncrease.push(k + 3);
-          k += 3;
-        } else {
-          base.push(curBase, priceArr[k + 2]);
-          k += 2;
-        }
-      } else if (priceArr[k + 1] === priceArr[k + 3]) {
-        if (k >= priceArr.length - 5 || curBase !== priceArr[k + 5]) {
-          base.push(priceArr[k + 1], priceArr[k + 1], priceArr[k + 1]);
-          k += 3;
+        i += 4;
+      } else if (curBase < priceArr[i + 3]) {
+        base.push(curBase, curBase, priceArr[i + 3]);
+        priceIncrease.push(i + 3);
+        i += 3;
+      } else if (priceArr[i + 1] < priceArr[i + 2]) {
+        base.push(curBase, priceArr[i + 2]);
+        i += 2;
+      } else if (priceArr[i + 1] === priceArr[i + 3]) {
+        if (i >= priceArr.length - 5 || curBase !== priceArr[i + 5]) {
+          base.push(priceArr[i + 1], priceArr[i + 1], priceArr[i + 1]);
+          i += 3;
         } else {
           base.push(curBase, curBase, curBase, curBase, curBase);
-          k += 5;
+          i += 5;
         }
-      } else if (priceArr[k + 2] > priceArr[k + 3]) {
-        base.push(curBase, priceArr[k + 2], priceArr[k + 2], priceArr[k + 2]);
-        k += 4;
-      } else if (priceArr[k + 2] < priceArr[k + 3]) {
-        base.push(priceArr[k + 1]);
-        k += 1;
+      } else if (priceArr[i + 2] > priceArr[i + 3]) {
+        base.push(curBase, priceArr[i + 2], priceArr[i + 2], priceArr[i + 2]);
+        i += 4;
       } else {
-        unknownDiscountModal();
+        base.push(priceArr[i + 1]);
+        i += 1;
       }
     } else {
-      base.push(curBase, priceArr[k + 2]);
-      priceIncrease.push(k + 2);
-      k += 2;
+      base.push(curBase, priceArr[i + 2]);
+      priceIncrease.push(i + 2);
+      i += 2;
     }
   }
 }
@@ -128,11 +130,15 @@ function checkAbnormalHigh(points, priceArr, baseArr, priceIncrease) {
   const base = baseArr;
   for (let i = priceIncrease.length - 1; i >= 0; i -= 1) {
     const tmp = priceIncrease[i];
-    if (tmp < priceArr.length - 1 && base[tmp] !== base[tmp + 1]) {
-      base[tmp - 1] = base[tmp + 1];
+    if (base[tmp] !== base[tmp + 1]) {
       base.splice(tmp, 2);
       priceArr.splice(tmp, 2);
       points.splice(tmp, 2);
+    } else if (base[tmp] !== base[tmp + 2]) {
+      base.splice(tmp, 1);
+      priceArr.splice(tmp, 1);
+      points.splice(tmp, 1);
+      makeBase(priceArr, base, priceIncrease, tmp - 1, tmp + 4);
     }
   }
 }

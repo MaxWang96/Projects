@@ -79,12 +79,6 @@
             }
         }
     },
-    "discountErrorHeader": {
-        "message": "Unknown Discount Error"
-    },
-    "discountErrorText": {
-        "message": "Sorry, something went wrong when calculating the discount. Please consider reporting the issue to help improve the extension."
-    },
     "simplify": {
         "message": "Simplify chart"
     },

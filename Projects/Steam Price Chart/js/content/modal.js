@@ -72,9 +72,3 @@ function bundleModal(name) {
     chrome.i18n.getMessage('bundleText', name),
     false);
 }
-
-function unknownDiscountModal() {
-  modal('unknown_discount_type_modal',
-    chrome.i18n.getMessage('discountErrorHeader'),
-    chrome.i18n.getMessage('discountErrorText'));
-}

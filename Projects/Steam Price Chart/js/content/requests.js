@@ -3,7 +3,7 @@
 function dataRequest(resolve, reject) {
   const noResponse = setTimeout(() => {
     reject('timeout');
-  }, 3000);
+  }, 3500);
 
   const info = findInfo();
   const message = {
@@ -12,6 +12,7 @@ function dataRequest(resolve, reject) {
     lang: info.sysLang,
     name: info.gameName,
     bundle: itemInfo.isBundle,
+    notGame: info.notGame,
   };
 
   chrome.runtime.sendMessage(message, (response) => {

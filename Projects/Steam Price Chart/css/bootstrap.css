@@ -601,7 +601,6 @@ button.close {
 }
 .modal-content {
     position: relative;
-    /*background-color: #377096;*/
     background-color: #d3dee6;
     -webkit-background-clip: padding-box;
     background-clip: padding-box;
@@ -631,8 +630,6 @@ button.close {
 }
 .modal-header {
     padding: 13px;
-    /*border-bottom: 0 none;*/
-    /*color: #ffffff;*/
     font-size: 14px;
     color: #4f94bc;
     padding-bottom: 0px;

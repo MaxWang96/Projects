@@ -64,62 +64,78 @@ function setup(points, priceArr, firstPurchaseOption) {
   return isDiscount;
 }
 
-function makeBase(priceArr, base, priceIncrease, begin = false, end = false) {
+function makeBase(priceArr, baseArr, priceIncrease, partial = false) {
   let i;
   let last = priceArr.length - 2;
-  if (!begin) {
+  const base = baseArr;
+
+  function addBase(values) {
+    const len = values.length;
+    for (let j = 0; j < len; j += 1) {
+      base[i + j + 1] = values[j];
+    }
+  }
+
+  if (!partial) {
     if (priceArr[0] >= priceArr[1]) {
-      base.push(priceArr[0]);
-      i = 0;
+      if (priceArr[0] >= priceArr[2]) {
+        [base[0]] = [priceArr[0]];
+        i = 0;
+      } else {
+        [base[0], base[1], base[2]] = [priceArr[2], priceArr[2], priceArr[2]];
+        priceIncrease.push(2);
+        i = 2;
+      }
     } else {
-      base.push(priceArr[1], priceArr[1]);
+      [base[0], base[1]] = [priceArr[1], priceArr[1]];
       priceIncrease.push(1);
       i = 1;
     }
   } else {
-    i = begin;
-    last = Math.min(end, last);
+    i = partial - 1;
+    last = Math.min(partial + 4, last);
   }
+
   while (i < last) {
     const curBase = priceArr[i];
     if (curBase < priceArr[i + 1]) {
-      base.push(priceArr[i + 1]);
+      addBase([priceArr[i + 1]]);
       priceIncrease.push(i + 1);
       i += 1;
     } else if (curBase === priceArr[i + 2]) {
-      base.push(curBase, curBase);
+      addBase([curBase, curBase]);
       i += 2;
     } else if (curBase > priceArr[i + 2]) {
       if (curBase === priceArr[i + 3]) {
-        base.push(curBase, curBase, curBase);
+        addBase([curBase, curBase, curBase]);
         i += 3;
       } else if (curBase === priceArr[i + 4]) {
-        base.push(curBase, curBase, curBase, curBase);
+        addBase([curBase, curBase, curBase, curBase]);
         i += 4;
       } else if (curBase < priceArr[i + 3]) {
-        base.push(curBase, curBase, priceArr[i + 3]);
+        addBase([curBase, curBase, priceArr[i + 3]]);
         priceIncrease.push(i + 3);
         i += 3;
       } else if (priceArr[i + 1] < priceArr[i + 2]) {
-        base.push(curBase, priceArr[i + 2]);
+        addBase([curBase, priceArr[i + 2]]);
         i += 2;
       } else if (priceArr[i + 1] === priceArr[i + 3]) {
         if (i >= priceArr.length - 5 || curBase !== priceArr[i + 5]) {
-          base.push(priceArr[i + 1], priceArr[i + 1], priceArr[i + 1]);
+          addBase([priceArr[i + 1], priceArr[i + 1], priceArr[i + 1]]);
           i += 3;
         } else {
-          base.push(curBase, curBase, curBase, curBase, curBase);
+          addBase([curBase, curBase, curBase, curBase, curBase]);
           i += 5;
         }
       } else if (priceArr[i + 2] > priceArr[i + 3]) {
-        base.push(curBase, priceArr[i + 2], priceArr[i + 2], priceArr[i + 2]);
+        addBase([curBase, priceArr[i + 2], priceArr[i + 2], priceArr[i + 2]]);
         i += 4;
       } else {
-        base.push(priceArr[i + 1]);
+        addBase([priceArr[i + 1]]);
         i += 1;
       }
     } else {
-      base.push(curBase, priceArr[i + 2]);
+      addBase([curBase, priceArr[i + 2]]);
       priceIncrease.push(i + 2);
       i += 2;
     }
@@ -128,23 +144,30 @@ function makeBase(priceArr, base, priceIncrease, begin = false, end = false) {
 
 function checkAbnormalHigh(points, priceArr, baseArr, priceIncrease) {
   const base = baseArr;
+  let tmp;
+
+  function removeAbnormal(n) {
+    base.splice(tmp, n);
+    priceArr.splice(tmp, n);
+    points.splice(tmp, n);
+  }
+
   for (let i = priceIncrease.length - 1; i >= 0; i -= 1) {
-    const tmp = priceIncrease[i];
+    tmp = priceIncrease[i];
     if (base[tmp] !== base[tmp + 1]) {
-      base.splice(tmp, 2);
-      priceArr.splice(tmp, 2);
-      points.splice(tmp, 2);
+      removeAbnormal(2);
     } else if (base[tmp] !== base[tmp + 2]) {
-      base.splice(tmp, 1);
-      priceArr.splice(tmp, 1);
-      points.splice(tmp, 1);
-      makeBase(priceArr, base, priceIncrease, tmp - 1, tmp + 4);
+      removeAbnormal(1);
+      makeBase(priceArr, base, priceIncrease, tmp);
+    } else if (tmp < base.length - 4 && base[tmp] !== base[tmp + 4]) {
+      removeAbnormal(3);
+      makeBase(priceArr, base, priceIncrease, tmp);
     }
   }
 }
 
 function calculateBase(points, priceArr) {
-  const base = [];
+  const base = Array(priceArr.length);
   const priceIncrease = [];
   makeBase(priceArr, base, priceIncrease);
   checkAbnormalHigh(points, priceArr, base, priceIncrease);

@@ -37,13 +37,29 @@ function abnormal(dataArr) {
   arr[len - 1][0] += fourtySixHours;
   arr.push([arr[len - 1][0] + 172800000, arr[len - 1][1]]);
   while (i < len - 2) {
-    if (arr[i + 1][0] - arr[i][0] <= fourHours
-      && arr[i + 3][0] - arr[i + 2][0] <= fourHours) {
-      tmpArr.push(arr[i], arr[i + 3]);
-      toCompare = arr[i][1];
-      i += 4;
+    if (arr[i + 1][0] - arr[i][0] <= fourHours) {
+      if (arr[i][1] > arr[i + 1][1]
+        && arr[i - 1][1] === arr[i + 1][1]) {
+        i += 2;
+      } else if (arr[i + 3][0] - arr[i + 2][0] <= fourHours) {
+        tmpArr.push(arr[i], arr[i + 3]);
+        toCompare = arr[i][1];
+        i += 4;
+      } else if (arr[i - 1][1] < arr[i + 1][1]) {
+        i += 1;
+      } else {
+        i += 2;
+      }
     } else if (arr[i + 1][0] - arr[i][0] <= fourtySixHours) {
-      if (arr[i + 2][0] - arr[i + 1][0] <= fourtySixHours
+      if (arr[i + 2][0] - arr[i + 1][0] <= fourHours) {
+        if (arr[i - 1][1] === arr[i + 1][1]) {
+          i += 2;
+        } else {
+          tmpArr.push(arr[i]);
+          toCompare = arr[i][1];
+          i += 1;
+        }
+      } else if (arr[i + 2][0] - arr[i + 1][0] <= fourtySixHours
         && arr[i + 2][1] < arr[i + 1][1]) {
         tmpArr.push(arr[i + 2]);
         toCompare = arr[i + 2][1];
@@ -139,8 +155,8 @@ function requests(message, sender, sendResponse) {
     }
   }
 
-  function hltbRequest(gameName, callback) {
-    const nameSend = gameName.replace('’', "'")
+  function hltbRequest(callback) {
+    const nameSend = name.replace('’', "'")
       .replace(/[^\w\s:',-]/gi, '');
     fetch('https://howlongtobeat.com/search_results.php', {
       method: 'POST',
@@ -154,7 +170,8 @@ function requests(message, sender, sendResponse) {
   }
 
   function altRequest(idx) {
-    hltbRequest(name.slice(0, idx), (data) => {
+    name = name.slice(0, idx);
+    hltbRequest((data) => {
       receivedAlt = 1;
       const getId = data.match(/href="(.+?)"/);
       if (getId !== null) {
@@ -168,7 +185,7 @@ function requests(message, sender, sendResponse) {
   }
 
   function sendHltbRequest() {
-    hltbRequest(name, (data) => {
+    hltbRequest((data) => {
       receivedReg = 1;
       const getId = data.match(/href="(.+?)"/);
       if (getId !== null) {
@@ -199,7 +216,7 @@ function requests(message, sender, sendResponse) {
 
   function hltb() {
     if (!message.lang.startsWith('zh')) {
-      if (message.lang.startsWith('en') || message.bundle) {
+      if (message.lang.startsWith('en') || message.bundle || message.notGame) {
         sendHltbRequest();
       } else {
         fetch(`https://steamspy.com/api.php?request=appdetails&appid=${message.id}`)

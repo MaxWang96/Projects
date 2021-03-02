@@ -38,8 +38,8 @@ label {
 }
 
 @media all and (max-width:30em) {
-#feedback-btn {
-    display: block;
-    margin: 0.4em auto;
-}
+    #feedback-btn {
+        display: block;
+        margin: 0.4em auto;
+    }
 }

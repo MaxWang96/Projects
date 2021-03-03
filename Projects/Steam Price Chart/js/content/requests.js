@@ -18,7 +18,7 @@ function dataRequest(resolve, reject) {
   chrome.runtime.sendMessage(message, (response) => {
     clearTimeout(noResponse);
     if (response.itadError) {
-      cantConnectModal();
+      return reject('cantConnect');
     }
 
     if (!response.hltbReady) {
@@ -36,9 +36,13 @@ function dataRequest(resolve, reject) {
     const {
       points,
     } = response.data;
-    response.data.discount = calculateDiscount(points, info.firstPurchaseOption);
+    try {
+      response.data.discount = calculateDiscount(points, info.firstPurchaseOption);
+    } catch {
+      return reject();
+    }
     response.data.points = addIntermediatePoints(points);
-    resolve({
+    return resolve({
       chartData: response,
       info,
     });

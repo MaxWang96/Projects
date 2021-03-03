@@ -359,9 +359,8 @@ function makeChart() {
   Promise.all([getData, getSetting])
     .then(drawChart)
     .catch((error) => {
-      if (error === 'timeout') {
-        timeoutModal();
-      }
+      if (error === 'timeout') timeoutModal();
+      else if (error === 'cantConnect') cantConnectModal();
     });
 }
 

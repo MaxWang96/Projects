@@ -21,14 +21,13 @@ function duplicate(arr) {
 
 function abnormal(dataArr) {
   const arr = dataArr;
+  const tmpArr = [arr[0]];
   let toCompare;
   let i = 1;
   let len = arr.length;
   let [min, max] = [arr[0][1], arr[0][1]];
-  const tmpArr = [arr[0]];
   const lastPoint = arr[len - 1].slice();
-  const fourHours = 14400000;
-  const fourtySixHours = 165600000;
+  const [fourHours, fourtySixHours] = [14400000, 165600000];
   if (arr[len - 1][1] !== arr[len - 2][1]
     && arr[len - 1][0] - arr[len - 2][0] <= fourHours) {
     arr.splice(len - 2, 1);
@@ -36,6 +35,21 @@ function abnormal(dataArr) {
   }
   arr[len - 1][0] += fourtySixHours;
   arr.push([arr[len - 1][0] + 172800000, arr[len - 1][1]]);
+
+  function pushCur() {
+    tmpArr.push(arr[i]);
+    toCompare = arr[i][1];
+    i += 1;
+  }
+
+  function condiPush() {
+    if (arr[i - 1][1] !== arr[i + 1][1]) {
+      tmpArr.push(arr[i + 1]);
+      toCompare = arr[i + 1][1];
+    }
+    i += 2;
+  }
+
   while (i < len - 2) {
     if (arr[i + 1][0] - arr[i][0] <= fourHours) {
       if (arr[i][1] > arr[i + 1][1]
@@ -55,26 +69,23 @@ function abnormal(dataArr) {
         if (arr[i - 1][1] === arr[i + 1][1]) {
           i += 2;
         } else {
-          tmpArr.push(arr[i]);
-          toCompare = arr[i][1];
-          i += 1;
+          pushCur();
         }
-      } else if (arr[i + 2][0] - arr[i + 1][0] <= fourtySixHours
-        && arr[i + 2][1] < arr[i + 1][1]) {
-        tmpArr.push(arr[i + 2]);
-        toCompare = arr[i + 2][1];
-        i += 3;
+      } else if (arr[i + 2][0] - arr[i + 1][0] <= fourtySixHours) {
+        if (arr[i + 2][1] < arr[i + 1][1]) {
+          tmpArr.push(arr[i + 2]);
+          toCompare = arr[i + 2][1];
+          i += 3;
+        } else if (arr[i][1] === arr[i + 2][1]) {
+          pushCur();
+        } else {
+          condiPush();
+        }
       } else {
-        if (arr[i - 1][1] !== arr[i + 1][1]) {
-          tmpArr.push(arr[i + 1]);
-          toCompare = arr[i + 1][1];
-        }
-        i += 2;
+        condiPush();
       }
     } else {
-      tmpArr.push(arr[i]);
-      toCompare = arr[i][1];
-      i += 1;
+      pushCur();
     }
     if (toCompare > max) {
       max = toCompare;
@@ -114,7 +125,7 @@ function requests(message, sender, sendResponse) {
         let dataArr = JSON.parse(text.match(/"Steam","data":(\[\[.+?\]\])/)[1]);
         dataArr = duplicate(dataArr);
         resp.data = abnormal(dataArr);
-        resp.itadUrl = `https://isthereanydeal.com/game/${itemName}/info/${message.storeRegion}`;
+        resp.itadUrl = `https://isthereanydeal.com/game/${itemName}/info`;
         if (message.bundle) {
           resp.bundleTitle = text.match(/<h1 id='gameTitle'>.+?>(.+?)</)[1];
         }
@@ -242,6 +253,5 @@ function requests(message, sender, sendResponse) {
 
   itad();
   hltb();
-
   return true;
 }

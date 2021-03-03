@@ -57,13 +57,15 @@ function dataModal(name) {
 function timeoutModal() {
   modal('no_response_from_background_modal',
     chrome.i18n.getMessage('timeoutErrorHeader'),
-    chrome.i18n.getMessage('timeoutErrorText'));
+    chrome.i18n.getMessage('timeoutErrorText'),
+    false);
 }
 
 function cantConnectModal() {
   modal('cant_connect_to_itad_modal',
     chrome.i18n.getMessage('connectErrorHeader'),
-    chrome.i18n.getMessage('connectErrorText'));
+    chrome.i18n.getMessage('connectErrorText'),
+    false);
 }
 
 function bundleModal(name) {

@@ -13,7 +13,8 @@ function findIdAndOption(purchaseArea, isDlc, isMusic) {
   let i = 0;
   const wrappers = purchaseArea.getElementsByClassName('game_area_purchase_game_wrapper');
   if (isDlc || isMusic) {
-    [firstPurchaseOption] = [wrappers[0]];
+    [firstPurchaseOption] = wrappers;
+    if (firstPurchaseOption.classList.length === 3) itemInfo.isBundle = true;
   } else {
     for (;;) {
       const wrap = wrappers[i];

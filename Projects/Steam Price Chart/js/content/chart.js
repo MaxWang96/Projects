@@ -361,6 +361,7 @@ function makeChart() {
     .catch((error) => {
       if (error === 'timeout') timeoutModal();
       else if (error === 'cantConnect') cantConnectModal();
+      else throw error;
     });
 }
 

@@ -38,8 +38,8 @@ function dataRequest(resolve, reject) {
     } = response.data;
     try {
       response.data.discount = calculateDiscount(points, info.firstPurchaseOption);
-    } catch {
-      return reject();
+    } catch (e) {
+      return reject(e);
     }
     response.data.points = addIntermediatePoints(points);
     return resolve({

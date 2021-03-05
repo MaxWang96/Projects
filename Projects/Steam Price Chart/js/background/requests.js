@@ -21,7 +21,7 @@ function duplicate(arr) {
         tmpArr.push(arr[i]);
         tmpPrice = arrPrice;
       }
-      i += 3;
+      i += 1;
     }
   }
   tmpArr.push(arr[i], arr[i + 1]);
@@ -62,12 +62,13 @@ function abnormal(dataArr) {
   while (i < len - 2) {
     if (arr[i + 1][0] - arr[i][0] <= fourHours) {
       if (arr[i][1] > arr[i + 1][1]
-        && arr[i - 1][1] === arr[i + 1][1]) {
+        && arr[i - 1][1] === arr[i + 1][1]
+        && arr[i + 2][0] - arr[i + 1][0] <= 604800000) { // dead by daylight US
         i += 2;
       } else if (arr[i + 3][0] - arr[i + 2][0] <= fourHours) {
-        tmpArr.push(arr[i], arr[i + 3]);
+        tmpArr.push(arr[i]);
         toCompare = arr[i][1];
-        i += 4;
+        i += 3;
       } else if (arr[i - 1][1] < arr[i + 1][1]) {
         i += 1;
       } else {
@@ -86,10 +87,16 @@ function abnormal(dataArr) {
         } else if (arr[i][1] === arr[i + 2][1]) {
           pushCur();
         } else {
-          condiPush(2);
+          condiPush(1);
         }
+      } else if (arr[i][1] > arr[i + 1][1]
+        && arr[i][1] === arr[i + 2][1]
+        && arr[i][1] < arr[i + 3][1]) { // darkest dungeon CN
+        tmpArr.push(arr[i], arr[i + 3]);
+        toCompare = arr[i][1];
+        i += 4;
       } else {
-        condiPush(2);
+        condiPush(1);
       }
     } else {
       pushCur();

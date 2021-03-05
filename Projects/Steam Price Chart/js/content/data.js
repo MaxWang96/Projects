@@ -1,23 +1,26 @@
 'use strict';
 
-function setup(points, priceArr, firstPurchaseOption) {
+function makePriceArr(arr, points) {
   let i = 0;
-  let len = points.length;
-  const arr = priceArr;
-  const itemName = document.getElementsByClassName('apphub_AppName')[0].textContent;
+  const len = points.length;
   for (; i < len - 2; i += 1) {
-    // if (points[i + 1][0] - points[i][0] <= 14400000
-    //   || points[i + 1][1] === points[i][1]) {
-    //   dataModal(itemName);
-    // }
+    if (points[i + 1][0] - points[i][0] <= 14400000
+      || points[i + 1][1] === points[i][1]) {
+      const itemName = document.getElementsByClassName('apphub_AppName')[0].textContent;
+      dataModal(itemName);
+    }
     arr.push(points[i][1]);
   }
   arr.push(points[i][1], points[i + 1][1]);
+}
 
+function setupEnd(priceArr, firstPurchaseOption) {
   let price;
-  let isDiscount = true;
+  let endDiscount = true;
+  const arr = priceArr;
+  const len = arr.length;
+  const curPrice = arr[len - 1];
   const discount = firstPurchaseOption.getElementsByClassName('discount_block');
-  len = priceArr.length;
   HTMLElement.prototype.findPrice = function (className) {
     return parseFloat(this.getElementsByClassName(className)[0]
       .textContent
@@ -37,7 +40,7 @@ function setup(points, priceArr, firstPurchaseOption) {
     if (max === price) {
       arr[len - 1] = price / 2;
       arr.push(price);
-      isDiscount = false;
+      endDiscount = false;
     } else {
       arr[len - 1] = max;
     }
@@ -48,14 +51,41 @@ function setup(points, priceArr, firstPurchaseOption) {
     price = firstPurchaseOption.findPrice('game_purchase_price');
     arr[len - 1] = price / 2;
     arr.push(price);
-    isDiscount = false;
+    endDiscount = false;
   }
-
-  if (price !== points[points.length - 1][1]) {
+  if (price !== curPrice) {
+    const itemName = document.getElementsByClassName('apphub_AppName')[0].textContent;
     dataModal(itemName);
   }
+  return endDiscount;
+}
 
-  return isDiscount;
+function setupBegin(arr, points) {
+  let max = arr[0];
+  let beginDiscount = false;
+  if (arr.length === 2) {
+    beginDiscount = true;
+    max = arr[1];
+  } else {
+    for (let i = 1; i < 3; i += 1) {
+      if (arr[i] > max) {
+        beginDiscount = true;
+        max = arr[i];
+      }
+    }
+  }
+  if (beginDiscount) {
+    arr.unshift(max);
+    points.unshift(0);
+  }
+  return beginDiscount;
+}
+
+function setup(points, priceArr, firstPurchaseOption) {
+  makePriceArr(priceArr, points);
+  const endDiscount = setupEnd(priceArr, firstPurchaseOption);
+  const beginDiscount = setupBegin(priceArr, points);
+  return [beginDiscount, endDiscount];
 }
 
 function makeBase(priceArr, baseArr, priceIncrease, partial = false) {
@@ -96,9 +126,14 @@ function makeBase(priceArr, baseArr, priceIncrease, partial = false) {
         if (i >= priceArr.length - 5 || cur !== priceArr[i + 5]) {
           base.fill(first, i + 1, i + 4);
           i += 3;
-        } else {
+        } else if (first / cur <= 0.8) { // borderlands 2 psycho pack US
           base.fill(cur, i + 1, i + 6);
           i += 5;
+        } else { // dead by daylight CN
+          base.fill(first, i + 1, i + 5);
+          base[i + 5] = cur;
+          i += 5;
+          priceIncrease.push(i);
         }
       } else if (second > third) {
         base[i + 1] = cur;
@@ -117,38 +152,55 @@ function makeBase(priceArr, baseArr, priceIncrease, partial = false) {
   }
 }
 
-function checkAbnormalHigh(points, priceArr, baseArr, priceIncrease) {
+function checkAbnormalHigh(pointsArr, priceArr, baseArr, priceIncrease) {
+  const price = priceArr;
   const base = baseArr;
   let tmp;
   let i = priceIncrease.length - 1;
 
   function removeAbnormal(n) {
-    base.splice(tmp, n);
-    priceArr.splice(tmp, n);
-    points.splice(tmp, n);
-    priceIncrease.splice(i, 1);
+    let j = 0;
+    let idx = tmp;
+    const points = pointsArr;
+    const toDelete = [];
+    const correctBase = base[tmp - 1];
+    while (j < n) {
+      if (price[idx] < correctBase) {
+        idx += 1;
+      } else {
+        if (price[idx - 1] !== correctBase) {
+          points[idx][1] = correctBase;
+          price[idx] = correctBase;
+          base[idx] = correctBase;
+        } else {
+          toDelete.push(idx);
+        }
+        if (price[idx + 1] === correctBase) {
+          toDelete.push(idx + 1);
+        }
+        idx += 2;
+        j += 1;
+      }
+    }
+    for (let k = toDelete.length - 1; k >= 0; k -= 1) {
+      const deleteIdx = toDelete[k];
+      base.splice(deleteIdx, 1);
+      price.splice(deleteIdx, 1);
+      points.splice(deleteIdx, 1);
+    }
   }
 
   for (; i >= 0; i -= 1) {
     tmp = priceIncrease[i];
     if (base[tmp] !== base[tmp + 1]) {
-      removeAbnormal(2);
+      removeAbnormal(1);
     } else if (base[tmp] !== base[tmp + 2]) {
       removeAbnormal(1);
-      makeBase(priceArr, base, priceIncrease, tmp);
-    } else if (tmp < base.length - 4 && base[tmp] !== base[tmp + 4]) {
-      if (tmp >= 2) {
-        removeAbnormal(3);
-        makeBase(priceArr, base, priceIncrease, tmp);
-      }
+      makeBase(price, base, priceIncrease, tmp);
+    } else if (tmp < base.length - 4 && base[tmp] !== base[tmp + 4]) { // rainbow six US
+      removeAbnormal(2);
+      makeBase(price, base, priceIncrease, tmp);
     }
-  }
-}
-
-function setBeginBase(baseArr, price, idx) {
-  const base = baseArr;
-  for (let i = 0; i < idx; i += 1) {
-    base[i] = price;
   }
 }
 
@@ -157,15 +209,18 @@ function calculateBase(points, priceArr) {
   const priceIncrease = [];
   makeBase(priceArr, base, priceIncrease);
   checkAbnormalHigh(points, priceArr, base, priceIncrease);
-  const firstIncrease = priceIncrease[0];
-  if (firstIncrease <= 3) setBeginBase(base, priceArr[firstIncrease], firstIncrease);
   return base;
 }
 
-function restorePriceArr(isDiscount, priceArr) {
+function restorePriceArr(points, priceArr, base, discounts) {
   const arr = priceArr;
+  if (discounts[0]) {
+    points.shift();
+    arr.shift();
+    base.shift();
+  }
   const len = arr.length;
-  if (isDiscount) {
+  if (discounts[1]) {
     arr[len - 1] = arr[len - 2];
   } else {
     arr[len - 2] = arr[len - 3];
@@ -197,16 +252,16 @@ function addIntermediatePoints(points) {
 }
 
 function calculateDiscount(points, firstPurchaseOption) {
-  const itemName = document.getElementsByClassName('apphub_AppName')[0].textContent;
   if ((points[0][1] === 0
       && points[1][0] - points[0][0] > 31536000000)
     || points[points.length - 1][1] !== points[points.length - 2][1]) {
+    const itemName = document.getElementsByClassName('apphub_AppName')[0].textContent;
     dataModal(itemName);
   }
 
   const priceArr = [];
-  const isDiscount = setup(points, priceArr, firstPurchaseOption);
+  const discounts = setup(points, priceArr, firstPurchaseOption);
   const base = calculateBase(points, priceArr);
-  restorePriceArr(isDiscount, priceArr);
+  restorePriceArr(points, priceArr, base, discounts);
   return makeDiscountArr(points.length, priceArr, base);
 }

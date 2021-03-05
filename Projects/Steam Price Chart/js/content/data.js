@@ -6,10 +6,10 @@ function setup(points, priceArr, firstPurchaseOption) {
   const arr = priceArr;
   const itemName = document.getElementsByClassName('apphub_AppName')[0].textContent;
   for (; i < len - 2; i += 1) {
-    if (points[i + 1][0] - points[i][0] <= 14400000
-      || points[i + 1][1] === points[i][1]) {
-      dataModal(itemName);
-    }
+    // if (points[i + 1][0] - points[i][0] <= 14400000
+    //   || points[i + 1][1] === points[i][1]) {
+    //   dataModal(itemName);
+    // }
     arr.push(points[i][1]);
   }
   arr.push(points[i][1], points[i + 1][1]);

@@ -4,15 +4,24 @@ function duplicate(arr) {
   const len = arr.length;
   const tmpArr = [];
   let i = 0;
+  let tmpPrice = -1;
+  let arrPrice;
   while (i < len - 2) {
-    if (arr[i][1] === null) {
+    arrPrice = arr[i][1];
+    if (arrPrice === null) {
       i += 1;
-    } else {
-      tmpArr.push(arr[i]);
-      if (arr[i][1] === arr[i + 1][1]) {
-        i += 1;
+    } else if (arrPrice === arr[i + 1][1]) {
+      if (tmpPrice !== arrPrice) {
+        tmpArr.push(arr[i]);
+        tmpPrice = arrPrice;
       }
-      i += 1;
+      i += 2;
+    } else {
+      if (tmpPrice !== arrPrice) {
+        tmpArr.push(arr[i]);
+        tmpPrice = arrPrice;
+      }
+      i += 3;
     }
   }
   tmpArr.push(arr[i], arr[i + 1]);
@@ -42,12 +51,12 @@ function abnormal(dataArr) {
     i += 1;
   }
 
-  function condiPush() {
-    if (arr[i - 1][1] !== arr[i + 1][1]) {
-      tmpArr.push(arr[i + 1]);
-      toCompare = arr[i + 1][1];
+  function condiPush(n) {
+    if (arr[i - 1][1] !== arr[i + n][1]) {
+      tmpArr.push(arr[i + n]);
+      toCompare = arr[i + n][1];
     }
-    i += 2;
+    i += n + 1;
   }
 
   while (i < len - 2) {
@@ -73,16 +82,14 @@ function abnormal(dataArr) {
         }
       } else if (arr[i + 2][0] - arr[i + 1][0] <= fourtySixHours) {
         if (arr[i + 2][1] < arr[i + 1][1]) {
-          tmpArr.push(arr[i + 2]);
-          toCompare = arr[i + 2][1];
-          i += 3;
+          condiPush(3);
         } else if (arr[i][1] === arr[i + 2][1]) {
           pushCur();
         } else {
-          condiPush();
+          condiPush(2);
         }
       } else {
-        condiPush();
+        condiPush(2);
       }
     } else {
       pushCur();
@@ -145,8 +152,8 @@ function requests(message, sender, sendResponse) {
         });
     } else {
       fetch(`https://isthereanydeal.com/steam/bundle/${message.id}/`, {
-        method: 'HEAD',
-      })
+          method: 'HEAD',
+        })
         .then((response) => {
           const bundleName = response.url.split('/')[4];
           sendItadRequest(bundleName);
@@ -170,12 +177,12 @@ function requests(message, sender, sendResponse) {
     const nameSend = name.replace('’', "'")
       .replace(/[^\w\s:',-]/gi, '');
     fetch('https://howlongtobeat.com/search_results.php', {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/x-www-form-urlencoded',
-      },
-      body: `queryString=${nameSend}&t=games&sorthead=popular&sortd='Normal Order'`,
-    })
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/x-www-form-urlencoded',
+        },
+        body: `queryString=${nameSend}&t=games&sorthead=popular&sortd='Normal Order'`,
+      })
       .then((response) => response.text())
       .then((text) => callback(text));
   }

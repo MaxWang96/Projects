@@ -74,19 +74,21 @@ function addHltbButton(chart, data) {
   const cha = chart;
   const hltbImgUrl = chrome.runtime.getURL('../images/howlongtobeat_icon.png');
   if (!data.hasOwnProperty('hltbUrl')) {
+    let hltbImg;
     if (data.hltbReady) {
       const hltbLabel = addLabel(cha, "Can't find the game on HowLongToBeat").align(setAlign(-190));
-      addImg(cha, hltbImgUrl, hltbLabel, -55).css({
+      hltbImg = addImg(cha, hltbImgUrl, hltbLabel, -55).css({
         opacity: 0.2,
       });
     } else {
       const hltbLabel = addLabel(cha, "Looking for the game's link...").align(setAlign(-167));
-      const hltbImg = addImg(cha, hltbImgUrl, hltbLabel, -55).css({
+      hltbImg = addImg(cha, hltbImgUrl, hltbLabel, -55).css({
         opacity: 0.5,
       });
       cha.hltbLabel = hltbLabel;
       cha.hltbImg = hltbImg;
     }
+    addImgUrl(hltbImg, 'https://howlongtobeat.com/');
   } else {
     const hltbLabel = addLabel(chart, 'View the game on HowLongToBeat').align(setAlign(-183));
     addImgUrl(addImg(chart, hltbImgUrl, hltbLabel, -55), data.hltbUrl);
@@ -365,13 +367,14 @@ function makeChart() {
     });
 }
 
-function redrawButton(text, align, opacity = 0.2) {
+function redrawButton(text, align, opacity = 0.2, url = 'https://howlongtobeat.com/') {
   const chart = $('#chart_container').highcharts();
   chart.hltbLabel.destroy();
   const hltbLabel = addLabel(chart, text).align(setAlign(align));
   addEvents(chart.hltbImg, hltbLabel).css({
     opacity,
   });
+  addImgUrl(chart.hltbImg, url);
 }
 
 function updateButton(message) {
@@ -380,8 +383,7 @@ function updateButton(message) {
   } else if (message === 'cantFind') {
     redrawButton("Can't find the game on HowLongToBeat", -190);
   } else {
-    redrawButton('View the game on HowLongToBeat', -183, 1);
-    addImgUrl($('#chart_container').highcharts().hltbImg, message);
+    redrawButton('View the game on HowLongToBeat', -183, 1, message);
   }
 }
 

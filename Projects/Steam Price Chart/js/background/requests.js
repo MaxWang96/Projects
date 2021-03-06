@@ -71,6 +71,12 @@ function abnormal(dataArr) {
         i += 3;
       } else if (arr[i - 1][1] < arr[i + 1][1]) {
         i += 1;
+      } else if (arr[i + 1][0] - arr[i][0] <= 3600000
+        && arr[i][0] - arr[i - 1][0] >= 2592000000) { // dead by daylight CN
+        tmpArr.pop();
+        tmpArr.push(arr[i + 1]);
+        toCompare = arr[i + 1][1];
+        i += 2;
       } else {
         i += 2;
       }

@@ -77,6 +77,9 @@ function abnormal(dataArr) {
         tmpArr.push(arr[i + 1]);
         toCompare = arr[i + 1][1];
         i += 2;
+      } else if (arr[i + 1][1] < arr[i][1]
+        && arr[i][1] < arr[i - 1][1]) { // shadow of the tomb raider US
+        i += 1;
       } else {
         i += 2;
       }
@@ -125,7 +128,7 @@ function requests(message, sender, sendResponse) {
   let {
     name,
   } = message;
-  let [itadSent, hltbReady, receivedReg, receivedAlt] = [0, 0, 0, 0];
+  let [itadSent, hltbReady, regReceived, altReceived, altSuccess] = [0, 0, 0, 0, 0];
   const resp = {};
   const itadCantConnect = setTimeout(() => {
     resp.itadError = true;
@@ -187,46 +190,67 @@ function requests(message, sender, sendResponse) {
   }
 
   function hltbRequest(callback) {
-    const nameSend = name.replace('’', "'")
-      .replace(/[^\w\s:',-]/gi, '');
     fetch('https://howlongtobeat.com/search_results.php', {
         method: 'POST',
         headers: {
           'Content-type': 'application/x-www-form-urlencoded',
         },
-        body: `queryString=${nameSend}&t=games&sorthead=popular&sortd='Normal Order'`,
+        body: `queryString=${name}&t=games&sorthead=popular&sortd='Normal Order'`,
       })
       .then((response) => response.text())
       .then((text) => callback(text));
   }
 
-  function altRequest(idx) {
-    name = name.slice(0, idx);
+  function backupMethod() {
+    function removeLastWord(str) {
+      return str.slice(0, str.lastIndexOf(' '));
+    }
+
+    name = removeLastWord(name);
     hltbRequest((data) => {
-      receivedAlt = 1;
       const getId = data.match(/href="(.+?)"/);
       if (getId !== null) {
         resp.hltbUrl = `http://howlongtobeat.com/${getId[1]}`;
-      }
-      if (receivedReg) {
         hltbReady = 1;
+        tryMessage();
+      } else {
+        backupMethod();
       }
-      tryMessage();
+    });
+  }
+
+  function altRequest(idx) {
+    name = name.slice(0, idx);
+    hltbRequest((data) => {
+      altReceived = 1;
+      const getId = data.match(/href="(.+?)"/);
+      if (getId !== null) {
+        altSuccess = 1;
+        resp.hltbUrl = `http://howlongtobeat.com/${getId[1]}`;
+        if (regReceived) {
+          hltbReady = 1;
+          tryMessage();
+        }
+      } else if (regReceived && !hltbReady) {
+        backupMethod();
+      }
     });
   }
 
   function sendHltbRequest() {
     hltbRequest((data) => {
-      receivedReg = 1;
+      regReceived = 1;
       const getId = data.match(/href="(.+?)"/);
       if (getId !== null) {
         resp.hltbUrl = `http://howlongtobeat.com/${getId[1]}`;
         hltbReady = 1;
-      }
-      if (receivedAlt) {
+        tryMessage();
+      } else if (altSuccess) {
         hltbReady = 1;
+        tryMessage();
+      } else if (altReceived) {
+        backupMethod();
       }
-      tryMessage();
     });
 
     if (name.includes('Edition')) {
@@ -241,13 +265,14 @@ function requests(message, sender, sendResponse) {
         altRequest(spaceIdx);
       }
     } else {
-      receivedAlt = 1;
+      altReceived = 1;
     }
   }
 
   function hltb() {
     if (!message.lang.startsWith('zh')) {
       if (message.lang.startsWith('en') || message.bundle || message.notGame) {
+        name = name.replace('’', "'").replace(/[^\w\s:',-]/gi, '');
         sendHltbRequest();
       } else {
         fetch(`https://steamspy.com/api.php?request=appdetails&appid=${message.id}`)
@@ -263,7 +288,7 @@ function requests(message, sender, sendResponse) {
                 });
               }
             } else {
-              name = findName[1];
+              name = findName[1].replace('’', "'").replace(/[^\w\s:',-]/gi, '');
               sendHltbRequest();
             }
           });

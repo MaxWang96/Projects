@@ -58,7 +58,7 @@
         "message": "Sorry, Steam Price Chart fail to connect to IsThereAnyDeal.com to get the price history data."
     },
     "bundleHeader": {
-        "message": "Shown Bundle Price"
+        "message": "Showing Bundle Price"
     },
     "bundleText": {
         "message": "$NAME$ is only sold in a bundle, displayed the bundle price history.",

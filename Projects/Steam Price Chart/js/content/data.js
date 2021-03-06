@@ -4,11 +4,11 @@ function makePriceArr(arr, points) {
   let i = 0;
   const len = points.length;
   for (; i < len - 2; i += 1) {
-    if (points[i + 1][0] - points[i][0] <= 14400000
-      || points[i + 1][1] === points[i][1]) {
-      const itemName = document.getElementsByClassName('apphub_AppName')[0].textContent;
-      dataModal(itemName);
-    }
+    // if (points[i + 1][0] - points[i][0] <= 14400000
+    //   || points[i + 1][1] === points[i][1]) {
+    //   const itemName = document.getElementsByClassName('apphub_AppName')[0].textContent;
+    //   dataModal(itemName);
+    // }
     arr.push(points[i][1]);
   }
   arr.push(points[i][1], points[i + 1][1]);
@@ -21,15 +21,16 @@ function setupEnd(priceArr, firstPurchaseOption) {
   const len = arr.length;
   const curPrice = arr[len - 1];
   const discount = firstPurchaseOption.getElementsByClassName('discount_block');
-  HTMLElement.prototype.findPrice = function (className) {
-    return parseFloat(this.getElementsByClassName(className)[0]
+
+  function findPrice(className, element = discount[0]) {
+    return parseFloat(element.getElementsByClassName(className)[0]
       .textContent
       .match(/[\d.,]+/)[0]
       .replace(',', '.'));
-  };
+  }
 
   if (itemInfo.isBundle) {
-    price = discount[0].findPrice('discount_final_price');
+    price = findPrice('discount_final_price');
     let max = price;
     const searchRange = len < 5 ? len - 1 : 4;
     for (let j = 0; j < searchRange; j += 1) {
@@ -45,10 +46,10 @@ function setupEnd(priceArr, firstPurchaseOption) {
       arr[len - 1] = max;
     }
   } else if (discount.length !== 0) {
-    price = discount[0].findPrice('discount_final_price');
-    arr[len - 1] = discount[0].findPrice('discount_original_price');
+    price = findPrice('discount_final_price');
+    arr[len - 1] = findPrice('discount_original_price');
   } else {
-    price = firstPurchaseOption.findPrice('game_purchase_price');
+    price = findPrice('game_purchase_price', firstPurchaseOption);
     arr[len - 1] = price / 2;
     arr.push(price);
     endDiscount = false;

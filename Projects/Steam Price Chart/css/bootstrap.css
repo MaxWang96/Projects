@@ -546,6 +546,7 @@ tbody.collapse.in {
   cursor: pointer;
   filter: alpha(opacity=50);
   opacity: 0.5;
+  outline: 0;
 }
 button.close {
   padding: 0;

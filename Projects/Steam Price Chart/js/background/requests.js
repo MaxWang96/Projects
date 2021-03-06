@@ -202,11 +202,7 @@ function requests(message, sender, sendResponse) {
   }
 
   function backupMethod() {
-    function removeLastWord(str) {
-      return str.slice(0, str.lastIndexOf(' '));
-    }
-
-    name = removeLastWord(name);
+    name = name.slice(0, name.lastIndexOf(' '));
     hltbRequest((data) => {
       const getId = data.match(/href="(.+?)"/);
       if (getId !== null) {

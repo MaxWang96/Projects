@@ -2,13 +2,14 @@
 
 function init() {
   chrome.storage.sync.set({
-    simplified: false,
+    appSimplified: false,
+    bundleSimplified: true,
   });
   chrome.declarativeContent.onPageChanged.removeRules(undefined, () => {
     chrome.declarativeContent.onPageChanged.addRules([{
       conditions: [new chrome.declarativeContent.PageStateMatcher({
         pageUrl: {
-          urlContains: 'store.steampowered.com/app',
+          urlMatches: 'store.steampowered.com/(app|bundle)',
         },
       })],
       actions: [new chrome.declarativeContent.ShowPageAction()],

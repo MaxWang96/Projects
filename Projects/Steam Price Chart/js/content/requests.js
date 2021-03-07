@@ -8,11 +8,11 @@ function dataRequest(resolve, reject) {
   const info = findInfo();
   const message = {
     id: info.id,
-    storeRegion: info.region.toLowerCase(),
+    storeRegion: info.region,
     lang: info.sysLang,
     name: info.gameName,
-    bundle: itemInfo.isBundle,
     notGame: info.notGame,
+    bundle,
   };
 
   chrome.runtime.sendMessage(message, (response) => {
@@ -50,7 +50,14 @@ function dataRequest(resolve, reject) {
 }
 
 function settingRequest(resolve, reject) {
-  chrome.storage.sync.get('simplified', (value) => {
-    resolve(value.simplified ? userChart.simp : userChart.full);
+  const key = (bundle !== 'bundle') ? 'appSimplified' : 'bundleSimplified';
+  chrome.storage.sync.get(key, (value) => {
+    resolve(value[key] ? {
+      simp: true,
+      options: userChart.simp,
+    } : {
+      simp: false,
+      options: userChart.full,
+    });
   });
 }

@@ -1,7 +1,7 @@
 'use strict';
 
 function findRegion() {
-  let region = JSON.parse(document.getElementById('application_config').getAttribute('data-config')).COUNTRY;
+  let region = document.cookie.match(/steamCountry=(..)/)[1];
   if (eu1.includes(region)) region = 'EU1';
   if (!supportedRegion.includes(region)) regionModal(region);
   return region;
@@ -14,7 +14,7 @@ function findIdAndOption(purchaseArea, isDlc, isMusic) {
   const wrappers = purchaseArea.getElementsByClassName('game_area_purchase_game_wrapper');
   if (isDlc || isMusic) {
     [firstPurchaseOption] = wrappers;
-    if (firstPurchaseOption.classList.length === 3) itemInfo.isBundle = true;
+    if (firstPurchaseOption.classList.length === 3) bundle = 'app';
   } else {
     for (;;) {
       const wrap = wrappers[i];
@@ -30,7 +30,7 @@ function findIdAndOption(purchaseArea, isDlc, isMusic) {
         }
       } else if (wrap.classList.length === 3) {
         firstPurchaseOption = wrap;
-        itemInfo.isBundle = true;
+        bundle = 'app';
         id = firstPurchaseOption.getAttribute('data-ds-bundleid');
         break;
       }
@@ -50,6 +50,7 @@ function findInfo() {
   const info = {
     sysLang: window.navigator.languages[0],
     itemName: document.getElementsByClassName('apphub_AppName')[0].textContent,
+    region: findRegion(),
     notGame: isDlc || isMusic,
   };
 
@@ -61,7 +62,23 @@ function findInfo() {
   info.gameName = (!isDlc && !isMusic)
     ? info.itemName
     : purchaseArea.getElementsByClassName('game_area_bubble')[0].querySelector('a').textContent;
-  info.region = findRegion();
   Object.assign(info, findIdAndOption(purchaseArea, isDlc, isMusic));
   return info;
+}
+
+function insertChart(height) {
+  const elements = document.getElementsByClassName('page_content');
+  const len = elements.length;
+  let loc;
+  for (let i = 0; i < len; i += 1) {
+    if (elements[i].className === 'page_content') {
+      loc = elements[i];
+      break;
+    }
+  }
+  loc.insertAdjacentHTML('afterbegin', `
+    <div class="steam_price_chart">
+        <div id="chart_container" style="height: ${height}; min-width: 310px"></div>
+    </div>
+    `);
 }

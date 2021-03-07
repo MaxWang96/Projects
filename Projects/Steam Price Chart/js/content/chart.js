@@ -100,43 +100,26 @@ function addButtons(chart, data) {
   addHltbButton(chart, data);
 }
 
-function insertChart(height) {
-  const elements = document.getElementsByClassName('page_content');
-  const len = elements.length;
-  let loc;
-  for (let i = 0; i < len; i += 1) {
-    if (elements[i].className === 'page_content') {
-      loc = elements[i];
-      break;
-    }
-  }
-  loc.insertAdjacentHTML('afterbegin', `
-    <div class="steam_price_chart">
-        <div id="chart_container" style="height: ${height}; min-width: 310px"></div>
-    </div>
-    `);
-}
-
 function drawChart(results) {
   const {
     info,
     chartData,
   } = results[0];
-  const title = itemInfo.isBundle ? chartData.bundleTitle : info.itemName;
+  const {
+    simp,
+  } = results[1];
+  const title = (bundle === 'app') ? chartData.bundleTitle : info.itemName;
 
   const {
     sysLang,
   } = info;
   let lang;
-  if (sysLang.startsWith('zh')) {
-    lang = locale.CN;
-  } else if (sysLang.startsWith('en')) {
-    lang = locale.US;
-  } else {
-    lang = locale.EU1;
-  }
+  if (sysLang.startsWith('zh')) lang = locale.CN;
+  else if (sysLang.startsWith('en')) lang = locale.US;
+  else lang = locale.EU1;
+
   const setting = {
-    chart: results[1],
+    chart: results[1].options,
     price: localePrice[info.region],
     lang,
   };
@@ -150,7 +133,7 @@ function drawChart(results) {
       backgroundColor: 'rgba( 0, 0, 0, 0.2 )',
       events: {
         load() {
-          if (setting.lang.siteButton) addButtons(this, chartData);
+          if (setting.lang.siteButton && bundle !== 'bundle') addButtons(this, chartData);
         },
       },
       style: {
@@ -339,10 +322,18 @@ function drawChart(results) {
   Object.assign(globalSetting, setting.chart);
   Highcharts.setOptions(globalSetting);
 
-  insertChart(setting.chart.chart.height);
-
+  let height;
+  const tmp = userChart.height;
+  if (bundle === 'bundle') {
+    if (simp) height = tmp.bundleSimp;
+    else height = tmp.bundleFull;
+  } else {
+    if (simp) height = tmp.appSimp;
+    else height = tmp.appFull;
+  }
+  insertChart(height);
   const chart = Highcharts.stockChart('chart_container', chartOptions);
-  if (setting.chart.chart.height === '350px') {
+  if (simp) {
     chart.update({
       rangeSelector: {
         enabled: false,
@@ -350,7 +341,7 @@ function drawChart(results) {
     });
   }
 
-  if (itemInfo.isBundle) {
+  if (bundle === 'app') {
     bundleModal(info.itemName);
   }
 }
@@ -378,28 +369,35 @@ function redrawButton(text, align, opacity = 0.2, url = 'https://howlongtobeat.c
 }
 
 function updateButton(message) {
-  if (message === 'error') {
-    redrawButton("Can't connect to HowLongToBeat", -173);
-  } else if (message === 'cantFind') {
-    redrawButton("Can't find the game on HowLongToBeat", -190);
-  } else {
-    redrawButton('View the game on HowLongToBeat', -183, 1, message);
-  }
+  if (message === 'error') redrawButton("Can't connect to HowLongToBeat", -173);
+  else if (message === 'cantFind') redrawButton("Can't find the game on HowLongToBeat", -190);
+  else redrawButton('View the game on HowLongToBeat', -183, 1, message);
 }
 
 function updateChart(request) {
   const container = $('#chart_container');
   const chart = container.highcharts();
-  if (request.simplified) {
-    container.css('height', '350px');
+  const tmp = userChart.height;
+  if (request.simp) {
+    const height = (bundle === 'bundle') ? tmp.bundleSimp : tmp.appSimp;
+    container.css('height', height);
     chart.update({
+      chart: {
+        height,
+      },
       rangeSelector: {
         enabled: false,
       },
     }, false);
     chart.update(userChart.simp);
   } else {
-    container.css('height', '400px');
+    const height = (bundle === 'bundle') ? tmp.bundleFull : tmp.appFull;
+    container.css('height', height);
+    chart.update({
+      chart: {
+        height,
+      },
+    }, false);
     chart.update(userChart.full);
     chart.update({
       chart: {

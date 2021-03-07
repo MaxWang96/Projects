@@ -141,7 +141,7 @@ function requests(message, sender, sendResponse) {
   }, 5000);
 
   function sendItadRequest(itemName) {
-    fetch(`https://isthereanydeal.com/game/${itemName}/history/${message.storeRegion}/?shop%5B%5D=steam&generate=Select+Stores`)
+    fetch(`https://isthereanydeal.com/game/${itemName}/history/${message.storeRegion.toLowerCase()}/?shop%5B%5D=steam&generate=Select+Stores`)
       .then((response) => response.text())
       .then((text) => {
         clearTimeout(itadCantConnect);
@@ -149,7 +149,7 @@ function requests(message, sender, sendResponse) {
         dataArr = duplicate(dataArr);
         resp.data = abnormal(dataArr);
         resp.itadUrl = `https://isthereanydeal.com/game/${itemName}/info`;
-        if (message.bundle) {
+        if (message.bundle === 'game') {
           resp.bundleTitle = text.match(/<h1 id='gameTitle'>.+?>(.+?)</)[1];
         }
         resp.hltbReady = hltbReady;
@@ -168,8 +168,8 @@ function requests(message, sender, sendResponse) {
         });
     } else {
       fetch(`https://isthereanydeal.com/steam/bundle/${message.id}/`, {
-          method: 'HEAD',
-        })
+        method: 'HEAD',
+      })
         .then((response) => {
           const bundleName = response.url.split('/')[4];
           sendItadRequest(bundleName);
@@ -191,12 +191,12 @@ function requests(message, sender, sendResponse) {
 
   function hltbRequest(callback) {
     fetch('https://howlongtobeat.com/search_results.php', {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/x-www-form-urlencoded',
-        },
-        body: `queryString=${name}&t=games&sorthead=popular&sortd='Normal Order'`,
-      })
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/x-www-form-urlencoded',
+      },
+      body: `queryString=${name}&t=games&sorthead=popular&sortd='Normal Order'`,
+    })
       .then((response) => response.text())
       .then((text) => callback(text));
   }

@@ -79,10 +79,6 @@ const localePrice = {
 
 const userChart = {
   full: {
-    chart: {
-      height: '400px',
-    },
-
     navigator: {
       margin: 25,
     },
@@ -107,7 +103,6 @@ const userChart = {
   simp: {
     chart: {
       animation: false,
-      height: '350px',
     },
 
     plotOptions: {
@@ -136,10 +131,14 @@ const userChart = {
       range: 7776000000,
     },
   },
+  height: {
+    appSimp: '350px',
+    appFull: '400px',
+    bundleSimp: '300px',
+    bundleFull: '350px',
+  },
 };
 Object.freeze(userChart.full);
 Object.freeze(userChart.simp);
 
-const itemInfo = {
-  isBundle: false,
-};
+let bundle = false;

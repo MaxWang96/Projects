@@ -7,7 +7,7 @@ chrome.tabs.query({
   currentWindow: true,
 }, (tabs) => {
   const type = tabs[0].url.split('/')[3];
-  const key = (type === 'app') ? 'appSimplified' : 'bundleSimplified';
+  const key = (type === 'app') ? 'appSimp' : 'bundleSimp';
   chrome.storage.sync.get(key, (value) => {
     swit.checked = value[key];
     const initSpeed = swit.checked ? '0s' : '0.4s';
@@ -31,11 +31,11 @@ document.getElementById('feedback-btn').onclick = () => {
 function saveOptions(type) {
   if (type === 'app') {
     chrome.storage.sync.set({
-      appSimplified: swit.checked,
+      appSimp: swit.checked,
     });
   } else {
     chrome.storage.sync.set({
-      bundleSimplified: swit.checked,
+      bundleSimp: swit.checked,
     });
   }
 }

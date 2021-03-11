@@ -50,7 +50,7 @@ function dataRequest(resolve, reject) {
 }
 
 function settingRequest(resolve, reject) {
-  const key = (bundle !== 'bundle') ? 'appSimplified' : 'bundleSimplified';
+  const key = (bundle !== 'bundle') ? 'appSimp' : 'bundleSimp';
   chrome.storage.sync.get(key, (value) => {
     resolve(value[key] ? {
       simp: true,

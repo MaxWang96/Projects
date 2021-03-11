@@ -1,7 +1,7 @@
 'use strict';
 
 function findRegion() {
-  let region = document.cookie.match(/steamCountry=(..)/)[1];
+  let region = JSON.parse(document.getElementById('application_config').getAttribute('data-config')).COUNTRY;
   if (eu1.includes(region)) region = 'EU1';
   if (!supportedRegion.includes(region)) regionModal(region);
   return region;
@@ -19,8 +19,9 @@ function findIdAndOption(purchaseArea, isDlc, isMusic) {
     for (;;) {
       const wrap = wrappers[i];
       if (wrap.classList.length === 1) {
-        if (wrap.getElementsByClassName('music').length === 0) {
-          const p = wrap.querySelector('p');
+        const option = wrap.getElementsByClassName('game_area_purchase_game')[0];
+        if (option.getElementsByClassName('music').length === 0) {
+          const p = option.querySelector('p');
           if (p === null
             || p.querySelector('a') === null
             || id === p.querySelector('a').href.split('/')[4]) {

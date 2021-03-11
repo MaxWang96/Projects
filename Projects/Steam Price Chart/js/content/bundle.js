@@ -1,7 +1,10 @@
 'use strict';
 
 function findRegion() {
-  let region = document.cookie.match(/steamCountry=(..)/)[1];
+  let region = document.getElementsByClassName('game_page_background')[0]
+    .getElementsByTagName('script')[0]
+    .innerText
+    .match(/[A-Z]{2}/)[0];
   if (eu1.includes(region)) region = 'EU1';
   if (!supportedRegion.includes(region)) regionModal(region);
   return region;

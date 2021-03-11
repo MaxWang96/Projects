@@ -79,6 +79,8 @@ const localePrice = {
 
 const userChart = {
   full: {
+    chart: {},
+
     navigator: {
       margin: 25,
     },

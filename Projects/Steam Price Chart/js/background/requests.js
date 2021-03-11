@@ -149,7 +149,7 @@ function requests(message, sender, sendResponse) {
         dataArr = duplicate(dataArr);
         resp.data = abnormal(dataArr);
         resp.itadUrl = `https://isthereanydeal.com/game/${itemName}/info`;
-        if (message.bundle === 'game') {
+        if (message.bundle === 'app') {
           resp.bundleTitle = text.match(/<h1 id='gameTitle'>.+?>(.+?)</)[1];
         }
         resp.hltbReady = hltbReady;
@@ -266,7 +266,7 @@ function requests(message, sender, sendResponse) {
   }
 
   function hltb() {
-    if (!message.lang.startsWith('zh')) {
+    if (!message.lang.startsWith('zh') && message.bundle !== 'bundle') {
       if (message.lang.startsWith('en') || message.bundle || message.notGame) {
         name = name.replace('’', "'").replace(/[^\w\s:',-]/gi, '');
         sendHltbRequest();

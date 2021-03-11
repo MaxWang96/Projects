@@ -6,8 +6,10 @@ function makePriceArr(arr, points) {
   for (; i < len - 2; i += 1) {
     if (points[i + 1][0] - points[i][0] <= 14400000
       || points[i + 1][1] === points[i][1]) {
-      const itemName = document.getElementsByClassName('apphub_AppName')[0].textContent;
-      dataModal(itemName);
+      const name = (bundle === 'bundle')
+        ? document.getElementsByClassName('pageheader')[0].textContent
+        : document.getElementsByClassName('apphub_AppName')[0].textContent;
+      dataModal(name);
     }
     arr.push(points[i][1]);
   }
@@ -55,8 +57,10 @@ function setupEnd(priceArr, firstPurchaseOption) {
     endDiscount = false;
   }
   if (price !== curPrice) {
-    const itemName = document.getElementsByClassName('apphub_AppName')[0].textContent;
-    dataModal(itemName);
+    const name = (bundle === 'bundle')
+      ? document.getElementsByClassName('pageheader')[0].textContent
+      : document.getElementsByClassName('apphub_AppName')[0].textContent;
+    dataModal(name);
   }
   return endDiscount;
 }
@@ -256,8 +260,10 @@ function calculateDiscount(points, firstPurchaseOption) {
   if ((points[0][1] === 0
       && points[1][0] - points[0][0] > 31536000000)
     || points[points.length - 1][1] !== points[points.length - 2][1]) {
-    const itemName = document.getElementsByClassName('apphub_AppName')[0].textContent;
-    dataModal(itemName);
+    const name = (bundle === 'bundle')
+      ? document.getElementsByClassName('pageheader')[0].textContent
+      : document.getElementsByClassName('apphub_AppName')[0].textContent;
+    dataModal(name);
   }
 
   const priceArr = [];

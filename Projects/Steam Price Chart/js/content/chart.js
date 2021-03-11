@@ -66,7 +66,6 @@ function addItadButton(chart, url) {
   const isMusic = document.getElementsByClassName('game_area_soundtrack_bubble').length !== 0;
   const itemType = isMusic ? 'soundtrack' : isDlc ? 'DLC' : 'game';
   const itadLabel = addLabel(chart, `View the ${itemType} on IsThereAnyDeal`).align(setAlign(isMusic ? -230 : isDlc ? -205 : -215));
-
   addImgUrl(addImg(chart, itadImgUrl, itadLabel, -85), url);
 }
 
@@ -332,6 +331,7 @@ function drawChart(results) {
     else height = tmp.appFull;
   }
   insertChart(height);
+
   const chart = Highcharts.stockChart('chart_container', chartOptions);
   if (simp) {
     chart.update({
@@ -354,7 +354,7 @@ function makeChart() {
     .catch((error) => {
       if (error === 'timeout') timeoutModal();
       else if (error === 'cantConnect') cantConnectModal();
-      else throw error;
+      else if (error.message !== 'chart error') throw error;
     });
 }
 
@@ -382,22 +382,20 @@ function updateChart(request) {
     const height = (bundle === 'bundle') ? tmp.bundleSimp : tmp.appSimp;
     container.css('height', height);
     chart.update({
-      chart: {
-        height,
-      },
       rangeSelector: {
         enabled: false,
       },
     }, false);
+    Object.assign(userChart.simp.chart, {
+      height,
+    });
     chart.update(userChart.simp);
   } else {
     const height = (bundle === 'bundle') ? tmp.bundleFull : tmp.appFull;
     container.css('height', height);
-    chart.update({
-      chart: {
-        height,
-      },
-    }, false);
+    Object.assign(userChart.full.chart, {
+      height,
+    });
     chart.update(userChart.full);
     chart.update({
       chart: {

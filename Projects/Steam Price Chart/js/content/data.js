@@ -1,19 +1,24 @@
 'use strict';
 
 function makePriceArr(arr, points) {
-  let i = 0;
   const len = points.length;
-  for (; i < len - 2; i += 1) {
-    if (points[i + 1][0] - points[i][0] <= 165600000
-      || points[i + 1][1] === points[i][1]) {
-      const name = (bundle === 'bundle')
-        ? document.getElementsByClassName('pageheader')[0].textContent
-        : document.getElementsByClassName('apphub_AppName')[0].textContent;
-      dataModal(name);
+  arr.push(points[0][1]);
+  if (len === 2) {
+    arr.push(points[1][1]);
+  } else {
+    let i = 1;
+    for (; i < len - 2; i += 1) {
+      if (points[i + 1][0] - points[i][0] <= 165600000
+        || points[i + 1][1] === points[i][1]) {
+        const name = (bundle === 'bundle')
+          ? document.getElementsByClassName('pageheader')[0].textContent
+          : document.getElementsByClassName('apphub_AppName')[0].textContent;
+        dataModal(name);
+      }
+      arr.push(points[i][1]);
     }
-    arr.push(points[i][1]);
+    arr.push(points[i][1], points[i + 1][1]);
   }
-  arr.push(points[i][1], points[i + 1][1]);
 }
 
 function setupEnd(priceArr, firstPurchaseOption) {
@@ -23,14 +28,6 @@ function setupEnd(priceArr, firstPurchaseOption) {
   const len = arr.length;
   const curPrice = arr[len - 1];
   const discount = firstPurchaseOption.getElementsByClassName('discount_block');
-
-  function findPrice(className, element = discount[0]) {
-    return parseFloat(element.getElementsByClassName(className)[0]
-      .textContent
-      .match(/[\d.,]+/)[0]
-      .replace(',', '.'));
-  }
-
   if (bundle) {
     price = discount[0].getAttribute('data-price-final') / 100;
     let max = price;
@@ -46,10 +43,14 @@ function setupEnd(priceArr, firstPurchaseOption) {
       arr[len - 1] = max;
     }
   } else if (discount.length !== 0) {
-    price = findPrice('discount_final_price');
-    arr[len - 1] = findPrice('discount_original_price');
+    price = discount[0].getAttribute('data-price-final') / 100;
+    arr[len - 1] = parseFloat(discount[0]
+      .getElementsByClassName('discount_original_price')[0]
+      .textContent
+      .match(/[\d.,]+/)[0]
+      .replace(',', '.'));
   } else {
-    price = findPrice('game_purchase_price', firstPurchaseOption);
+    price = firstPurchaseOption.getElementsByClassName('game_purchase_price')[0].getAttribute('data-price-final') / 100;
     arr[len - 1] = price / 2;
     arr.push(price);
     endDiscount = false;
@@ -250,18 +251,6 @@ function makeDiscountArr(len, priceArr, base) {
   return discountArr;
 }
 
-function addIntermediatePoints(points) {
-  const plotArr = [];
-  const len = points.length;
-  let i = 0;
-  for (; i < len - 2; i += 1) {
-    plotArr.push(points[i]);
-    plotArr.push([points[i + 1][0] - 3600000, points[i][1]]);
-  }
-  plotArr.push(points[i], points[i + 1]);
-  return plotArr;
-}
-
 function calculateDiscount(points, firstPurchaseOption) {
   if ((points[0][1] === 0
       && points[1][0] - points[0][0] > 31536000000)
@@ -277,4 +266,35 @@ function calculateDiscount(points, firstPurchaseOption) {
   const base = calculateBase(points, priceArr);
   restorePriceArr(points, priceArr, base, discounts);
   return makeDiscountArr(points.length, priceArr, base);
+}
+
+function personalPrice(pointsArr, firstPurchaseOption) {
+  const userPrice = firstPurchaseOption.getElementsByClassName('your_price');
+  if (userPrice.length) {
+    const price = parseFloat(userPrice[0]
+      .children[1]
+      .textContent
+      .match(/[\d.,]+/)[0]
+      .replace(',', '.'));
+    const points = pointsArr;
+    const len = points.length;
+    if (price !== points[len - 1][1]) {
+      const pricePercent = price / points[len - 1][1];
+      for (let i = 0; i < len; i += 1) {
+        points[i][1] *= pricePercent;
+      }
+    }
+  }
+}
+
+function addIntermediatePoints(points) {
+  const plotArr = [];
+  const len = points.length;
+  let i = 0;
+  for (; i < len - 2; i += 1) {
+    plotArr.push(points[i]);
+    plotArr.push([points[i + 1][0] - 3600000, points[i][1]]);
+  }
+  plotArr.push(points[i], points[i + 1]);
+  return plotArr;
 }

@@ -22,8 +22,8 @@ chrome.tabs.query({
 
 const lang = window.navigator.languages[0];
 document.body.style['min-width'] = lang.startsWith('zh') ? '120px' : '150px';
-document.getElementsByTagName('label')[0].innerText = chrome.i18n.getMessage('simplify');
-document.getElementById('feedback-btn').innerText = chrome.i18n.getMessage('feedback');
+document.getElementsByTagName('label')[0].textContent = chrome.i18n.getMessage('simplify');
+document.getElementById('feedback-btn').textContent = chrome.i18n.getMessage('feedback');
 document.getElementById('feedback-btn').onclick = () => {
   window.open('https://chrome.google.com/webstore/detail/stayfocusd/laankejkbhbdhmipfmgcngdelahlfoji/support');
 };

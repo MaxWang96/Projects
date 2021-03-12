@@ -20,20 +20,24 @@ function findIdAndOption(purchaseArea, isDlc, isMusic) {
       const wrap = wrappers[i];
       if (wrap.classList.length === 1) {
         const option = wrap.getElementsByClassName('game_area_purchase_game')[0];
-        if (option.getElementsByClassName('music').length === 0) {
+        if (!option.getElementsByTagName('h1')[0].textContent.includes('Soundtrack')) {
           const p = option.querySelector('p');
           if (p === null
-            || p.querySelector('a') === null
+            || p.querySelector('a') === null // portal 2
             || id === p.querySelector('a').href.split('/')[4]) {
             firstPurchaseOption = wrap;
             break;
           }
         }
       } else if (wrap.classList.length === 3) {
-        firstPurchaseOption = wrap;
-        bundle = 'app';
-        id = firstPurchaseOption.getAttribute('data-ds-bundleid');
-        break;
+        if (wrap.getElementsByClassName('btn_disabled').length) {
+          bundleOwnedModal();
+        } else {
+          firstPurchaseOption = wrap;
+          bundle = 'app';
+          id = firstPurchaseOption.getAttribute('data-ds-bundleid');
+          break;
+        }
       }
       i += 1;
     }

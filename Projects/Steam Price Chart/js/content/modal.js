@@ -74,3 +74,9 @@ function bundleModal(name) {
     chrome.i18n.getMessage('bundleText', name),
     false);
 }
+
+function bundleOwnedModal() {
+  modal('bundle_owned_modal',
+    chrome.i18n.getMessage('bundleOwnedHeader'),
+    chrome.i18n.getMessage('bundleOwnedText'));
+}

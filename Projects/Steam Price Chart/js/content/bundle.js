@@ -3,7 +3,7 @@
 function findRegion() {
   let region = document.getElementsByClassName('game_page_background')[0]
     .getElementsByTagName('script')[0]
-    .innerText
+    .textContent
     .match(/[A-Z]{2}/)[0];
   if (eu1.includes(region)) region = 'EU1';
   if (!supportedRegion.includes(region)) regionModal(region);
@@ -18,6 +18,7 @@ function findInfo() {
     itemName: document.getElementsByClassName('pageheader')[0].textContent,
     firstPurchaseOption: document.getElementsByClassName('bundle')[0],
   };
+  if (info.firstPurchaseOption.getElementsByClassName('btn_disabled').length) bundleOwnedModal();
   bundle = 'bundle';
   info.gameName = info.itemName;
   return info;

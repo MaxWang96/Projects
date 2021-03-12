@@ -70,6 +70,19 @@
         "message": "对不起，Steam价格历史图无法连接到数据来源以获取数据。",
         "description": "无法连接弹窗的主体文字"
     },
+    "freeItemHeader": {
+        "message": "免费商品",
+        "description": "免费商品弹窗的标题"
+    },
+    "freeItemText": {
+        "message": "$NAME$是免费商品，不显示图表。",
+        "description": "免费商品弹窗的主体文字，$NAME$是商品名称",
+        "placeholders": {
+            "name": {
+                "content": "$1"
+            }
+        }
+    },
     "bundleHeader": {
         "message": "显示捆绑包价格历史",
         "description": "捆绑包弹窗的标题"
@@ -83,18 +96,13 @@
             }
         }
     },
-    "freeItemHeader": {
-        "message": "免费商品",
-        "description": "免费商品弹窗的标题"
+    "bundleOwnedHeader": {
+        "message": "已拥有商品",
+        "description": "已拥有商品弹窗的标题"
     },
-    "freeItemText": {
-        "message": "$NAME$是免费商品，不显示图表。",
-        "description": "免费商品弹窗的主体文字，$NAME$是商品名称",
-        "placeholders": {
-            "name": {
-                "content": "$1"
-            }
-        }
+    "bundleOwnedText": {
+        "message": "您已经拥有了该商品，不显示图表。",
+        "description": "已拥有商品弹窗的主体文字"
     },
     "simplify": {
         "message": "简化图表",

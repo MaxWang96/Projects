@@ -41,6 +41,7 @@ function dataRequest(resolve, reject) {
     } catch (e) {
       return reject(e);
     }
+    if (bundle) response.data.points = personalPrice(points, info.firstPurchaseOption);
     response.data.points = addIntermediatePoints(points);
     return resolve({
       chartData: response,

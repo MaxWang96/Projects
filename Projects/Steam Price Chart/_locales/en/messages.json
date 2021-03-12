@@ -57,6 +57,17 @@
     "connectErrorText": {
         "message": "Sorry, Steam Price Chart fail to connect to IsThereAnyDeal.com to get the price history data."
     },
+    "freeItemHeader": {
+        "message": "Free Item"
+    },
+    "freeItemText": {
+        "message": "$NAME$ is free, no chart will be displayed.",
+        "placeholders": {
+            "name": {
+                "content": "$1"
+            }
+        }
+    },
     "bundleHeader": {
         "message": "Showing Bundle Price"
     },
@@ -68,16 +79,11 @@
             }
         }
     },
-    "freeItemHeader": {
-        "message": "Free Item"
+    "bundleOwnedHeader": {
+        "message": "Owned Item"
     },
-    "freeItemText": {
-        "message": "$NAME$ is free, no chart will be displayed.",
-        "placeholders": {
-            "name": {
-                "content": "$1"
-            }
-        }
+    "bundleOwnedText": {
+        "message": "You already own the item, no chart will be displayed."
     },
     "simplify": {
         "message": "Simplify chart"

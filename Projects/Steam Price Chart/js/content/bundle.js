@@ -24,8 +24,8 @@ function findInfo() {
 }
 
 function insertChart(height) {
-  document.getElementById('game_area_description')
-    .insertAdjacentHTML('beforeBegin', `
+  document.getElementById('game_area_purchase')
+    .insertAdjacentHTML('afterEnd', `
     <div class="steam_price_chart">
         <div id="chart_container" style="height: ${height}; min-width: 310px"></div>
     </div>

@@ -179,6 +179,7 @@ function drawChart(results) {
       gridLineColor: '#626366',
       gridLineWidth: 0.5,
       labels: {
+        x: 3,
         style: {
           color: '#acb2b8',
           fontSize: '12px',

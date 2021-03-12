@@ -590,6 +590,7 @@ button.close {
 }
 .modal-open .modal {
     width: 0px;
+    padding-right: 0px !important;
     margin: 0 auto;
     overflow-x: auto;
     overflow-y: auto;

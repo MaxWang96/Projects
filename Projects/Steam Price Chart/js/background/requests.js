@@ -66,9 +66,13 @@ function abnormal(dataArr) {
         && arr[i + 2][0] - arr[i + 1][0] <= 604800000) { // dead by daylight US
         i += 2;
       } else if (arr[i + 3][0] - arr[i + 2][0] <= fourHours) {
-        tmpArr.push(arr[i]);
-        toCompare = arr[i][1];
-        i += 3;
+        if (arr[i + 2][0] - arr[i + 1][0] <= fourHours) {
+          i += 4;
+        } else {
+          tmpArr.push(arr[i]);
+          toCompare = arr[i][1];
+          i += 3;
+        }
       } else if (arr[i - 1][1] < arr[i + 1][1]) {
         i += 1;
       } else if (arr[i + 1][0] - arr[i][0] <= 3600000
@@ -168,8 +172,8 @@ function requests(message, sender, sendResponse) {
         });
     } else {
       fetch(`https://isthereanydeal.com/steam/bundle/${message.id}/`, {
-        method: 'HEAD',
-      })
+          method: 'HEAD',
+        })
         .then((response) => {
           const bundleName = response.url.split('/')[4];
           sendItadRequest(bundleName);
@@ -191,12 +195,12 @@ function requests(message, sender, sendResponse) {
 
   function hltbRequest(callback) {
     fetch('https://howlongtobeat.com/search_results.php', {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/x-www-form-urlencoded',
-      },
-      body: `queryString=${name}&t=games&sorthead=popular&sortd='Normal Order'`,
-    })
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/x-www-form-urlencoded',
+        },
+        body: `queryString=${name}&t=games&sorthead=popular&sortd='Normal Order'`,
+      })
       .then((response) => response.text())
       .then((text) => callback(text));
   }

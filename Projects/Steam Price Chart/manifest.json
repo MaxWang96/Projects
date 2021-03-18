@@ -26,23 +26,20 @@
     "options_ui": "",
     "content_scripts": [
         {
-            "css": [
-                "css/bootstrap.css"
-            ],
             "js": [
-                "js/content/libs/jquery.min.js",
-                "js/content/libs/bootstrap.min.js",
-                "js/content/libs/highstock.js",
-                "js/content/modal.js",
-                "js/content/globals.js",
-                "js/content/app.js",
-                "js/content/chart.js",
-                "js/content/requests.js",
-                "js/content/data.js",
-                "js/content/content.js"
+                "js/content/app.js"
             ],
             "matches": [
                 "*://store.steampowered.com/app/*"
+            ],
+            "run_at": "document_end"
+        },
+        {
+            "js": [
+                "js/content/bundle.js"
+            ],
+            "matches": [
+                "*://store.steampowered.com/bundle/*"
             ],
             "run_at": "document_end"
         },
@@ -56,14 +53,15 @@
                 "js/content/libs/highstock.js",
                 "js/content/modal.js",
                 "js/content/globals.js",
-                "js/content/bundle.js",
                 "js/content/chart.js",
                 "js/content/requests.js",
                 "js/content/data.js",
                 "js/content/content.js"
             ],
             "matches": [
-                "*://store.steampowered.com/bundle/*"
+                "*://store.steampowered.com/app/*",
+                "*://store.steampowered.com/bundle/*",
+                "*://store.steampowered.com/sub/*"
             ],
             "run_at": "document_end"
         }

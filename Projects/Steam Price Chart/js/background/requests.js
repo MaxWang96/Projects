@@ -158,8 +158,8 @@ function requests(message, sender, sendResponse) {
       .then((response) => response.text())
       .then((text) => {
         clearTimeout(itadCantConnect);
-        let dataArr = JSON.parse(text.match(/"Steam","data":(\[\[.+?\]\])/)[1]);
-        dataArr = duplicate(dataArr);
+        resp.originalData = JSON.parse(text.match(/"Steam","data":(\[\[.+?\]\])/)[1]);
+        const dataArr = duplicate(resp.originalData);
         resp.data = abnormal(dataArr);
         if (button) resp.itadUrl = `https://isthereanydeal.com/game/${itemName}/info`;
         if (bundle === 'app' || bundle === 'appSub') {

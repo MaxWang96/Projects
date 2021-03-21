@@ -48,10 +48,10 @@ function freeItemModal(name) {
     chrome.i18n.getMessage('freeItemText', name));
 }
 
-function dataModal(name) {
+function dataModal() {
   modal('price_data_error_modal',
     chrome.i18n.getMessage('priceDataErrorHeader'),
-    chrome.i18n.getMessage('priceDataErrorText', name));
+    chrome.i18n.getMessage('priceDataErrorText', getName()));
 }
 
 function timeoutModal() {

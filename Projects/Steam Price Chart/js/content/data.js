@@ -10,7 +10,7 @@ function makePriceArr(arr, points) {
     for (; i < len - 2; i += 1) {
       if (points[i + 1][0] - points[i][0] <= 165600000
         || points[i + 1][1] === points[i][1]) {
-        dataModal(getName());
+        dataModal();
       }
       arr.push(points[i][1]);
     }
@@ -52,7 +52,7 @@ function setupEnd(priceArr, firstPurchaseOption) {
     arr.push(price);
     endDiscount = false;
   }
-  if (price !== curPrice) dataModal(getName());
+  if (price !== curPrice) dataModal();
   return endDiscount;
 }
 
@@ -131,8 +131,8 @@ function makeBase(priceArr, baseArr, priceIncrease, partial = false) {
           i += 5;
           priceIncrease.push(i);
         }
-      } else if (second > third) {
-        base[i + 1] = cur;
+      } else if (second > third) { // double price decrease
+        base[i + 1] = first;
         base.fill(second, i + 2, i + 5);
         i += 4;
       } else {
@@ -161,7 +161,7 @@ function checkAbnormalHigh(pointsArr, priceArr, baseArr, priceIncrease) {
     const toDelete = [];
     const correctBase = base[tmp - 1];
     if (i - 2 >= 0) {
-      if (priceIncrease[i] - priceIncrease[i - 2] <= 10) dataModal(getName());
+      if (priceIncrease[i] - priceIncrease[i - 2] <= 10) dataModal();
     }
     while (j < n) {
       if (price[idx] < correctBase) {
@@ -226,12 +226,20 @@ function restorePriceArr(points, priceArr, base, discounts) {
   }
 }
 
-function makeDiscountArr(len, priceArr, base) {
+function makeDiscountArr(points, priceArr, base) {
   const discountArr = [];
+  const len = points.length;
   let i = 0;
   for (; i < len - 2; i += 1) {
-    const curDiscount = Math.round((1 - priceArr[i] / base[i]) * 100);
-    discountArr.push(curDiscount, curDiscount);
+    if (priceArr[i] === base[i]) {
+      discountArr.push(0, 0);
+    } else {
+      if (points[i + 1][0] - points[i][0] >= 2592000000) {
+        dataModal();
+      }
+      const curDiscount = Math.round((1 - priceArr[i] / base[i]) * 100);
+      discountArr.push(curDiscount, curDiscount);
+    }
   }
   discountArr.push(Math.round((1 - priceArr[i] / base[i]) * 100),
     Math.round((1 - priceArr[i + 1] / base[i + 1]) * 100));
@@ -242,14 +250,14 @@ function calculateDiscount(points, firstPurchaseOption) {
   if ((points[0][1] === 0
       && points[1][0] - points[0][0] > 31536000000)
     || points[points.length - 1][1] !== points[points.length - 2][1]) {
-    dataModal(getName());
+    dataModal();
   }
 
   const priceArr = [];
   const discounts = setup(points, priceArr, firstPurchaseOption);
   const base = calculateBase(points, priceArr);
   restorePriceArr(points, priceArr, base, discounts);
-  return makeDiscountArr(points.length, priceArr, base);
+  return makeDiscountArr(points, priceArr, base);
 }
 
 function personalPrice(pointsArr, firstPurchaseOption) {

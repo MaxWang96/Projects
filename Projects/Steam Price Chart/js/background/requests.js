@@ -114,14 +114,16 @@ function abnormal(dataArr) {
     } else {
       pushCur();
     }
-    if (toCompare > max) {
-      max = toCompare;
-    } else if (toCompare < min) {
-      min = toCompare;
-    }
+    if (toCompare > max) max = toCompare;
+    else if (toCompare < min) min = toCompare;
   }
   tmpArr.push(arr[i]);
-  if (i === len - 2) tmpArr.push(lastPoint);
+  if (i === len - 2) {
+    tmpArr.push(lastPoint);
+    const lastPrice = lastPoint[1];
+    if (lastPrice > max) max = lastPrice;
+    else if (lastPrice < min) min = lastPrice;
+  }
   return {
     points: tmpArr,
     range: [min, max],
@@ -132,8 +134,15 @@ function requests(message, sender, sendResponse) {
   let {
     name,
   } = message;
-  let [itadSent, hltbReady, regReceived, altReceived, altSuccess] = [0, 0, 0, 0, 0];
+  const {
+    bundle,
+  } = message;
+  const button = !message.lang.startsWith('zh')
+    && bundle !== 'bundle'
+    && bundle !== 'sub';
+  const region = message.storeRegion === 'EU1' ? 'FR' : message.storeRegion;
   const resp = {};
+  let [itadSent, hltbReady, regReceived, altReceived, altSuccess] = [0, 0, 0, 0, 0];
   const itadCantConnect = setTimeout(() => {
     resp.itadError = true;
     sendResponse(resp);
@@ -145,15 +154,15 @@ function requests(message, sender, sendResponse) {
   }, 5000);
 
   function sendItadRequest(itemName) {
-    fetch(`https://isthereanydeal.com/game/${itemName}/history/${message.storeRegion.toLowerCase()}/?shop%5B%5D=steam&generate=Select+Stores`)
+    fetch(`https://isthereanydeal.com/game/${itemName}/history/?country=${region}&shop%5B%5D=steam&generate=Select+Stores`)
       .then((response) => response.text())
       .then((text) => {
         clearTimeout(itadCantConnect);
         let dataArr = JSON.parse(text.match(/"Steam","data":(\[\[.+?\]\])/)[1]);
         dataArr = duplicate(dataArr);
         resp.data = abnormal(dataArr);
-        resp.itadUrl = `https://isthereanydeal.com/game/${itemName}/info`;
-        if (message.bundle === 'app') {
+        if (button) resp.itadUrl = `https://isthereanydeal.com/game/${itemName}/info`;
+        if (bundle === 'app' || bundle === 'appSub') {
           resp.bundleTitle = text.match(/<h1 id='gameTitle'>.+?>(.+?)</)[1];
         }
         resp.hltbReady = hltbReady;
@@ -163,7 +172,7 @@ function requests(message, sender, sendResponse) {
   }
 
   function itad() {
-    if (!message.bundle) {
+    if (!bundle) {
       fetch(`https://api.isthereanydeal.com/v02/game/plain/?key=2a0a6baa1713e7be64e451ab1b863b988ce63455&shop=steam&game_id=app%2F${message.id}`)
         .then((response) => response.text())
         .then((text) => {
@@ -171,7 +180,8 @@ function requests(message, sender, sendResponse) {
           sendItadRequest(gameName);
         });
     } else {
-      fetch(`https://isthereanydeal.com/steam/bundle/${message.id}/`, {
+      const type = (bundle === 'sub' || bundle === 'appSub') ? 'sub' : 'bundle';
+      fetch(`https://isthereanydeal.com/steam/${type}/${message.id}/`, {
           method: 'HEAD',
         })
         .then((response) => {
@@ -210,9 +220,16 @@ function requests(message, sender, sendResponse) {
     hltbRequest((data) => {
       const getId = data.match(/href="(.+?)"/);
       if (getId !== null) {
-        resp.hltbUrl = `http://howlongtobeat.com/${getId[1]}`;
-        hltbReady = 1;
-        tryMessage();
+        if (data.match(/title="(.+?)"/)[1].length === name.length) {
+          resp.hltbUrl = `http://howlongtobeat.com/${getId[1]}`;
+          hltbReady = 1;
+          tryMessage();
+        } else {
+          clearTimeout(hltbCantConnect);
+          chrome.tabs.sendMessage(sender.tab.id, {
+            hltbCantFind: true,
+          });
+        }
       } else {
         backupMethod();
       }
@@ -270,8 +287,8 @@ function requests(message, sender, sendResponse) {
   }
 
   function hltb() {
-    if (!message.lang.startsWith('zh') && message.bundle !== 'bundle') {
-      if (message.lang.startsWith('en') || message.bundle || message.notGame) {
+    if (button) {
+      if (message.lang.startsWith('en') || bundle || message.notGame) {
         name = name.replace('’', "'").replace(/[^\w\s:',-]/gi, '');
         sendHltbRequest();
       } else {

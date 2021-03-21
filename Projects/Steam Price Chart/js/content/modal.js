@@ -75,6 +75,13 @@ function bundleModal(name) {
     false);
 }
 
+function subModal(name) {
+  modal('display_sub_modal',
+    chrome.i18n.getMessage('subHeader'),
+    chrome.i18n.getMessage('subText', name),
+    false);
+}
+
 function bundleOwnedModal() {
   modal('bundle_owned_modal',
     chrome.i18n.getMessage('bundleOwnedHeader'),

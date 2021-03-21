@@ -10,16 +10,23 @@ function findRegion() {
   return region;
 }
 
+function getName() {
+  return document.getElementsByClassName('pageheader')[0].textContent;
+}
+
 function findInfo() {
+  const urlParts = window.location.href.split('/');
   const info = {
     region: findRegion(),
+    itemName: getName(),
     sysLang: window.navigator.languages[0],
-    id: window.location.href.split('/')[4],
-    itemName: document.getElementsByClassName('pageheader')[0].textContent,
-    firstPurchaseOption: document.getElementsByClassName('bundle')[0],
+    id: urlParts[4],
+    firstPurchaseOption: (urlParts[3] === 'bundle')
+      ? document.getElementsByClassName('bundle')[0]
+      : document.getElementsByClassName('game_area_purchase_game')[0],
   };
   if (info.firstPurchaseOption.getElementsByClassName('btn_disabled').length) bundleOwnedModal();
-  bundle = 'bundle';
+  bundle = urlParts[3];
   info.gameName = info.itemName;
   return info;
 }

@@ -64,8 +64,16 @@ function addItadButton(chart, url) {
   const itadImgUrl = chrome.runtime.getURL('../images/isthereanydeal_icon.svg');
   const isDlc = document.getElementsByClassName('game_area_dlc_bubble').length !== 0;
   const isMusic = document.getElementsByClassName('game_area_soundtrack_bubble').length !== 0;
-  const itemType = isMusic ? 'soundtrack' : isDlc ? 'DLC' : 'game';
-  const itadLabel = addLabel(chart, `View the ${itemType} on IsThereAnyDeal`).align(setAlign(isMusic ? -230 : isDlc ? -205 : -215));
+
+  let itemType;
+  let offset;
+  if (isMusic)[itemType, offset] = ['soundtrack', -230];
+  else if (isDlc)[itemType, offset] = ['DLC', -205];
+  else if (bundle === 'app')[itemType, offset] = ['bundle', -220];
+  else if (bundle === 'appSub')[itemType, offset] = ['package', -230];
+  else [itemType, offset] = ['game', -215];
+
+  const itadLabel = addLabel(chart, `View the ${itemType} on IsThereAnyDeal`).align(setAlign(offset));
   addImgUrl(addImg(chart, itadImgUrl, itadLabel, -85), url);
 }
 
@@ -107,7 +115,7 @@ function drawChart(results) {
   const {
     simp,
   } = results[1];
-  const title = (bundle === 'app') ? chartData.bundleTitle : info.itemName;
+  const title = (bundle === 'app' || bundle === 'appSub') ? chartData.bundleTitle : info.itemName;
 
   const {
     sysLang,
@@ -132,7 +140,9 @@ function drawChart(results) {
       backgroundColor: 'rgba( 0, 0, 0, 0.2 )',
       events: {
         load() {
-          if (setting.lang.siteButton && bundle !== 'bundle') addButtons(this, chartData);
+          if (setting.lang.siteButton
+            && bundle !== 'bundle'
+            && bundle !== 'sub') addButtons(this, chartData);
         },
       },
       style: {
@@ -324,7 +334,7 @@ function drawChart(results) {
 
   let height;
   const tmp = userChart.height;
-  if (bundle === 'bundle') {
+  if (bundle === 'bundle' || bundle === 'sub') {
     if (simp) height = tmp.bundleSimp;
     else height = tmp.bundleFull;
   } else {
@@ -342,9 +352,8 @@ function drawChart(results) {
     });
   }
 
-  if (bundle === 'app') {
-    bundleModal(info.itemName);
-  }
+  if (bundle === 'app') bundleModal(info.itemName);
+  else if (bundle === 'appSub') subModal(info.itemName);
 }
 
 function makeChart() {
@@ -379,8 +388,9 @@ function updateChart(request) {
   const container = $('#chart_container');
   const chart = container.highcharts();
   const tmp = userChart.height;
+  const appPage = bundle !== 'bundle' && bundle !== 'sub';
   if (request.simp) {
-    const height = (bundle === 'bundle') ? tmp.bundleSimp : tmp.appSimp;
+    const height = appPage ? tmp.appSimp : tmp.bundleSimp;
     container.css('height', height);
     chart.update({
       rangeSelector: {
@@ -392,7 +402,7 @@ function updateChart(request) {
     });
     chart.update(userChart.simp);
   } else {
-    const height = (bundle === 'bundle') ? tmp.bundleFull : tmp.appFull;
+    const height = appPage ? tmp.appFull : tmp.bundleFull;
     container.css('height', height);
     Object.assign(userChart.full.chart, {
       height,

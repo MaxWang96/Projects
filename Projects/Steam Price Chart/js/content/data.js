@@ -10,10 +10,7 @@ function makePriceArr(arr, points) {
     for (; i < len - 2; i += 1) {
       if (points[i + 1][0] - points[i][0] <= 165600000
         || points[i + 1][1] === points[i][1]) {
-        const name = (bundle === 'bundle')
-          ? document.getElementsByClassName('pageheader')[0].textContent
-          : document.getElementsByClassName('apphub_AppName')[0].textContent;
-        dataModal(name);
+        dataModal(getName());
       }
       arr.push(points[i][1]);
     }
@@ -28,7 +25,7 @@ function setupEnd(priceArr, firstPurchaseOption) {
   const len = arr.length;
   const curPrice = arr[len - 1];
   const discount = firstPurchaseOption.getElementsByClassName('discount_block');
-  if (bundle) {
+  if (bundle === 'app' || bundle === 'bundle') {
     price = discount[0].getAttribute('data-price-final') / 100;
     let max = price;
     const searchRange = len < 5 ? len - 1 : 4;
@@ -55,12 +52,7 @@ function setupEnd(priceArr, firstPurchaseOption) {
     arr.push(price);
     endDiscount = false;
   }
-  if (price !== curPrice) {
-    const name = (bundle === 'bundle')
-      ? document.getElementsByClassName('pageheader')[0].textContent
-      : document.getElementsByClassName('apphub_AppName')[0].textContent;
-    dataModal(name);
-  }
+  if (price !== curPrice) dataModal(getName());
   return endDiscount;
 }
 
@@ -169,12 +161,7 @@ function checkAbnormalHigh(pointsArr, priceArr, baseArr, priceIncrease) {
     const toDelete = [];
     const correctBase = base[tmp - 1];
     if (i - 2 >= 0) {
-      if (priceIncrease[i] - priceIncrease[i - 2] <= 10) {
-        const name = (bundle === 'bundle')
-          ? document.getElementsByClassName('pageheader')[0].textContent
-          : document.getElementsByClassName('apphub_AppName')[0].textContent;
-        dataModal(name);
-      }
+      if (priceIncrease[i] - priceIncrease[i - 2] <= 10) dataModal(getName());
     }
     while (j < n) {
       if (price[idx] < correctBase) {
@@ -255,10 +242,7 @@ function calculateDiscount(points, firstPurchaseOption) {
   if ((points[0][1] === 0
       && points[1][0] - points[0][0] > 31536000000)
     || points[points.length - 1][1] !== points[points.length - 2][1]) {
-    const name = (bundle === 'bundle')
-      ? document.getElementsByClassName('pageheader')[0].textContent
-      : document.getElementsByClassName('apphub_AppName')[0].textContent;
-    dataModal(name);
+    dataModal(getName());
   }
 
   const priceArr = [];

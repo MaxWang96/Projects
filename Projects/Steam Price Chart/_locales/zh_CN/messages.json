@@ -96,6 +96,19 @@
             }
         }
     },
+    "subHeader": {
+        "message": "显示礼包价格历史",
+        "description": "礼包弹窗的标题"
+    },
+    "subText": {
+        "message": "$NAME$只在礼包中出售，显示礼包价格历史。",
+        "description": "礼包弹窗的主体文字，$NAME$是商品名称",
+        "placeholders": {
+            "name": {
+                "content": "$1"
+            }
+        }
+    },
     "bundleOwnedHeader": {
         "message": "已拥有商品",
         "description": "已拥有商品弹窗的标题"

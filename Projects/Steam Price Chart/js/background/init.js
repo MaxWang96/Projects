@@ -9,7 +9,7 @@ function init() {
     chrome.declarativeContent.onPageChanged.addRules([{
       conditions: [new chrome.declarativeContent.PageStateMatcher({
         pageUrl: {
-          urlMatches: 'store.steampowered.com/(app|bundle)',
+          urlMatches: 'store.steampowered.com/(app|sub|bundle)',
         },
       })],
       actions: [new chrome.declarativeContent.ShowPageAction()],

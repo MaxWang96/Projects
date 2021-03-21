@@ -79,6 +79,17 @@
             }
         }
     },
+    "subHeader": {
+        "message": "Showing Package Price"
+    },
+    "subText": {
+        "message": "$NAME$ is only sold in a package, displayed the package price history.",
+        "placeholders": {
+            "name": {
+                "content": "$1"
+            }
+        }
+    },
     "bundleOwnedHeader": {
         "message": "Owned Item"
     },

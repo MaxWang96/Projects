@@ -7,7 +7,7 @@ function findRegion() {
   return region;
 }
 
-function findIdAndOption(purchaseArea, isDlc, isMusic) {
+function findIdAndOption(purchaseArea, isDlc, isMusic, name) {
   let id = window.location.href.split('/')[4];
   let firstPurchaseOption;
   let i = 0;
@@ -15,16 +15,23 @@ function findIdAndOption(purchaseArea, isDlc, isMusic) {
   if (isDlc || isMusic) {
     [firstPurchaseOption] = wrappers;
     if (firstPurchaseOption.classList.length === 3) bundle = 'app';
+    else if (firstPurchaseOption.getElementsByClassName('package_contents').length === 1) bundle = 'appSub';
   } else {
     for (;;) {
       const wrap = wrappers[i];
       if (wrap.classList.length === 1) {
         const option = wrap.getElementsByClassName('game_area_purchase_game')[0];
-        if (!option.getElementsByTagName('h1')[0].textContent.includes('Soundtrack')) {
-          const p = option.querySelector('p');
-          if (p === null
-            || p.querySelector('a') === null // portal 2
-            || id === p.querySelector('a').href.split('/')[4]) {
+        const h1 = option.getElementsByTagName('h1')[0].textContent;
+        if (!h1.includes('Soundtrack')) {
+          const p = option.getElementsByTagName('p');
+          if (p.length === 0
+            || p[0].getElementsByTagName('a').length === 0
+            || h1.startsWith(name)
+            || h1.endsWith(name)) {
+            if (option.getElementsByClassName('package_contents').length === 1) {
+              bundle = 'appSub';
+              [id] = option.getAttribute('id').match(/\d+/);
+            }
             firstPurchaseOption = wrap;
             break;
           }
@@ -48,26 +55,31 @@ function findIdAndOption(purchaseArea, isDlc, isMusic) {
   };
 }
 
+function getName() {
+  return document.getElementsByClassName('apphub_AppName')[0].textContent;
+}
+
 function findInfo() {
   const purchaseArea = document.getElementById('game_area_purchase');
   const isDlc = purchaseArea.getElementsByClassName('game_area_dlc_bubble').length !== 0;
   const isMusic = purchaseArea.getElementsByClassName('game_area_soundtrack_bubble').length !== 0;
   const info = {
-    sysLang: window.navigator.languages[0],
-    itemName: document.getElementsByClassName('apphub_AppName')[0].textContent,
     region: findRegion(),
+    itemName: getName(),
+    sysLang: window.navigator.languages[0],
     notGame: isDlc || isMusic,
   };
 
-  if (purchaseArea.querySelector('div.game_area_purchase_game')
-    .getAttribute('class') === 'game_area_purchase_game ') {
+  const firstOption = purchaseArea.querySelector('div.game_area_purchase_game');
+  if (firstOption === null) throw new Error('chart error');
+  else if (firstOption.getAttribute('class') === 'game_area_purchase_game ') {
     freeItemModal(info.itemName);
   }
 
   info.gameName = (!isDlc && !isMusic)
     ? info.itemName
-    : purchaseArea.getElementsByClassName('game_area_bubble')[0].querySelector('a').textContent;
-  Object.assign(info, findIdAndOption(purchaseArea, isDlc, isMusic));
+    : purchaseArea.getElementsByClassName('game_area_bubble')[0].getElementsByTagName('a')[0].textContent;
+  Object.assign(info, findIdAndOption(purchaseArea, isDlc, isMusic, info.itemName));
   return info;
 }
 

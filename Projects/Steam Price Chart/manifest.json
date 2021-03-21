@@ -39,7 +39,8 @@
                 "js/content/bundle.js"
             ],
             "matches": [
-                "*://store.steampowered.com/bundle/*"
+                "*://store.steampowered.com/bundle/*",
+                "*://store.steampowered.com/sub/*"
             ],
             "run_at": "document_end"
         },

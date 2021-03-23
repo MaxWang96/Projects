@@ -10,7 +10,7 @@ function makePriceArr(arr, points) {
     for (; i < len - 2; i += 1) {
       if (points[i + 1][0] - points[i][0] <= 165600000
         || points[i + 1][1] === points[i][1]) {
-        dataModal();
+        showOriginalModal();
       }
       arr.push(points[i][1]);
     }
@@ -161,7 +161,7 @@ function checkAbnormalHigh(pointsArr, priceArr, baseArr, priceIncrease) {
     const toDelete = [];
     const correctBase = base[tmp - 1];
     if (i - 2 >= 0) {
-      if (priceIncrease[i] - priceIncrease[i - 2] <= 10) dataModal();
+      if (priceIncrease[i] - priceIncrease[i - 2] <= 10) showOriginalModal();
     }
     while (j < n) {
       if (price[idx] < correctBase) {
@@ -234,8 +234,8 @@ function makeDiscountArr(points, priceArr, base) {
     if (priceArr[i] === base[i]) {
       discountArr.push(0, 0);
     } else {
-      if (points[i + 1][0] - points[i][0] >= 2592000000) {
-        dataModal();
+      if (points[i + 1][0] - points[i][0] >= 2592000000 && i > 0) {
+        showOriginalModal();
       }
       const curDiscount = Math.round((1 - priceArr[i] / base[i]) * 100);
       discountArr.push(curDiscount, curDiscount);
@@ -248,11 +248,10 @@ function makeDiscountArr(points, priceArr, base) {
 
 function calculateDiscount(points, firstPurchaseOption) {
   if ((points[0][1] === 0
-      && points[1][0] - points[0][0] > 31536000000)
+      && points[1][0] - points[0][0] >= 31536000000)
     || points[points.length - 1][1] !== points[points.length - 2][1]) {
     dataModal();
   }
-
   const priceArr = [];
   const discounts = setup(points, priceArr, firstPurchaseOption);
   const base = calculateBase(points, priceArr);

@@ -12,7 +12,7 @@ function showModal(id) {
     });
 }
 
-function modal(id, header, text, error = true) {
+function modal(id, header, text, error = 'chart error') {
   document.body.insertAdjacentHTML('beforeend', `
             <div class="spc_modal_container">
                 <div class="modal right fade" id="${id}" role="dialog">
@@ -33,7 +33,7 @@ function modal(id, header, text, error = true) {
   if (document.readyState !== 'complete') setTimeout(showModal.bind(null, id), 1000);
   else showModal(id);
 
-  if (error) throw new Error('chart error');
+  if (error) throw new Error(error);
 }
 
 function regionModal(region) {
@@ -46,6 +46,13 @@ function freeItemModal(name) {
   modal('free_item_modal',
     chrome.i18n.getMessage('freeItemHeader'),
     chrome.i18n.getMessage('freeItemText', name));
+}
+
+function showOriginalModal() {
+  modal('show_original_data_modal',
+    chrome.i18n.getMessage('originalDataHeader'),
+    chrome.i18n.getMessage('originalDataText', getName()),
+    'original');
 }
 
 function dataModal() {

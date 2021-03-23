@@ -39,6 +39,13 @@ function dataRequest(resolve, reject) {
     try {
       response.data.discount = calculateDiscount(points, info.firstPurchaseOption);
     } catch (e) {
+      if (e.message === 'original') {
+        return resolve({
+          chartData: response,
+          original: false,
+          info,
+        });
+      }
       return reject(e);
     }
     if (bundle) response.data.points = personalPrice(points, info.firstPurchaseOption);

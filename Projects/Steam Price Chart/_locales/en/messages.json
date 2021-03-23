@@ -34,6 +34,17 @@
             }
         }
     },
+    "originalDataHeader": {
+        "message": "Showing Original Data"
+    },
+    "originalDataText": {
+        "message": "Sorry, Steam Price Chart can't cleanse the price history data of $NAME$. The original data is displayed for referrence.",
+        "placeholders": {
+            "name": {
+                "content": "$1"
+            }
+        }
+    },
     "timeoutErrorHeader": {
         "message": "Background Error"
     },

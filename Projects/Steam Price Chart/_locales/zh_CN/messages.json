@@ -41,6 +41,19 @@
             }
         }
     },
+    "originalDataHeader": {
+        "message": "显示原始数据",
+        "description": "原始数据弹窗的标题"
+    },
+    "originalDataText": {
+        "message": "对不起，Steam价格历史图无法清理$NAME$的价格历史数据。显示原始数据作为参考。",
+        "description": "原始数据弹窗的主体文字，$NAME$是商品名称",
+        "placeholders": {
+            "name": {
+                "content": "$1"
+            }
+        }
+    },
     "timeoutErrorHeader": {
         "message": "后台错误",
         "description": "后台错误弹窗的标题"

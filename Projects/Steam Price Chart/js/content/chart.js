@@ -111,6 +111,7 @@ function drawChart(results) {
   const {
     info,
     chartData,
+    original,
   } = results[0];
   const {
     simp,
@@ -159,7 +160,7 @@ function drawChart(results) {
 
     series: [{
       name: chrome.i18n.getMessage('lineName'),
-      data: chartData.data.points,
+      data: original ? chartData.originalData : chartData.data.points,
       color: '#67c1f5',
       step: true,
     }],
@@ -217,12 +218,14 @@ function drawChart(results) {
         } = this.points[0];
         let htmlStr = `<span style="font-size:90%">${Highcharts.dateFormat(setting.lang.dateFormat, this.x)}</span>`;
         htmlStr += `<br/>${chrome.i18n.getMessage('linePrefix')}<b>${setting.price.formatPrice(point.y)}</b><br/>`;
-        if (chartData.data.discount[point.index] === 0) {
-          htmlStr += chrome.i18n.getMessage('noDiscount');
-        } else if (chartData.data.discount[point.index] !== 100) {
-          htmlStr += `${chrome.i18n.getMessage('discountPrefix')}<b>${chartData.data.discount[point.index]}%</b>`;
-        } else {
-          htmlStr += chrome.i18n.getMessage('freeItem');
+        if (!original) {
+          if (chartData.data.discount[point.index] === 0) {
+            htmlStr += chrome.i18n.getMessage('noDiscount');
+          } else if (chartData.data.discount[point.index] !== 100) {
+            htmlStr += `${chrome.i18n.getMessage('discountPrefix')}<b>${chartData.data.discount[point.index]}%</b>`;
+          } else {
+            htmlStr += chrome.i18n.getMessage('freeItem');
+          }
         }
         return htmlStr;
       },

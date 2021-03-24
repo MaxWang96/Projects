@@ -234,9 +234,9 @@ function makeDiscountArr(points, priceArr, base) {
     if (priceArr[i] === base[i]) {
       discountArr.push(0, 0);
     } else {
-      if (points[i + 1][0] - points[i][0] >= 2592000000 && i > 0) {
-        showOriginalModal();
-      }
+      // if (points[i + 1][0] - points[i][0] >= 2592000000 && i > 0) {
+      //   showOriginalModal();
+      // }
       const curDiscount = Math.round((1 - priceArr[i] / base[i]) * 100);
       discountArr.push(curDiscount, curDiscount);
     }

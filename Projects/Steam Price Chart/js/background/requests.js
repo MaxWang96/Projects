@@ -36,7 +36,7 @@ function abnormal(dataArr) {
   let len = arr.length;
   let [min, max] = [arr[0][1], arr[0][1]];
   const lastPoint = arr[len - 1].slice();
-  const [fourHours, fourtySixHours] = [14400000, 165600000];
+  const [fourHours, fourtySixHours, oneMonth] = [14400000, 165600000, 2592000000];
   if (arr[len - 1][1] !== arr[len - 2][1]
     && arr[len - 1][0] - arr[len - 2][0] <= fourHours) {
     arr.splice(len - 2, 1);
@@ -59,6 +59,14 @@ function abnormal(dataArr) {
     i += n + 1;
   }
 
+  function flip() {
+    arr[i + 2][1] = arr[i + 1][1];
+    tmpArr.push(arr[i], arr[i + 2]);
+    toCompare = arr[i][1];
+    if (arr[i + 2][1] === arr[i + 3][1]) i += 4;
+    else i += 3;
+  }
+
   while (i < len - 2) {
     if (arr[i + 1][0] - arr[i][0] <= fourHours) {
       if (arr[i][1] > arr[i + 1][1]
@@ -73,10 +81,15 @@ function abnormal(dataArr) {
           toCompare = arr[i][1];
           i += 3;
         }
+      } else if (arr[i + 3][0] - arr[i + 2][0] >= oneMonth
+        && i < len - 4
+        && arr[i + 1][1] > arr[i + 2][1]
+        && (arr[i + 3][1] > arr[i + 2][1] || arr[i + 4][1] > arr[i + 2][1])) {
+        flip();
       } else if (arr[i - 1][1] < arr[i + 1][1]) {
         i += 1;
       } else if (arr[i + 1][0] - arr[i][0] <= 3600000
-        && arr[i][0] - arr[i - 1][0] >= 2592000000) { // dead by daylight CN
+        && arr[i][0] - arr[i - 1][0] >= oneMonth) { // dead by daylight CN
         tmpArr.pop();
         tmpArr.push(arr[i + 1]);
         toCompare = arr[i + 1][1];
@@ -102,6 +115,11 @@ function abnormal(dataArr) {
         } else {
           condiPush(1);
         }
+      } else if (arr[i + 3][0] - arr[i + 2][0] >= oneMonth
+        && i < len - 4
+        && arr[i + 1][1] > arr[i + 2][1]
+        && (arr[i + 3][1] > arr[i + 2][1] || arr[i + 4][1] > arr[i + 2][1])) {
+        flip();
       } else if (arr[i][1] > arr[i + 1][1]
         && arr[i][1] === arr[i + 2][1]
         && arr[i][1] < arr[i + 3][1]) { // darkest dungeon CN

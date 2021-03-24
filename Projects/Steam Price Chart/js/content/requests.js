@@ -42,7 +42,7 @@ function dataRequest(resolve, reject) {
       if (e.message === 'original') {
         return resolve({
           chartData: response,
-          original: false,
+          original: true,
           info,
         });
       }

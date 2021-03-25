@@ -228,15 +228,24 @@ function restorePriceArr(points, priceArr, base, discounts) {
 
 function makeDiscountArr(points, priceArr, base) {
   const discountArr = [];
-  const len = points.length;
+  let len = points.length;
   let i = 0;
   for (; i < len - 2; i += 1) {
     if (priceArr[i] === base[i]) {
       discountArr.push(0, 0);
     } else {
-      // if (points[i + 1][0] - points[i][0] >= 2592000000 && i > 0) {
-      //   showOriginalModal();
-      // }
+      if (points[i + 1][0] - points[i][0] >= 2592000000
+        && i > 1) {
+        if (priceArr[i] === 0) {
+          points[i][1] = points[i + 1][1];
+          points.splice(i + 1, 1);
+          priceArr.splice(i + 1, 1);
+          base.splice(i + 1, 1);
+          len -= 1;
+        } else {
+          showOriginalModal();
+        }
+      }
       const curDiscount = Math.round((1 - priceArr[i] / base[i]) * 100);
       discountArr.push(curDiscount, curDiscount);
     }

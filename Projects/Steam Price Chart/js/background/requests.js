@@ -67,6 +67,13 @@ function abnormal(dataArr) {
     else i += 3;
   }
 
+  function badDiscount() {
+    tmpArr.pop();
+    tmpArr.push(arr[i + 1]);
+    toCompare = arr[i + 1][1];
+    i += 2;
+  }
+
   while (i < len - 2) {
     if (arr[i + 1][0] - arr[i][0] <= fourHours) {
       if (arr[i][1] > arr[i + 1][1]
@@ -84,16 +91,14 @@ function abnormal(dataArr) {
       } else if (arr[i + 3][0] - arr[i + 2][0] >= oneMonth
         && i < len - 4
         && arr[i + 1][1] > arr[i + 2][1]
-        && (arr[i + 3][1] > arr[i + 2][1] || arr[i + 4][1] > arr[i + 2][1])) {
+        && (arr[i + 3][1] > arr[i + 2][1]
+          || arr[i + 4][1] > arr[i + 2][1])) { // hitman blood money requiem pack US
         flip();
       } else if (arr[i - 1][1] < arr[i + 1][1]) {
         i += 1;
       } else if (arr[i + 1][0] - arr[i][0] <= 3600000
         && arr[i][0] - arr[i - 1][0] >= oneMonth) { // dead by daylight CN
-        tmpArr.pop();
-        tmpArr.push(arr[i + 1]);
-        toCompare = arr[i + 1][1];
-        i += 2;
+        badDiscount();
       } else if (arr[i + 1][1] < arr[i][1]
         && arr[i][1] < arr[i - 1][1]) { // shadow of the tomb raider US
         i += 1;
@@ -115,10 +120,17 @@ function abnormal(dataArr) {
         } else {
           condiPush(1);
         }
+      } else if (arr[i][1] > arr[i + 1][1]
+        && i > 1
+        && arr[i][0] - arr[i - 1][0] >= oneMonth
+        && arr[i - 2][1] === arr[i][1]
+        && arr[i - 2][1] > arr[i - 1][1]) { // borderlands 2 season pass CN
+        badDiscount();
       } else if (arr[i + 3][0] - arr[i + 2][0] >= oneMonth
         && i < len - 4
         && arr[i + 1][1] > arr[i + 2][1]
-        && (arr[i + 3][1] > arr[i + 2][1] || arr[i + 4][1] > arr[i + 2][1])) {
+        && (arr[i + 3][1] > arr[i + 2][1]
+          || arr[i + 4][1] > arr[i + 2][1])) { // borderlands 2 season pass CN
         flip();
       } else if (arr[i][1] > arr[i + 1][1]
         && arr[i][1] === arr[i + 2][1]

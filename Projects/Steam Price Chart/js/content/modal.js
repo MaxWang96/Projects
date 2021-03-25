@@ -49,10 +49,10 @@ function freeItemModal(name) {
 }
 
 function showOriginalModal() {
-  modal('show_original_data_modal',
-    chrome.i18n.getMessage('originalDataHeader'),
-    chrome.i18n.getMessage('originalDataText', getName()),
-    'original');
+  // modal('show_original_data_modal',
+  //   chrome.i18n.getMessage('originalDataHeader'),
+  //   chrome.i18n.getMessage('originalDataText', getName()),
+  //   'original');
 }
 
 function dataModal() {

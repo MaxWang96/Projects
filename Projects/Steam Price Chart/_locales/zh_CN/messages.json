@@ -41,6 +41,17 @@
             }
         }
     },
+    "updateDelayHeader": {
+        "message": "数据更新延迟"
+    },
+    "updateDelayText": {
+        "message": "对不起，$NAME$的价格历史数据更新似乎出现了延迟，图表数据可能不准确。",
+        "placeholders": {
+            "name": {
+                "content": "$1"
+            }
+        }
+    },
     "originalDataHeader": {
         "message": "显示原始数据",
         "description": "原始数据弹窗的标题"

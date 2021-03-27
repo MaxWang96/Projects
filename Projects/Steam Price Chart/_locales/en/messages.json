@@ -34,6 +34,17 @@
             }
         }
     },
+    "updateDelayHeader": {
+        "message": "Data Update Delay"
+    },
+    "updateDelayText": {
+        "message": "Sorry, there seems to be an update delay of the price history data of $NAME$, the chart might not be accurate.",
+        "placeholders": {
+            "name": {
+                "content": "$1"
+            }
+        }
+    },
     "originalDataHeader": {
         "message": "Showing Original Data"
     },

@@ -49,16 +49,23 @@ function freeItemModal(name) {
 }
 
 function showOriginalModal() {
-  // modal('show_original_data_modal',
-  //   chrome.i18n.getMessage('originalDataHeader'),
-  //   chrome.i18n.getMessage('originalDataText', getName()),
-  //   'original');
+  modal('show_original_data_modal',
+    chrome.i18n.getMessage('originalDataHeader'),
+    chrome.i18n.getMessage('originalDataText', getName()),
+    'original');
 }
 
 function dataModal() {
   modal('price_data_error_modal',
     chrome.i18n.getMessage('priceDataErrorHeader'),
     chrome.i18n.getMessage('priceDataErrorText', getName()));
+}
+
+function updateDelayModal() {
+  modal('update_delay_modal',
+    chrome.i18n.getMessage('updateDelayHeader'),
+    chrome.i18n.getMessage('updateDelayText', getName()),
+    false);
 }
 
 function timeoutModal() {

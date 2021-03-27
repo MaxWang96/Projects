@@ -130,7 +130,7 @@ const userChart = {
     },
 
     xAxis: {
-      range: 7776000000,
+      range: 7776e6,
     },
   },
   height: {

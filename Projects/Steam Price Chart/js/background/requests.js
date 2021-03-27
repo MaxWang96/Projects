@@ -36,14 +36,14 @@ function abnormal(dataArr) {
   let len = arr.length;
   let [min, max] = [arr[0][1], arr[0][1]];
   const lastPoint = arr[len - 1].slice();
-  const [fourHours, fourtySixHours, oneMonth] = [14400000, 165600000, 2592000000];
+  const [fiveHours, fourtySixHours, oneMonth] = [18e6, 1656e5, 2592e6];
   if (arr[len - 1][1] !== arr[len - 2][1]
-    && arr[len - 1][0] - arr[len - 2][0] <= fourHours) {
+    && arr[len - 1][0] - arr[len - 2][0] <= fiveHours) {
     arr.splice(len - 2, 1);
     len -= 1;
   }
   arr[len - 1][0] += fourtySixHours;
-  arr.push([arr[len - 1][0] + 172800000, arr[len - 1][1]]);
+  arr.push([arr[len - 1][0] + 1728e5, arr[len - 1][1]]);
 
   function pushCur() {
     tmpArr.push(arr[i]);
@@ -75,13 +75,13 @@ function abnormal(dataArr) {
   }
 
   while (i < len - 2) {
-    if (arr[i + 1][0] - arr[i][0] <= fourHours) {
+    if (arr[i + 1][0] - arr[i][0] <= fiveHours) {
       if (arr[i][1] > arr[i + 1][1]
         && arr[i - 1][1] === arr[i + 1][1]
-        && arr[i + 2][0] - arr[i + 1][0] <= 604800000) { // dead by daylight US
+        && arr[i + 2][0] - arr[i + 1][0] <= 6048e5) { // dead by daylight US
         i += 2;
-      } else if (arr[i + 3][0] - arr[i + 2][0] <= fourHours) {
-        if (arr[i + 2][0] - arr[i + 1][0] <= fourHours) {
+      } else if (arr[i + 3][0] - arr[i + 2][0] <= fiveHours) {
+        if (arr[i + 2][0] - arr[i + 1][0] <= fiveHours) {
           i += 4;
         } else {
           tmpArr.push(arr[i]);
@@ -96,7 +96,8 @@ function abnormal(dataArr) {
         flip();
       } else if (arr[i - 1][1] < arr[i + 1][1]) {
         i += 1;
-      } else if (arr[i + 1][0] - arr[i][0] <= 3600000
+      } else if (arr[i + 1][0] - arr[i][0] <= 36e5
+        && arr[i][1] > arr[i - 1][1]
         && arr[i][0] - arr[i - 1][0] >= oneMonth) { // dead by daylight CN
         badDiscount();
       } else if (arr[i + 1][1] < arr[i][1]
@@ -106,7 +107,7 @@ function abnormal(dataArr) {
         i += 2;
       }
     } else if (arr[i + 1][0] - arr[i][0] <= fourtySixHours) {
-      if (arr[i + 2][0] - arr[i + 1][0] <= fourHours) {
+      if (arr[i + 2][0] - arr[i + 1][0] <= fiveHours) {
         if (arr[i - 1][1] === arr[i + 1][1]) {
           i += 2;
         } else {
@@ -114,7 +115,11 @@ function abnormal(dataArr) {
         }
       } else if (arr[i + 2][0] - arr[i + 1][0] <= fourtySixHours) {
         if (arr[i + 2][1] < arr[i + 1][1]) {
-          condiPush(3);
+          if (arr[i] < arr[i + 1] && arr[i - 1] < arr[i]) { // dmc US
+            i += 2;
+          } else {
+            condiPush(3);
+          }
         } else if (arr[i][1] === arr[i + 2][1]) {
           pushCur();
         } else {
@@ -252,14 +257,9 @@ function requests(message, sender, sendResponse) {
       if (getId !== null) {
         if (data.match(/title="(.+?)"/)[1].length === name.length) {
           resp.hltbUrl = `http://howlongtobeat.com/${getId[1]}`;
-          hltbReady = 1;
-          tryMessage();
-        } else {
-          clearTimeout(hltbCantConnect);
-          chrome.tabs.sendMessage(sender.tab.id, {
-            hltbCantFind: true,
-          });
         }
+        hltbReady = 1;
+        tryMessage();
       } else {
         backupMethod();
       }

@@ -133,7 +133,12 @@ function drawChart(results) {
   };
   const globalSetting = {
     lang: setting.lang.lang,
+    time: {
+      timezoneOffset: new Date().getTimezoneOffset(),
+    },
   };
+  Object.assign(globalSetting, setting.chart);
+  Highcharts.setOptions(globalSetting);
   const text = setting.lang.buttonText;
 
   const chartOptions = {
@@ -331,9 +336,6 @@ function drawChart(results) {
       },
     },
   };
-
-  Object.assign(globalSetting, setting.chart);
-  Highcharts.setOptions(globalSetting);
 
   let height;
   const tmp = userChart.height;

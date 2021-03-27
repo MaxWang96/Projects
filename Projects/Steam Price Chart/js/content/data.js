@@ -1,30 +1,37 @@
 'use strict';
 
-function makePriceArr(arr, points) {
+function makePriceArr(price, points) {
   const len = points.length;
-  arr.push(points[0][1]);
+  price.push(points[0][1]);
   if (len === 2) {
-    arr.push(points[1][1]);
+    price.push(points[1][1]);
   } else {
     let i = 1;
     for (; i < len - 2; i += 1) {
-      if (points[i + 1][0] - points[i][0] <= 165600000
+      if (points[i + 1][0] - points[i][0] <= 1656e5
         || points[i + 1][1] === points[i][1]) {
         showOriginalModal();
       }
-      arr.push(points[i][1]);
+      price.push(points[i][1]);
     }
-    arr.push(points[i][1], points[i + 1][1]);
+    price.push(points[i][1], points[i + 1][1]);
   }
 }
 
-function setupEnd(priceArr, firstPurchaseOption) {
+function setupEnd(priceArr, pointsArr, firstPurchaseOption) {
+  const arr = priceArr;
   let price;
   let endDiscount = true;
-  const arr = priceArr;
   const len = arr.length;
   const curPrice = arr[len - 1];
   const discount = firstPurchaseOption.getElementsByClassName('discount_block');
+
+  function fillDiscount() {
+    arr[len - 1] = price / 2;
+    arr.push(price);
+    endDiscount = false;
+  }
+
   if (bundle === 'app' || bundle === 'bundle') {
     price = discount[0].getAttribute('data-price-final') / 100;
     let max = price;
@@ -33,9 +40,7 @@ function setupEnd(priceArr, firstPurchaseOption) {
       if (arr[len - j - 2] > max) max = arr[len - j - 2];
     }
     if (max === price) {
-      arr[len - 1] = price / 2;
-      arr.push(price);
-      endDiscount = false;
+      fillDiscount();
     } else {
       arr[len - 1] = max;
     }
@@ -48,52 +53,71 @@ function setupEnd(priceArr, firstPurchaseOption) {
       .replace(',', '.'));
   } else {
     price = firstPurchaseOption.getElementsByClassName('game_purchase_price')[0].getAttribute('data-price-final') / 100;
-    arr[len - 1] = price / 2;
-    arr.push(price);
-    endDiscount = false;
+    fillDiscount();
   }
-  if (price !== curPrice) dataModal();
+
+  if (price !== curPrice) {
+    if (firstPurchaseOption.parentNode.getElementsByClassName('free_weekend').length === 0) {
+      const updateDelay = Date.now() - pointsArr[len - 1][0];
+      if (updateDelay >= 864e5) {
+        dataModal();
+      } else if (endDiscount && curPrice === arr[len - 1]) { // divinity US
+        updateDelayModal();
+        fillDiscount();
+      } else if (!endDiscount && updateDelay >= 54e5) {
+        updateDelayModal();
+        arr.pop();
+        arr[len - 1] = price;
+        endDiscount = true;
+      } else {
+        dataModal();
+      }
+    } else {
+      const points = pointsArr;
+      [points[len - 2][1], points[len - 1][1]] = [price, price];
+      arr[len - 2] = price;
+    }
+  }
   return endDiscount;
 }
 
-function setupBegin(arr, points) {
-  let max = arr[0];
+function setupBegin(price, points) {
+  let max = price[0];
   let beginDiscount = false;
-  if (arr.length === 2) {
+  if (price.length === 2) {
     beginDiscount = true;
-    max = arr[1];
+    max = price[1];
   } else {
     for (let i = 1; i < 3; i += 1) {
-      if (arr[i] > max) {
+      if (price[i] > max) {
         beginDiscount = true;
-        max = arr[i];
+        max = price[i];
       }
     }
   }
   if (beginDiscount) {
-    arr.unshift(max);
+    price.unshift(max);
     points.unshift(0);
   }
-  return beginDiscount;
 }
 
-function setup(points, priceArr, firstPurchaseOption) {
-  makePriceArr(priceArr, points);
-  const endDiscount = setupEnd(priceArr, firstPurchaseOption);
-  const beginDiscount = setupBegin(priceArr, points);
-  return [beginDiscount, endDiscount];
+function setup(points, price, firstPurchaseOption) {
+  makePriceArr(price, points);
+  const endDiscount = setupEnd(price, points, firstPurchaseOption);
+  setupBegin(price, points);
+  return endDiscount;
 }
 
-function makeBase(priceArr, baseArr, priceIncrease, partial = false) {
-  let i = partial ? partial - 1 : 0;
-  const len = priceArr.length;
-  const last = partial ? Math.min(partial + 4, len - 2) : len - 2;
+function makeBase(price, baseArr, priceIncrease, partial = false) {
   const base = baseArr;
-  if (len === 2) base.fill(priceArr[1]);
-  else [base[0]] = priceArr;
+  let i = partial ? partial - 1 : 0;
+  const len = price.length;
+  const last = partial ? Math.min(partial + 4, len - 2) : len - 2;
+  if (len === 2) base.fill(price[1]);
+  else [base[0]] = price;
 
   while (i < last) {
-    const [cur, first, second] = [priceArr[i], priceArr[i + 1], priceArr[i + 2]];
+    const [cur, first, second] = [price[i], price[i + 1], price[i + 2]];
     if (cur < first) {
       base[i + 1] = first;
       i += 1;
@@ -102,11 +126,11 @@ function makeBase(priceArr, baseArr, priceIncrease, partial = false) {
       base.fill(cur, i + 1, i + 3);
       i += 2;
     } else if (cur > second) {
-      const third = priceArr[i + 3];
+      const third = price[i + 3];
       if (cur === third) {
         base.fill(cur, i + 1, i + 4);
         i += 3;
-      } else if (cur === priceArr[i + 4]) {
+      } else if (cur === price[i + 4]) {
         base.fill(cur, i + 1, i + 5);
         i += 4;
       } else if (cur < third) {
@@ -119,7 +143,7 @@ function makeBase(priceArr, baseArr, priceIncrease, partial = false) {
         base[i + 2] = second;
         i += 2;
       } else if (first === third) {
-        if (i >= priceArr.length - 5 || cur !== priceArr[i + 5]) {
+        if (i >= price.length - 5 || cur !== price[i + 5]) {
           base.fill(first, i + 1, i + 4);
           i += 3;
         } else if (first / cur <= 0.8) { // borderlands 2 psycho pack US
@@ -149,10 +173,18 @@ function makeBase(priceArr, baseArr, priceIncrease, partial = false) {
 }
 
 function checkAbnormalHigh(pointsArr, priceArr, baseArr, priceIncrease) {
-  const price = priceArr;
-  const base = baseArr;
+  const [price, base] = [priceArr, baseArr];
   let tmp;
   let i = priceIncrease.length - 1;
+
+  if (pointsArr.length > 3 && pointsArr[0] === 0) { // XCOM 2 CN
+    if (baseArr[0] !== baseArr[3]) {
+      base.splice(2, 2);
+      price.splice(2, 2);
+      pointsArr(2, 2);
+      makeBase(price, base, priceIncrease, 1);
+    }
+  }
 
   function removeAbnormal(n) {
     let j = 0;
@@ -160,7 +192,7 @@ function checkAbnormalHigh(pointsArr, priceArr, baseArr, priceIncrease) {
     const points = pointsArr;
     const toDelete = [];
     const correctBase = base[tmp - 1];
-    if (i - 2 >= 0) {
+    if (i >= 2) {
       if (priceIncrease[i] - priceIncrease[i - 2] <= 10) showOriginalModal();
     }
     while (j < n) {
@@ -203,68 +235,79 @@ function checkAbnormalHigh(pointsArr, priceArr, baseArr, priceIncrease) {
   }
 }
 
-function calculateBase(points, priceArr) {
-  const base = Array(priceArr.length);
+function calculateBase(points, price) {
+  const base = Array(price.length);
   const priceIncrease = [];
-  makeBase(priceArr, base, priceIncrease);
-  checkAbnormalHigh(points, priceArr, base, priceIncrease);
+  makeBase(price, base, priceIncrease);
+  checkAbnormalHigh(points, price, base, priceIncrease);
   return base;
 }
 
-function restorePriceArr(points, priceArr, base, discounts) {
-  const arr = priceArr;
-  if (discounts[0]) {
+function restorePriceArr(points, priceArr, base, endDiscount) {
+  const price = priceArr;
+  if (points[0] === 0) {
     points.shift();
-    arr.shift();
+    price.shift();
     base.shift();
   }
-  const len = arr.length;
-  if (discounts[1]) {
-    arr[len - 1] = arr[len - 2];
+  const len = price.length;
+  if (endDiscount) {
+    price[len - 1] = price[len - 2];
   } else {
-    arr[len - 2] = arr[len - 3];
+    price[len - 2] = price[len - 3];
   }
 }
 
-function makeDiscountArr(points, priceArr, base) {
+function makeDiscountArr(pointsArr, priceArr, base) {
+  const [points, price] = [pointsArr, priceArr];
   const discountArr = [];
   let len = points.length;
   let i = 0;
   for (; i < len - 2; i += 1) {
-    if (priceArr[i] === base[i]) {
+    if (price[i] === base[i]) {
       discountArr.push(0, 0);
     } else {
-      if (points[i + 1][0] - points[i][0] >= 2592000000
-        && i > 1) {
-        if (priceArr[i] === 0) {
-          points[i][1] = points[i + 1][1];
-          points.splice(i + 1, 1);
-          priceArr.splice(i + 1, 1);
-          base.splice(i + 1, 1);
-          len -= 1;
-        } else {
-          showOriginalModal();
+      if (points[i + 1][0] - points[i][0] >= 2592e6) {
+        if (i > 1) {
+          if (price[i] === 0) {
+            if (price[i - 1] === base[i - 1]) { // dying light US
+              points[i][1] = price[i - 2];
+              price[i] = price[i - 2];
+            } else { // rainbow six US
+              points[i][1] = price[i + 1];
+              points.splice(i + 1, 1);
+              price.splice(i, 1);
+              base.splice(i, 1);
+              len -= 1;
+            }
+          } else {
+            showOriginalModal();
+          }
+        } else if (i === 1) {
+          if (price[i - 1] === base[i - 1]) { // tomb raider US
+            showOriginalModal();
+          }
         }
       }
-      const curDiscount = Math.round((1 - priceArr[i] / base[i]) * 100);
+      const curDiscount = Math.round((1 - price[i] / base[i]) * 100);
       discountArr.push(curDiscount, curDiscount);
     }
   }
-  discountArr.push(Math.round((1 - priceArr[i] / base[i]) * 100),
-    Math.round((1 - priceArr[i + 1] / base[i + 1]) * 100));
+  discountArr.push(Math.round((1 - price[i] / base[i]) * 100),
+    Math.round((1 - price[i + 1] / base[i + 1]) * 100));
   return discountArr;
 }
 
 function calculateDiscount(points, firstPurchaseOption) {
   if ((points[0][1] === 0
-      && points[1][0] - points[0][0] >= 31536000000)
+      && points[1][0] - points[0][0] >= 31536e6)
     || points[points.length - 1][1] !== points[points.length - 2][1]) {
     dataModal();
   }
   const priceArr = [];
-  const discounts = setup(points, priceArr, firstPurchaseOption);
+  const endDiscount = setup(points, priceArr, firstPurchaseOption);
   const base = calculateBase(points, priceArr);
-  restorePriceArr(points, priceArr, base, discounts);
+  restorePriceArr(points, priceArr, base, endDiscount);
   return makeDiscountArr(points, priceArr, base);
 }
 
@@ -293,7 +336,7 @@ function addIntermediatePoints(points) {
   let i = 0;
   for (; i < len - 2; i += 1) {
     plotArr.push(points[i]);
-    plotArr.push([points[i + 1][0] - 3600000, points[i][1]]);
+    plotArr.push([points[i + 1][0] - 36e5, points[i][1]]);
   }
   plotArr.push(points[i], points[i + 1]);
   return plotArr;

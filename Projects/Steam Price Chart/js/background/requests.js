@@ -103,6 +103,9 @@ function abnormal(dataArr) {
       } else if (arr[i + 1][1] < arr[i][1]
         && arr[i][1] < arr[i - 1][1]) { // shadow of the tomb raider US
         i += 1;
+      } else if (arr[i][1] < arr[i + 1][1]
+        && arr[i + 1][1] < arr[i + 2][1]) { // hunt: showdown CN
+        i += 1;
       } else {
         i += 2;
       }
@@ -110,12 +113,16 @@ function abnormal(dataArr) {
       if (arr[i + 2][0] - arr[i + 1][0] <= fiveHours) {
         if (arr[i - 1][1] === arr[i + 1][1]) {
           i += 2;
+        } else if (arr[i + 1][1] > arr[i + 2][1]
+          && arr[i][1] < arr[i + 1][1]
+          && arr[i - 1][1] < arr[i][1]) { // dmc EU
+          i += 2;
         } else {
           pushCur();
         }
       } else if (arr[i + 2][0] - arr[i + 1][0] <= fourtySixHours) {
-        if (arr[i + 2][1] < arr[i + 1][1]) {
-          if (arr[i] < arr[i + 1] && arr[i - 1] < arr[i]) { // dmc US
+        if (arr[i + 1][1] > arr[i + 2][1]) {
+          if (arr[i][1] < arr[i + 1][1] && arr[i - 1][1] < arr[i][1]) { // dmc US
             i += 2;
           } else {
             condiPush(3);

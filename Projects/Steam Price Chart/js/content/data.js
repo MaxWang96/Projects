@@ -8,10 +8,6 @@ function makePriceArr(price, points) {
   } else {
     let i = 1;
     for (; i < len - 2; i += 1) {
-      if (points[i + 1][0] - points[i][0] <= 1656e5
-        || points[i + 1][1] === points[i][1]) {
-        showOriginalModal();
-      }
       price.push(points[i][1]);
     }
     price.push(points[i][1], points[i + 1][1]);
@@ -181,7 +177,7 @@ function checkAbnormalHigh(pointsArr, priceArr, baseArr, priceIncrease) {
     if (baseArr[0] !== baseArr[3]) {
       base.splice(2, 2);
       price.splice(2, 2);
-      pointsArr(2, 2);
+      pointsArr.splice(2, 2);
       makeBase(price, base, priceIncrease, 1);
     }
   }
@@ -259,13 +255,17 @@ function restorePriceArr(points, priceArr, base, endDiscount) {
 }
 
 function makeDiscountArr(pointsArr, priceArr, base) {
-  const [points, price] = [pointsArr, priceArr];
-  const discountArr = [];
+  const [points, price, discount] = [pointsArr, priceArr, []];
   let len = points.length;
   let i = 0;
   for (; i < len - 2; i += 1) {
+    if ((points[i + 1][0] - points[i][0] <= 1656e5
+        || points[i][1] === points[i + 1][1])
+      && i > 0) {
+      showOriginalModal();
+    }
     if (price[i] === base[i]) {
-      discountArr.push(0, 0);
+      discount.push(0, 0);
     } else {
       if (points[i + 1][0] - points[i][0] >= 2592e6) {
         if (i > 1) {
@@ -290,12 +290,12 @@ function makeDiscountArr(pointsArr, priceArr, base) {
         }
       }
       const curDiscount = Math.round((1 - price[i] / base[i]) * 100);
-      discountArr.push(curDiscount, curDiscount);
+      discount.push(curDiscount, curDiscount);
     }
   }
-  discountArr.push(Math.round((1 - price[i] / base[i]) * 100),
+  discount.push(Math.round((1 - price[i] / base[i]) * 100),
     Math.round((1 - price[i + 1] / base[i + 1]) * 100));
-  return discountArr;
+  return discount;
 }
 
 function calculateDiscount(points, firstPurchaseOption) {

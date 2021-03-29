@@ -37,6 +37,14 @@ function abnormal(dataArr) {
   let [min, max] = [arr[0][1], arr[0][1]];
   const lastPoint = arr[len - 1].slice();
   const [fiveHours, fourtySixHours, oneMonth] = [18e6, 1656e5, 2592e6];
+  let time0;
+  let price0;
+  let time1;
+  let price1;
+  let time2;
+  let price2;
+  let time1n;
+  let price1n;
   if (arr[len - 1][1] !== arr[len - 2][1]
     && arr[len - 1][0] - arr[len - 2][0] <= fiveHours) {
     arr.splice(len - 2, 1);
@@ -47,12 +55,12 @@ function abnormal(dataArr) {
 
   function pushCur() {
     tmpArr.push(arr[i]);
-    toCompare = arr[i][1];
+    toCompare = price0;
     i += 1;
   }
 
   function condiPush(n) {
-    if (arr[i - 1][1] !== arr[i + n][1]) {
+    if (price1n !== arr[i + n][1]) {
       tmpArr.push(arr[i + n]);
       toCompare = arr[i + n][1];
     }
@@ -60,9 +68,9 @@ function abnormal(dataArr) {
   }
 
   function flip() {
-    arr[i + 2][1] = arr[i + 1][1];
+    arr[i + 2][1] = price1;
     tmpArr.push(arr[i], arr[i + 2]);
-    toCompare = arr[i][1];
+    toCompare = price0;
     if (arr[i + 2][1] === arr[i + 3][1]) i += 4;
     else i += 3;
   }
@@ -70,85 +78,85 @@ function abnormal(dataArr) {
   function badDiscount() {
     tmpArr.pop();
     tmpArr.push(arr[i + 1]);
-    toCompare = arr[i + 1][1];
+    toCompare = price1;
     i += 2;
   }
 
   while (i < len - 2) {
-    if (arr[i + 1][0] - arr[i][0] <= fiveHours) {
-      if (arr[i][1] > arr[i + 1][1]
-        && arr[i - 1][1] === arr[i + 1][1]
-        && arr[i + 2][0] - arr[i + 1][0] <= 6048e5) { // dead by daylight US
+    [time0, price0] = arr[i];
+    [time1, price1] = arr[i + 1];
+    [time2, price2] = arr[i + 2];
+    [time1n, price1n] = arr[i - 1];
+    if (time1 - time0 <= fiveHours) {
+      if (price0 > price1
+        && price1n === price1
+        && time2 - time1 <= 6048e5) { // dead by daylight US
         i += 2;
-      } else if (arr[i + 3][0] - arr[i + 2][0] <= fiveHours) {
-        if (arr[i + 2][0] - arr[i + 1][0] <= fiveHours) {
+      } else if (arr[i + 3][0] - time2 <= fiveHours) {
+        if (time2 - time1 <= fiveHours) {
           i += 4;
         } else {
           tmpArr.push(arr[i]);
-          toCompare = arr[i][1];
+          toCompare = price0;
           i += 3;
         }
-      } else if (arr[i + 3][0] - arr[i + 2][0] >= oneMonth
+      } else if (arr[i + 3][0] - time2 >= oneMonth
         && i < len - 4
-        && arr[i + 1][1] > arr[i + 2][1]
-        && (arr[i + 3][1] > arr[i + 2][1]
-          || arr[i + 4][1] > arr[i + 2][1])) { // hitman blood money requiem pack US
+        && price1 > price2
+        && (arr[i + 3][1] > price2
+          || arr[i + 4][1] > price2)) { // hitman blood money requiem pack US
         flip();
-      } else if (arr[i - 1][1] < arr[i + 1][1]) {
-        i += 1;
-      } else if (arr[i + 1][0] - arr[i][0] <= 36e5
-        && arr[i][1] > arr[i - 1][1]
-        && arr[i][0] - arr[i - 1][0] >= oneMonth) { // dead by daylight CN
+      } else if (time1 - time0 <= 72e5
+        && price0 > price1n
+        && time0 - time1n >= oneMonth) { // dead by daylight CN; machinarium soundtrack art book CN
         badDiscount();
-      } else if (arr[i + 1][1] < arr[i][1]
-        && arr[i][1] < arr[i - 1][1]) { // shadow of the tomb raider US
-        i += 1;
-      } else if (arr[i][1] < arr[i + 1][1]
-        && arr[i + 1][1] < arr[i + 2][1]) { // hunt: showdown CN
+      } else if (price1n !== price1) { // shadow of the tomb raider US; hunt: showdown US CN
         i += 1;
       } else {
         i += 2;
       }
-    } else if (arr[i + 1][0] - arr[i][0] <= fourtySixHours) {
-      if (arr[i + 2][0] - arr[i + 1][0] <= fiveHours) {
-        if (arr[i - 1][1] === arr[i + 1][1]) {
+    } else if (time1 - time0 <= fourtySixHours) {
+      if (time2 - time1 <= fiveHours) {
+        if (price1n === price1) {
           i += 2;
-        } else if (arr[i + 1][1] > arr[i + 2][1]
-          && arr[i][1] < arr[i + 1][1]
-          && arr[i - 1][1] < arr[i][1]) { // dmc EU
+        } else if (price1 > price2
+          && price0 < price1
+          && price1n < price0) { // dmc EU
           i += 2;
         } else {
           pushCur();
         }
-      } else if (arr[i + 2][0] - arr[i + 1][0] <= fourtySixHours) {
-        if (arr[i + 1][1] > arr[i + 2][1]) {
-          if (arr[i][1] < arr[i + 1][1] && arr[i - 1][1] < arr[i][1]) { // dmc US
+      } else if (time2 - time1 <= fourtySixHours) {
+        if (price1 > price2) {
+          if (price1n === price1) { // undertale US
+            i += 2;
+          } else if (price0 < price1 && price1n < price0) { // dmc US
             i += 2;
           } else {
             condiPush(3);
           }
-        } else if (arr[i][1] === arr[i + 2][1]) {
+        } else if (price0 === price2) {
           pushCur();
         } else {
           condiPush(1);
         }
-      } else if (arr[i][1] > arr[i + 1][1]
+      } else if (price0 > price1
         && i > 1
-        && arr[i][0] - arr[i - 1][0] >= oneMonth
-        && arr[i - 2][1] === arr[i][1]
-        && arr[i - 2][1] > arr[i - 1][1]) { // borderlands 2 season pass CN
+        && time0 - time1n >= oneMonth
+        && arr[i - 2][1] === price0
+        && arr[i - 2][1] > price1n) { // borderlands 2 season pass CN
         badDiscount();
-      } else if (arr[i + 3][0] - arr[i + 2][0] >= oneMonth
+      } else if (arr[i + 3][0] - time2 >= oneMonth
         && i < len - 4
-        && arr[i + 1][1] > arr[i + 2][1]
-        && (arr[i + 3][1] > arr[i + 2][1]
-          || arr[i + 4][1] > arr[i + 2][1])) { // borderlands 2 season pass CN
+        && price1 > price2
+        && (arr[i + 3][1] > price2
+          || arr[i + 4][1] > price2)) { // borderlands 2 season pass CN
         flip();
-      } else if (arr[i][1] > arr[i + 1][1]
-        && arr[i][1] === arr[i + 2][1]
-        && arr[i][1] < arr[i + 3][1]) { // darkest dungeon CN
+      } else if (price0 > price1
+        && price0 === price2
+        && price0 < arr[i + 3][1]) { // darkest dungeon CN
         tmpArr.push(arr[i], arr[i + 3]);
-        toCompare = arr[i][1];
+        toCompare = price0;
         i += 4;
       } else {
         condiPush(1);

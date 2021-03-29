@@ -83,7 +83,7 @@ function addHltbButton(chart, data) {
   if (!data.hasOwnProperty('hltbUrl')) {
     let hltbImg;
     if (data.hltbReady) {
-      const hltbLabel = addLabel(cha, "Can't find the game on HowLongToBeat").align(setAlign(-190));
+      const hltbLabel = addLabel(cha, "Can't find the game on HowLongToBeat").align(setAlign(-192));
       hltbImg = addImg(cha, hltbImgUrl, hltbLabel, -55).css({
         opacity: 0.2,
       });
@@ -385,7 +385,7 @@ function redrawButton(text, align, opacity = 0.2, url = 'https://howlongtobeat.c
 
 function updateButton(message) {
   if (message === 'error') redrawButton("Can't connect to HowLongToBeat", -173);
-  else if (message === 'cantFind') redrawButton("Can't find the game on HowLongToBeat", -190);
+  else if (message === 'cantFind') redrawButton("Can't find the game on HowLongToBeat", -192);
   else redrawButton('View the game on HowLongToBeat', -183, 1, message);
 }
 

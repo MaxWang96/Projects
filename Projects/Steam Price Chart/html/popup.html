@@ -8,8 +8,16 @@
 </head>
 <body>
     <div class="grid-container">
-        <input type="checkbox" id="simplify"class="js-switch" />
         <label for="simplify"></label>
+        <input type="checkbox" id="simplify" class="js-switch" />
+        <label for="range-select">Time Range</label>
+        <div id="range-selector" class="selector">
+            <select id="range-select">
+                <option value="0">3y</option>
+                <option value="1">1y</option>
+                <option value="1">All</option>
+            </select>
+        </div>
         <button id="feedback-btn"></button>
     </div>
     <script src="../js/popup/popup.js"></script>

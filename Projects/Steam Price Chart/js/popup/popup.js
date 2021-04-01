@@ -15,6 +15,7 @@ chrome.tabs.query({
       size: 'small',
       color: '#377096',
       speed: initSpeed,
+      boxShadow: null,
     });
     if (swit.checked) init.options.speed = '0.4s';
   });

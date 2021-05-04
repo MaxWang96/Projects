@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "consumer.h": "c",
+        "cmath": "c"
+    }
+}

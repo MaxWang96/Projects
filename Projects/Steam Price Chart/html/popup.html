@@ -3,13 +3,13 @@
 <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../css/popup.css" />
-    <link rel="stylesheet" href="../css/switchery.min.css" />
-    <script src="../js/popup/switchery.min.js"></script>
 </head>
 <body>
     <div class="grid-container">
-        <label for="simplify"></label>
-        <input type="checkbox" id="simplify" class="js-switch" />
+        <label class="switch" for="simplify">
+            <input type="checkbox" id="simplify">
+            <span class="slider round"></span>
+        </label>
         <label for="range-select">Time Range</label>
         <div id="range-selector" class="selector">
             <select id="range-select">

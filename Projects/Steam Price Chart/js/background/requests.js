@@ -180,17 +180,17 @@ function abnormal(dataArr) {
   };
 }
 
-function requests(message, sender, sendResponse) {
+function requests(msg, sender, sendResponse) {
   let {
     name,
-  } = message;
+  } = msg;
   const {
     bundle,
-  } = message;
-  const button = !message.lang.startsWith('zh')
+  } = msg;
+  const button = !msg.lang.startsWith('zh')
     && bundle !== 'bundle'
     && bundle !== 'sub';
-  const region = message.storeRegion === 'EU1' ? 'FR' : message.storeRegion;
+  const region = msg.storeRegion === 'EU1' ? 'FR' : msg.storeRegion;
   const resp = {};
   let [itadSent, hltbReady, regReceived, altReceived, altSuccess] = [0, 0, 0, 0, 0];
   const itadCantConnect = setTimeout(() => {
@@ -223,7 +223,7 @@ function requests(message, sender, sendResponse) {
 
   function itad() {
     if (!bundle) {
-      fetch(`https://api.isthereanydeal.com/v02/game/plain/?key=2a0a6baa1713e7be64e451ab1b863b988ce63455&shop=steam&game_id=app%2F${message.id}`)
+      fetch(`https://api.isthereanydeal.com/v02/game/plain/?key=2a0a6baa1713e7be64e451ab1b863b988ce63455&shop=steam&game_id=app%2F${msg.id}`)
         .then((response) => response.text())
         .then((text) => {
           const gameName = text.match(/"plain":"(.+?)"/)[1];
@@ -231,7 +231,7 @@ function requests(message, sender, sendResponse) {
         });
     } else {
       const type = (bundle === 'sub' || bundle === 'appSub') ? 'sub' : 'bundle';
-      fetch(`https://isthereanydeal.com/steam/${type}/${message.id}/`, {
+      fetch(`https://isthereanydeal.com/steam/${type}/${msg.id}/`, {
           method: 'HEAD',
         })
         .then((response) => {
@@ -333,11 +333,11 @@ function requests(message, sender, sendResponse) {
 
   function hltb() {
     if (button) {
-      if (message.lang.startsWith('en') || bundle || message.notGame) {
+      if (msg.lang.startsWith('en') || bundle || msg.notGame) {
         name = name.replace('’', "'").replace(/[^\w\s:',-]/gi, '');
         sendHltbRequest();
       } else {
-        fetch(`https://steamspy.com/api.php?request=appdetails&appid=${message.id}`)
+        fetch(`https://steamspy.com/api.php?request=appdetails&appid=${msg.id}`)
           .then((response) => response.text())
           .then((text) => {
             const findName = text.match(/"name":"(.+?)"/);

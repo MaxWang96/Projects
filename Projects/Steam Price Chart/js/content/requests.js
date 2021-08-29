@@ -6,7 +6,7 @@ function dataRequest(resolve, reject) {
   }, 3500);
 
   const info = findInfo();
-  const message = {
+  const msg = {
     id: info.id,
     storeRegion: info.region,
     lang: info.sysLang,
@@ -15,7 +15,7 @@ function dataRequest(resolve, reject) {
     bundle,
   };
 
-  chrome.runtime.sendMessage(message, (response) => {
+  chrome.runtime.sendMessage(msg, (response) => {
     clearTimeout(noResponse);
     if (response.itadError) {
       return reject('cantConnect');

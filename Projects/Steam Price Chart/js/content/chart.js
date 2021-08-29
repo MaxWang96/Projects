@@ -383,18 +383,19 @@ function redrawButton(text, align, opacity = 0.2, url = 'https://howlongtobeat.c
   addImgUrl(chart.hltbImg, url);
 }
 
-function updateButton(message) {
-  if (message === 'error') redrawButton("Can't connect to HowLongToBeat", -173);
-  else if (message === 'cantFind') redrawButton("Can't find the game on HowLongToBeat", -192);
-  else redrawButton('View the game on HowLongToBeat', -183, 1, message);
+function updateButton(msg) {
+  if (msg === 'error') redrawButton("Can't connect to HowLongToBeat", -173);
+  else if (msg === 'cantFind') redrawButton("Can't find the game on HowLongToBeat", -192);
+  else redrawButton('View the game on HowLongToBeat', -183, 1, msg);
 }
 
-function updateChart(request) {
+function updateSimp(request) {
   const container = $('#chart_container');
   const chart = container.highcharts();
   const tmp = userChart.height;
   const appPage = bundle !== 'bundle' && bundle !== 'sub';
-  if (request.simp) {
+  const simp = appPage ? request.appSimp : request.bundleSimp;
+  if (simp) {
     const height = appPage ? tmp.appSimp : tmp.bundleSimp;
     container.css('height', height);
     chart.update({
@@ -419,4 +420,9 @@ function updateChart(request) {
       },
     });
   }
+}
+
+function updateRange(msg) {
+  const chart = $('#chart_container').highcharts();
+
 }

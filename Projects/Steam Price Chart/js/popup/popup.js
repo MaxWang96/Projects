@@ -1,18 +1,21 @@
 'use strict';
 
 const swit = document.getElementById('simplify');
+let tab;
 
 chrome.tabs.query({
   active: true,
   currentWindow: true,
 }, (tabs) => {
-  const type = tabs[0].url.split('/')[3];
-  const key = (type === 'app') ? 'appSimp' : 'bundleSimp';
-  chrome.storage.sync.get(key, (value) => {
-    swit.checked = value[key];
+  tab = tabs[0];
+  const type = tab.url.split('/')[3];
+  const simpType = (type === 'app') ? 'appSimp' : 'bundleSimp';
+  chrome.storage.sync.get([simpType, 'range'], (value) => {
+    swit.checked = value[simpType];
     setTimeout(() => {
       document.documentElement.style.setProperty('--transition-time', '.3s');
     }, 10);
+    document.getElementsByTagName('span')[0].textContent = value.range;
   });
 });
 
@@ -24,40 +27,16 @@ document.getElementById('feedback-btn').onclick = () => {
   window.open('https://chrome.google.com/webstore/detail/stayfocusd/laankejkbhbdhmipfmgcngdelahlfoji/support');
 };
 
-document.getElementById('range-selector').addEventListener('click', () => {
+function saveAndChange(setting, id) {
+  chrome.storage.sync.set(setting);
+  chrome.tabs.sendMessage(id, setting);
+}
 
+swit.addEventListener('change', () => {
+  const type = tab.url.split('/')[3];
+  const toSet = (type === 'app') ? {appSimp: swit.checked} : {bundleSimp: swit.checked};
+  saveAndChange(toSet, tab.id);
 });
-
-function saveOptions(type) {
-  if (type === 'app') {
-    chrome.storage.sync.set({
-      appSimp: swit.checked,
-    });
-  } else {
-    chrome.storage.sync.set({
-      bundleSimp: swit.checked,
-    });
-  }
-}
-
-function changeChart(id) {
-  chrome.tabs.sendMessage(id, {
-    simp: swit.checked,
-  });
-}
-
-function funcs() {
-  chrome.tabs.query({
-    active: true,
-    currentWindow: true,
-  }, (tabs) => {
-    const type = tabs[0].url.split('/')[3];
-    saveOptions(type);
-    changeChart(tabs[0].id);
-  });
-}
-
-document.addEventListener('change', funcs);
 
 [...document.getElementsByClassName('dropdown')].forEach((el) => {
   el.addEventListener('click', function dropdown1() {
@@ -73,6 +52,7 @@ document.addEventListener('change', funcs);
   [...el.getElementsByTagName('li')].forEach((item) => {
     item.addEventListener('click', function dropdown3() {
       this.closest('.dropdown').getElementsByTagName('span')[0].textContent = this.textContent;
+      saveAndChange({[this.parentNode.id]: this.textContent}, tab.id);
       //   $(this).parents('.dropdown').find('input').attr('value', $(this).attr('id'));
       // dropdown.getElementsByTagName
     });

@@ -1,6 +1,6 @@
 'use strict';
 
-function makePriceArr(price, points) {
+function makePriceArr(points, price) {
   const len = points.length;
   price.push(points[0][1]);
   if (len === 2) {
@@ -14,7 +14,7 @@ function makePriceArr(price, points) {
   }
 }
 
-function setupEnd(priceArr, pointsArr, firstPurchaseOption) {
+function setupEnd(pointsArr, priceArr, firstPurchaseOption) {
   const arr = priceArr;
   let price;
   let endDiscount = true;
@@ -77,7 +77,7 @@ function setupEnd(priceArr, pointsArr, firstPurchaseOption) {
   return endDiscount;
 }
 
-function setupBegin(price, points) {
+function setupBegin(points, price) {
   let max = price[0];
   let beginDiscount = false;
   if (price.length === 2) {
@@ -98,9 +98,9 @@ function setupBegin(price, points) {
 }
 
 function setup(points, price, firstPurchaseOption) {
-  makePriceArr(price, points);
-  const endDiscount = setupEnd(price, points, firstPurchaseOption);
-  setupBegin(price, points);
+  makePriceArr(points, price);
+  const endDiscount = setupEnd(points, price, firstPurchaseOption);
+  setupBegin(points, price);
   return endDiscount;
 }
 

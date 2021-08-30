@@ -117,6 +117,7 @@ function drawChart(results) {
     simp,
   } = results[1];
   const title = (bundle === 'app' || bundle === 'appSub') ? chartData.bundleTitle : info.itemName;
+  const data = original ? chartData.originalData : chartData.data.points;
 
   const {
     sysLang,
@@ -165,7 +166,7 @@ function drawChart(results) {
 
     series: [{
       name: chrome.i18n.getMessage('lineName'),
-      data: original ? chartData.originalData : chartData.data.points,
+      data: data,
       color: '#67c1f5',
       step: true,
     }],
@@ -217,7 +218,7 @@ function drawChart(results) {
       shared: true,
       useHTML: true,
       borderColor: '#171a21',
-      formatter() {
+      formatter: function () {
         const {
           point,
         } = this.points[0];
@@ -356,6 +357,12 @@ function drawChart(results) {
       },
     });
   }
+  chart.rangeData = {
+    originalData: data,
+    dateFormat: setting.lang.dateFormat,
+    priceFormat: setting.price.formatPrice,
+    
+  }
 
   if (bundle === 'app') bundleModal(info.itemName);
   else if (bundle === 'appSub') subModal(info.itemName);
@@ -422,7 +429,46 @@ function updateSimp(request) {
   }
 }
 
+function binarySearch(data, value, start, end) {
+  let mid = Math.floor((start + end) / 2);
+  const midValue = data[mid][0];
+  if (midValue === value) return [0, mid];
+  else if (midValue > value) {
+    if (data[mid - 1][0] < value) return [1, mid];
+    else return binarySearch(data, value, start, mid - 1);
+  } else {
+    if (data[mid + 1][0] > value) return [-1, mid];
+    else return binarySearch(data, value, mid + 1, end);
+  }
+}
+
 function updateRange(msg) {
   const chart = $('#chart_container').highcharts();
-
+  const data = chart.originalData;
+  let timeRange;
+  if (msg.range === '1y') timeRange = 31536000000;
+  else if (msg.range === '3y') timeRange = 94608000000;
+  else {
+    chart.series[0].update({
+      data: data
+    }, true);
+  }
+  const startTime = Date.now() - timeRange;
+  if (startTime <= data[0][0]) {
+    if (data[0][0] !== chart.series[0].options.data[0][0]) {
+      chart.series[0].update({
+        data: data
+      }, true);
+    }
+  } else {
+    const result = binarySearch(data, startTime, 0, data.length - 1);
+    const startIdx = result[0] + result[1];
+    const newData = data.slice(startIdx, data.length);
+    if (result[0]) {
+      newData.unshift([startTime, data[startIdx - 1][1]]);
+    }
+    chart.series[0].update({
+      data: newData
+    }, true);
+  }
 }

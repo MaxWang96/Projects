@@ -34,7 +34,11 @@ function saveAndChange(setting, id) {
 
 swit.addEventListener('change', () => {
   const type = tab.url.split('/')[3];
-  const toSet = (type === 'app') ? {appSimp: swit.checked} : {bundleSimp: swit.checked};
+  const toSet = (type === 'app') ? {
+    appSimp: swit.checked
+  } : {
+    bundleSimp: swit.checked
+  };
   saveAndChange(toSet, tab.id);
 });
 
@@ -51,15 +55,13 @@ swit.addEventListener('change', () => {
   });
   [...el.getElementsByTagName('li')].forEach((item) => {
     item.addEventListener('click', function dropdown3() {
-      this.closest('.dropdown').getElementsByTagName('span')[0].textContent = this.textContent;
-      saveAndChange({[this.parentNode.id]: this.textContent}, tab.id);
-      //   $(this).parents('.dropdown').find('input').attr('value', $(this).attr('id'));
-      // dropdown.getElementsByTagName
+      const span = this.closest('.dropdown').getElementsByTagName('span')[0];
+      if (span.textContent !== this.textContent) {
+        span.textContent = this.textContent;
+        saveAndChange({
+          [this.parentNode.id]: this.textContent
+        }, tab.id);
+      }
     });
   });
-  // $('.dropdown-menu li').click(function () {
-  //   var input = '<strong>' + $(this).parents('.dropdown').find('input').val() + '</strong>',
-  //     msg = '<span class="msg">Hidden input value: ';
-  //   $('.msg').html(msg + input + '</span>');
-  // });
 });

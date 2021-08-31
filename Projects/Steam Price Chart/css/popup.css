@@ -149,3 +149,12 @@ input.switch:checked:after {
 .dropdown .dropdown-menu li:hover {
   background-color: #f2f2f2;
 }
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+
+    .slider.round:before {
+        border-radius: 50%;
+    }

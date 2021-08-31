@@ -113,7 +113,7 @@ function addHltbButton(chart, data) {
   if (!data.hasOwnProperty('hltbUrl')) {
     let hltbImg;
     if (data.hltbReady) {
-      const hltbLabel = addLabel(cha, "Can't find the game on HowLongToBeat").align(setAlign(-192));
+      const hltbLabel = addLabel(cha, "Can't find the game on HowLongToBeat").align(setAlign(-190));
       hltbImg = addImg(cha, hltbImgUrl, hltbLabel, -55).css({
         opacity: 0.2,
       });

@@ -1,88 +1,87 @@
 {
-    "name": "__MSG_extensionName__",
-    "version": "0.2.0",
-    "manifest_version": 2,
-    "permissions": [
-        "https://isthereanydeal.com/*",
-        "https://steamspy.com/api.php*",
-        "https://howlongtobeat.com/*",
-        "http://chrome.google.com/*",
-        "declarativeContent",
-        "storage",
-        "tabs"
+  "name": "__MSG_extensionName__",
+  "version": "0.2.0",
+  "manifest_version": 2,
+  "permissions": [
+    "https://isthereanydeal.com/*",
+    "https://steamspy.com/api.php*",
+    "https://howlongtobeat.com/*",
+    "http://chrome.google.com/*",
+    "declarativeContent",
+    "storage",
+    "tabs"
+  ],
+  "optional_permissions": [],
+  "author": "gingerax",
+  "background": {
+    "scripts": [
+      "js/background/init.js",
+      "js/background/requests.js",
+      "js/background/background.js"
     ],
-    "optional_permissions": [],
-    "author": "gingerax",
-    "background": {
-        "scripts": [
-            "js/background/init.js",
-            "js/background/requests.js",
-            "js/background/background.js"
-        ],
-        "persistent": false
+    "persistent": false
+  },
+  "description": "__MSG_extensionDescription__",
+  "default_locale": "en",
+  "options_ui": "",
+  "content_scripts": [
+    {
+      "js": [
+        "js/content/app.js"
+      ],
+      "matches": [
+        "*://store.steampowered.com/app/*"
+      ],
+      "run_at": "document_end"
     },
-    "description": "__MSG_extensionDescription__",
-    "default_locale": "en",
-    "options_ui": "",
-    "content_scripts": [
-        {
-            "js": [
-                "js/content/app.js"
-            ],
-            "matches": [
-                "*://store.steampowered.com/app/*"
-            ],
-            "run_at": "document_end"
-        },
-        {
-            "js": [
-                "js/content/bundle.js"
-            ],
-            "matches": [
-                "*://store.steampowered.com/bundle/*",
-                "*://store.steampowered.com/sub/*"
-            ],
-            "run_at": "document_end"
-        },
-        {
-            "css": [
-                "css/bootstrap.css"
-            ],
-            "js": [
-                "js/content/libs/jquery.min.js",
-                "js/content/libs/bootstrap.min.js",
-                "js/content/libs/highstock.js",
-                "js/content/modal.js",
-                "js/content/globals.js",
-                "js/content/chart.js",
-                "js/content/requests.js",
-                "js/content/data.js",
-                "js/content/content.js"
-            ],
-            "matches": [
-                "*://store.steampowered.com/app/*",
-                "*://store.steampowered.com/bundle/*",
-                "*://store.steampowered.com/sub/*"
-            ],
-            "run_at": "document_end"
-        }
-    ],
-    "page_action": {
-        "default_icon": {
-            "48": "images/icon_48.png",
-            "96": "images/icon_96.png"
-        },
-        "default_title": "__MSG_extensionTitle__",
-        "default_popup": "html/popup.html"
+    {
+      "js": [
+        "js/content/bundle.js"
+      ],
+      "matches": [
+        "*://store.steampowered.com/bundle/*",
+        "*://store.steampowered.com/sub/*"
+      ],
+      "run_at": "document_end"
     },
-    "icons": {
-        "48": "images/icon_48.png",
-        "96": "images/icon_96.png"
+    {
+      "css": [
+        "css/bootstrap.css"
+      ],
+      "js": [
+        "js/content/libs/jquery.min.js",
+        "js/content/libs/bootstrap.min.js",
+        "js/content/libs/highstock.js",
+        "js/content/modal.js",
+        "js/content/globals.js",
+        "js/content/requests.js",
+        "js/content/data.js",
+        "js/content/chart.js",
+        "js/content/content.js"
+      ],
+      "matches": [
+        "*://store.steampowered.com/app/*",
+        "*://store.steampowered.com/bundle/*",
+        "*://store.steampowered.com/sub/*"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  "page_action": {
+    "default_icon": {
+      "48": "images/icon_48.png",
+      "96": "images/icon_96.png"
     },
-    "web_accessible_resources": [
-        "images/icon_48.png",
-        "images/isthereanydeal_icon.svg",
-        "images/howlongtobeat_icon.png"
-    ]
+    "default_title": "__MSG_extensionTitle__",
+    "default_popup": "html/popup.html"
+  },
+  "icons": {
+    "48": "images/icon_48.png",
+    "96": "images/icon_96.png"
+  },
+  "web_accessible_resources": [
+    "images/icon_48.png",
+    "images/isthereanydeal_icon.svg",
+    "images/howlongtobeat_icon.png"
+  ]
 }
-	

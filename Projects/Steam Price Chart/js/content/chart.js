@@ -1,5 +1,35 @@
 'use strict';
 
+function setRangeButtons(range, text) {
+  const defaultButtons = [{
+    type: 'month',
+    count: 1,
+    text: text[0],
+  }, {
+    type: 'month',
+    count: 3,
+    text: text[1],
+  }, {
+    type: 'month',
+    count: 6,
+    text: text[2],
+  }, {
+    type: 'year',
+    count: 1,
+    text: text[3],
+  }, {
+    type: 'year',
+    count: 3,
+    text: text[4],
+  }, {
+    type: 'all',
+    text: text[5],
+  }];
+  if (range === '1y') defaultButtons.splice(-2);
+  else if (range === '3y') defaultButtons.pop();
+  return defaultButtons;
+}
+
 function addEvents(obj, label) {
   return obj
     .on('mouseover', () => {
@@ -111,13 +141,15 @@ function drawChart(results) {
   const {
     info,
     chartData,
-    original,
   } = results[0];
   const {
     simp,
+    range,
   } = results[1];
+  const original = setupData(chartData.data, info.firstPurchaseOption, range);
+
   const title = (bundle === 'app' || bundle === 'appSub') ? chartData.bundleTitle : info.itemName;
-  const data = original ? chartData.originalData : chartData.data.points;
+  const data = chartData.data.original ? chartData.originalData : chartData.data.points;
 
   const {
     sysLang,
@@ -140,7 +172,8 @@ function drawChart(results) {
   };
   Object.assign(globalSetting, setting.chart);
   Highcharts.setOptions(globalSetting);
-  const text = setting.lang.buttonText;
+  const rangeButtons = setRangeButtons(range, setting.lang.buttonText);
+  // const text = setting.lang.buttonText;
 
   const chartOptions = {
     chart: {
@@ -218,7 +251,7 @@ function drawChart(results) {
       shared: true,
       useHTML: true,
       borderColor: '#171a21',
-      formatter: function () {
+      formatter() {
         const {
           point,
         } = this.points[0];
@@ -300,30 +333,7 @@ function drawChart(results) {
         color: '#acb2b8',
       },
       selected: 1,
-      buttons: [{
-        type: 'month',
-        count: 1,
-        text: text[0],
-      }, {
-        type: 'month',
-        count: 3,
-        text: text[1],
-      }, {
-        type: 'month',
-        count: 6,
-        text: text[2],
-      }, {
-        type: 'year',
-        count: 1,
-        text: text[3],
-      }, {
-        type: 'year',
-        count: 3,
-        text: text[4],
-      }, {
-        type: 'all',
-        text: text[5],
-      }],
+      buttons: rangeButtons,
     },
 
     credits: {
@@ -358,11 +368,10 @@ function drawChart(results) {
     });
   }
   chart.rangeData = {
-    originalData: data,
+    fullData: chartData.data.fullData,
     dateFormat: setting.lang.dateFormat,
-    priceFormat: setting.price.formatPrice,
-    
-  }
+    formatPrice: setting.price.formatPrice,
+  };
 
   if (bundle === 'app') bundleModal(info.itemName);
   else if (bundle === 'appSub') subModal(info.itemName);
@@ -373,10 +382,10 @@ function makeChart() {
   const getSetting = new Promise(settingRequest);
   Promise.all([getData, getSetting])
     .then(drawChart)
-    .catch((error) => {
-      if (error === 'timeout') timeoutModal();
-      else if (error === 'cantConnect') cantConnectModal();
-      else if (error.message !== 'chart error') throw error;
+    .catch((e) => {
+      if (e === 'timeout') timeoutModal();
+      else if (e === 'cantConnect') cantConnectModal();
+      else if (e.message !== 'chart error') throw e;
     });
 }
 
@@ -429,46 +438,32 @@ function updateSimp(request) {
   }
 }
 
-function binarySearch(data, value, start, end) {
-  let mid = Math.floor((start + end) / 2);
-  const midValue = data[mid][0];
-  if (midValue === value) return [0, mid];
-  else if (midValue > value) {
-    if (data[mid - 1][0] < value) return [1, mid];
-    else return binarySearch(data, value, start, mid - 1);
-  } else {
-    if (data[mid + 1][0] > value) return [-1, mid];
-    else return binarySearch(data, value, mid + 1, end);
-  }
-}
-
 function updateRange(msg) {
   const chart = $('#chart_container').highcharts();
-  const data = chart.originalData;
-  let timeRange;
-  if (msg.range === '1y') timeRange = 31536000000;
-  else if (msg.range === '3y') timeRange = 94608000000;
-  else {
-    chart.series[0].update({
-      data: data
-    }, true);
-  }
-  const startTime = Date.now() - timeRange;
-  if (startTime <= data[0][0]) {
-    if (data[0][0] !== chart.series[0].options.data[0][0]) {
-      chart.series[0].update({
-        data: data
-      }, true);
-    }
-  } else {
-    const result = binarySearch(data, startTime, 0, data.length - 1);
-    const startIdx = result[0] + result[1];
-    const newData = data.slice(startIdx, data.length);
-    if (result[0]) {
-      newData.unshift([startTime, data[startIdx - 1][1]]);
-    }
-    chart.series[0].update({
-      data: newData
-    }, true);
+  const data = setRange(chart.rangeData.fullData, msg.range);
+  const points = addIntermediatePoints(data[0]);
+  const discount = data[1];
+  const original = false;
+  if (chart.series[0].options.data[0][0] !== points[0][0]) {
+    chart.tooltip.update({
+      formatter() {
+        const {
+          point,
+        } = this.points[0];
+        let htmlStr = `<span style="font-size:90%">${Highcharts.dateFormat(chart.rangeData.dateFormat, this.x)}</span>`;
+        htmlStr += `<br/>${chrome.i18n.getMessage('linePrefix')}<b>${chart.rangeData.formatPrice(point.y)}</b><br/>`;
+        if (!original) {
+          if (discount[point.index] === 0) {
+            htmlStr += chrome.i18n.getMessage('noDiscount');
+          } else if (discount[point.index] !== 100) {
+            htmlStr += `${chrome.i18n.getMessage('discountPrefix')}<b>${discount[point.index]}%</b>`;
+          } else {
+            htmlStr += chrome.i18n.getMessage('freeItem');
+          }
+        }
+        return htmlStr;
+      },
+    });
+    chart.series[0].setData(points, true, false);
   }
 }

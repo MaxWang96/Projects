@@ -33,23 +33,6 @@ function dataRequest(resolve, reject) {
       });
     }
 
-    const {
-      points,
-    } = response.data;
-    try {
-      response.data.discount = calculateDiscount(points, info.firstPurchaseOption);
-    } catch (e) {
-      if (e.message === 'original') {
-        return resolve({
-          chartData: response,
-          original: true,
-          info,
-        });
-      }
-      return reject(e);
-    }
-    if (bundle) response.data.points = personalPrice(points, info.firstPurchaseOption);
-    response.data.points = addIntermediatePoints(points);
     return resolve({
       chartData: response,
       info,
@@ -58,14 +41,16 @@ function dataRequest(resolve, reject) {
 }
 
 function settingRequest(resolve, reject) {
-  const key = (bundle === 'bundle' || bundle === 'sub') ? 'bundleSimp' : 'appSimp';
-  chrome.storage.sync.get(key, (value) => {
-    resolve(value[key] ? {
+  const simp = (bundle === 'bundle' || bundle === 'sub') ? 'bundleSimp' : 'appSimp';
+  chrome.storage.sync.get([simp, 'range'], (value) => {
+    resolve(value[simp] ? {
       simp: true,
       options: userChart.simp,
+      range: value.range
     } : {
       simp: false,
       options: userChart.full,
+      range: value.range
     });
   });
 }

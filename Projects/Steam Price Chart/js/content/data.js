@@ -341,3 +341,58 @@ function addIntermediatePoints(points) {
   plotArr.push(points[i], points[i + 1]);
   return plotArr;
 }
+
+function binarySearch(data, value, start, end) {
+  let mid = Math.floor((start + end) / 2);
+  const midValue = data[mid][0];
+  if (midValue === value) return [0, mid];
+  else if (midValue > value) {
+    if (data[mid - 1][0] < value) return [-1, mid];
+    else return binarySearch(data, value, start, mid - 1);
+  } else {
+    if (data[mid + 1][0] > value) return [1, mid];
+    else return binarySearch(data, value, mid + 1, end);
+  }
+}
+
+function setRange(data, range) {
+  const {
+    points,
+    discount,
+  } = data;
+  let timeRange;
+  if (range === '1y') timeRange = 31536000000;
+  else if (range === '3y') timeRange = 94608000000;
+  else return [points, discount];
+  const startTime = Date.now() - timeRange - 3600000;
+  if (startTime > points[0][0]) {
+    const result = binarySearch(points, startTime, 0, points.length - 1);
+    const startIdx = result[0] === 1? result[1] + 1 : result[1];
+    const newPoints = points.slice(startIdx, points.length);
+    const newDiscount = discount.slice(startIdx * 2, discount.length);
+    if (result[0]) {
+      newPoints.unshift([startTime, points[startIdx - 1][1]]);
+      newDiscount.unshift(discount[startIdx * 2 - 1], discount[startIdx * 2 - 1]);
+    }
+    return [newPoints, newDiscount];
+  }
+  return [points, discount];
+}
+
+function setupData(data, firstPurchaseOption, range) {
+  try {
+    data.discount = calculateDiscount(data.points, firstPurchaseOption);
+  } catch (e) {
+    if (e.message === 'original') {
+      data.original = true;
+      return;
+    } else throw e;
+  }
+  data.original = false;
+  if (bundle) personalPrice(data.points, firstPurchaseOption);
+  data.fullData = {};
+  data.fullData.points = data.points;
+  data.fullData.discount = data.discount;
+  [data.points, data.discount] = setRange(data, range);
+  data.points = addIntermediatePoints(data.points);
+}

@@ -364,7 +364,7 @@ function setRange(data, range) {
   if (range === '1y') timeRange = 31536000000;
   else if (range === '3y') timeRange = 94608000000;
   else return [points, discount];
-  const startTime = Date.now() - timeRange - 3600000;
+  const startTime = Date.now() - timeRange;
   if (startTime > points[0][0]) {
     const result = binarySearch(points, startTime, 0, points.length - 1);
     const startIdx = result[0] === 1? result[1] + 1 : result[1];

@@ -25,8 +25,13 @@ function setRangeButtons(range, text) {
     type: 'all',
     text: text[5],
   }];
-  if (range === '1y') defaultButtons.splice(-2);
-  else if (range === '3y') defaultButtons.pop();
+  if (range === '1y') {
+    defaultButtons.splice(-2);
+    defaultButtons[3].type = 'all';
+  } else if (range === '3y') {
+    defaultButtons.pop();
+    defaultButtons[4].type = 'all';
+  }
   return defaultButtons;
 }
 
@@ -172,8 +177,8 @@ function drawChart(results) {
   };
   Object.assign(globalSetting, setting.chart);
   Highcharts.setOptions(globalSetting);
-  const rangeButtons = setRangeButtons(range, setting.lang.buttonText);
-  // const text = setting.lang.buttonText;
+  const text = setting.lang.buttonText;
+  const rangeButtons = setRangeButtons(range, text);
 
   const chartOptions = {
     chart: {
@@ -309,6 +314,7 @@ function drawChart(results) {
     rangeSelector: {
       buttonTheme: {
         fill: 'rgba( 103, 193, 245, 0.2 )',
+        cursor: 'pointer',
         style: {
           color: '#67c1f5',
         },
@@ -324,6 +330,7 @@ function drawChart(results) {
       inputStyle: {
         backgroundColor: '#18222e',
         color: '#acb2b8',
+        cursor: 'text',
       },
       inputDateFormat: setting.lang.inputDateFormat,
       inputEditDateFormat: setting.lang.inputEditDateFormat,
@@ -371,6 +378,7 @@ function drawChart(results) {
     fullData: chartData.data.fullData,
     dateFormat: setting.lang.dateFormat,
     formatPrice: setting.price.formatPrice,
+    buttonText: text,
   };
 
   if (bundle === 'app') bundleModal(info.itemName);
@@ -441,29 +449,40 @@ function updateSimp(request) {
 function updateRange(msg) {
   const chart = $('#chart_container').highcharts();
   const data = setRange(chart.rangeData.fullData, msg.range);
-  const points = addIntermediatePoints(data[0]);
-  const discount = data[1];
-  const original = false;
-  if (chart.series[0].options.data[0][0] !== points[0][0]) {
-    chart.tooltip.update({
-      formatter() {
-        const {
-          point,
-        } = this.points[0];
-        let htmlStr = `<span style="font-size:90%">${Highcharts.dateFormat(chart.rangeData.dateFormat, this.x)}</span>`;
-        htmlStr += `<br/>${chrome.i18n.getMessage('linePrefix')}<b>${chart.rangeData.formatPrice(point.y)}</b><br/>`;
-        if (!original) {
-          if (discount[point.index] === 0) {
-            htmlStr += chrome.i18n.getMessage('noDiscount');
-          } else if (discount[point.index] !== 100) {
-            htmlStr += `${chrome.i18n.getMessage('discountPrefix')}<b>${discount[point.index]}%</b>`;
-          } else {
-            htmlStr += chrome.i18n.getMessage('freeItem');
+  if (chart.series[0].options.data[0][0] !== data[0][0][0]) {
+    const points = addIntermediatePoints(data[0]);
+    const discount = data[1];
+    const original = false;
+    chart.update({
+      tooltip: {
+        formatter() {
+          const {
+            point,
+          } = this.points[0];
+          let htmlStr = `<span style="font-size:90%">${Highcharts.dateFormat(chart.rangeData.dateFormat, this.x)}</span>`;
+          htmlStr += `<br/>${chrome.i18n.getMessage('linePrefix')}<b>${chart.rangeData.formatPrice(point.y)}</b><br/>`;
+          if (!original) {
+            if (discount[point.index] === 0) {
+              htmlStr += chrome.i18n.getMessage('noDiscount');
+            } else if (discount[point.index] !== 100) {
+              htmlStr += `${chrome.i18n.getMessage('discountPrefix')}<b>${discount[point.index]}%</b>`;
+            } else {
+              htmlStr += chrome.i18n.getMessage('freeItem');
+            }
           }
-        }
-        return htmlStr;
+          return htmlStr;
+        },
       },
-    });
+      rangeSelector: {
+        buttons: setRangeButtons(msg.range, chart.rangeData.buttonText),
+      },
+    }, false);
     chart.series[0].setData(points, true, false);
+  } else {
+    chart.update({
+      rangeSelector: {
+        buttons: setRangeButtons(msg.range, chart.rangeData.buttonText),
+      },
+    }, true, false, false);
   }
 }

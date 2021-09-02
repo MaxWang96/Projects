@@ -28,6 +28,7 @@ input.switch {
   grid-row: 1;
   grid-column: 2;
   position: relative;
+  justify-self: end;
   appearance: none;
   width: 32px;
   height: 20px;
@@ -37,7 +38,6 @@ input.switch {
   border-radius: 10px;
   box-shadow: inset -10px 0 0 0 #e5e5e5;
   transition-duration: var(--transition-time);
-  justify-self: end;
 }
 
 input.switch:after {

@@ -1,6 +1,5 @@
 'use strict';
 
-const swit = document.getElementById('simplify');
 let tab;
 
 chrome.tabs.query({
@@ -11,7 +10,7 @@ chrome.tabs.query({
   const type = tab.url.split('/')[3];
   const simpType = (type === 'app') ? 'appSimp' : 'bundleSimp';
   chrome.storage.sync.get([simpType, 'range'], (value) => {
-    swit.checked = value[simpType];
+    document.getElementById('simplify').checked = value[simpType];
     setTimeout(() => {
       document.documentElement.style.setProperty('--transition-time', '.3s');
     }, 200);
@@ -32,12 +31,13 @@ function saveAndChange(setting, id) {
   chrome.tabs.sendMessage(id, setting);
 }
 
-swit.addEventListener('change', () => {
+document.getElementById('simplify').addEventListener('change', () => {
+  const toggleSwitch = document.getElementById('simplify');
   const type = tab.url.split('/')[3];
   const toSet = (type === 'app') ? {
-    appSimp: swit.checked
+    appSimp: toggleSwitch.checked
   } : {
-    bundleSimp: swit.checked
+    bundleSimp: toggleSwitch.checked
   };
   saveAndChange(toSet, tab.id);
 });

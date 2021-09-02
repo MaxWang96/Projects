@@ -291,7 +291,7 @@ function drawChart(results) {
         dateTimeLabelFormats: setting.lang.navigatorDateFormats,
       },
       yAxis: {
-        min: chartData.data.range[0] - (chartData.data.range[1] - chartData.data.range[0]) * 0.6,
+        min: chartData.data.priceRange[0] - (chartData.data.priceRange[1] - chartData.data.priceRange[0]) * 0.6,
       },
       outlineColor: 'rgba( 0, 0, 0, 0 )',
       maskFill: 'rgba(102,133,194,0.2)',
@@ -450,6 +450,7 @@ function updateRange(msg) {
   const chart = $('#chart_container').highcharts();
   const data = setRange(chart.rangeData.fullData, msg.range);
   if (chart.series[0].options.data[0][0] !== data[0][0][0]) {
+    const priceRange = findMinMax(data[0]);
     const points = addIntermediatePoints(data[0]);
     const discount = data[1];
     const original = false;
@@ -473,10 +474,18 @@ function updateRange(msg) {
           return htmlStr;
         },
       },
+
+      navigator: {
+        yAxis: {
+          min: priceRange[0] - (priceRange[1] - priceRange[0]) * 0.6,
+        },
+      },
+
       rangeSelector: {
         buttons: setRangeButtons(msg.range, chart.rangeData.buttonText),
       },
-    }, false);
+    }, true, false, false);
+    chart.xAxis[0].setExtremes(points[points.length - 1][0] - 7776000000, points[points.length - 1][0]);
     chart.series[0].setData(points, true, false);
   } else {
     chart.update({

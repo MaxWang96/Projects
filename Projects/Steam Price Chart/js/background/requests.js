@@ -31,10 +31,8 @@ function duplicate(arr) {
 function abnormal(dataArr) {
   const arr = dataArr;
   const tmpArr = [arr[0]];
-  let toCompare;
   let i = 1;
   let len = arr.length;
-  let [min, max] = [arr[0][1], arr[0][1]];
   const lastPoint = arr[len - 1].slice();
   const [fiveHours, fourtySixHours, oneMonth] = [18e6, 1656e5, 2592e6];
   let time0;
@@ -55,22 +53,17 @@ function abnormal(dataArr) {
 
   function pushCur() {
     tmpArr.push(arr[i]);
-    toCompare = price0;
     i += 1;
   }
 
   function condiPush(n) {
-    if (price1n !== arr[i + n][1]) {
-      tmpArr.push(arr[i + n]);
-      toCompare = arr[i + n][1];
-    }
+    if (price1n !== arr[i + n][1]) tmpArr.push(arr[i + n]);
     i += n + 1;
   }
 
   function flip() {
     arr[i + 2][1] = price1;
     tmpArr.push(arr[i], arr[i + 2]);
-    toCompare = price0;
     if (arr[i + 2][1] === arr[i + 3][1]) i += 4;
     else i += 3;
   }
@@ -78,7 +71,6 @@ function abnormal(dataArr) {
   function badDiscount() {
     tmpArr.pop();
     tmpArr.push(arr[i + 1]);
-    toCompare = price1;
     i += 2;
   }
 
@@ -97,7 +89,6 @@ function abnormal(dataArr) {
           i += 4;
         } else {
           tmpArr.push(arr[i]);
-          toCompare = price0;
           i += 3;
         }
       } else if (arr[i + 3][0] - time2 >= oneMonth
@@ -156,7 +147,6 @@ function abnormal(dataArr) {
         && price0 === price2
         && price0 < arr[i + 3][1]) { // darkest dungeon CN
         tmpArr.push(arr[i], arr[i + 3]);
-        toCompare = price0;
         i += 4;
       } else {
         condiPush(1);
@@ -164,19 +154,11 @@ function abnormal(dataArr) {
     } else {
       pushCur();
     }
-    if (toCompare > max) max = toCompare;
-    else if (toCompare < min) min = toCompare;
   }
   tmpArr.push(arr[i]);
-  if (i === len - 2) {
-    tmpArr.push(lastPoint);
-    const lastPrice = lastPoint[1];
-    if (lastPrice > max) max = lastPrice;
-    else if (lastPrice < min) min = lastPrice;
-  }
+  if (i === len - 2) tmpArr.push(lastPoint);
   return {
     points: tmpArr,
-    range: [min, max],
   };
 }
 

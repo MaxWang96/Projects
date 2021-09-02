@@ -293,8 +293,8 @@ function makeDiscountArr(pointsArr, priceArr, base) {
       discount.push(curDiscount, curDiscount);
     }
   }
-  discount.push(Math.round((1 - price[i] / base[i]) * 100),
-    Math.round((1 - price[i + 1] / base[i + 1]) * 100));
+  const lastDiscount = Math.round(1 - price[i] / base[i]) * 100;
+  discount.push(lastDiscount, lastDiscount);
   return discount;
 }
 
@@ -330,18 +330,6 @@ function personalPrice(pointsArr, firstPurchaseOption) {
   }
 }
 
-function addIntermediatePoints(points) {
-  const plotArr = [];
-  const len = points.length;
-  let i = 0;
-  for (; i < len - 2; i += 1) {
-    plotArr.push(points[i]);
-    plotArr.push([points[i + 1][0] - 36e5, points[i][1]]);
-  }
-  plotArr.push(points[i], points[i + 1]);
-  return plotArr;
-}
-
 function binarySearch(data, value, start, end) {
   let mid = Math.floor((start + end) / 2);
   const midValue = data[mid][0];
@@ -367,7 +355,7 @@ function setRange(data, range) {
   const startTime = Date.now() - timeRange;
   if (startTime > points[0][0]) {
     const result = binarySearch(points, startTime, 0, points.length - 1);
-    const startIdx = result[0] === 1? result[1] + 1 : result[1];
+    const startIdx = result[0] === 1 ? result[1] + 1 : result[1];
     const newPoints = points.slice(startIdx, points.length);
     const newDiscount = discount.slice(startIdx * 2, discount.length);
     if (result[0]) {
@@ -379,7 +367,30 @@ function setRange(data, range) {
   return [points, discount];
 }
 
-function setupData(data, firstPurchaseOption, range) {
+function findMinMax(points) {
+  let [min, max] = [points[0][1], points[0][1]];
+  const len = points.length;
+  for (let i = 1; i < len - 1; i += 1) {
+    const curPrice = points[i][1];
+    if (curPrice < min) min = curPrice;
+    else if (curPrice > max) max = curPrice;
+  }
+  return [min, max];
+}
+
+function addIntermediatePoints(points) {
+  const plotArr = [];
+  const len = points.length;
+  let i = 0;
+  for (; i < len - 2; i += 1) {
+    plotArr.push(points[i]);
+    plotArr.push([points[i + 1][0] - 36e5, points[i][1]]);
+  }
+  plotArr.push(points[i], points[i + 1]);
+  return plotArr;
+}
+
+function setupData(data, firstPurchaseOption, timeRange) {
   try {
     data.discount = calculateDiscount(data.points, firstPurchaseOption);
   } catch (e) {
@@ -393,6 +404,7 @@ function setupData(data, firstPurchaseOption, range) {
   data.fullData = {};
   data.fullData.points = data.points;
   data.fullData.discount = data.discount;
-  [data.points, data.discount] = setRange(data, range);
+  [data.points, data.discount] = setRange(data, timeRange);
+  data.priceRange = findMinMax(data.points);
   data.points = addIntermediatePoints(data.points);
 }

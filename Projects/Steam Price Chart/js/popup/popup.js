@@ -14,7 +14,7 @@ chrome.tabs.query({
     swit.checked = value[simpType];
     setTimeout(() => {
       document.documentElement.style.setProperty('--transition-time', '.3s');
-    }, 10);
+    }, 200);
     document.getElementsByTagName('span')[0].textContent = value.range;
   });
 });

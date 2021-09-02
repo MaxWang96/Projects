@@ -1,8 +1,0 @@
-{
-    "files.associations": {
-        "mapreduce.h": "c",
-        "utils.h": "c",
-        "fcntl.h": "c",
-        "stream.h": "c"
-    }
-}

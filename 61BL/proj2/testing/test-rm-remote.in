@@ -1,8 +1,0 @@
-I template.in
-> add-remote other ../.gitlet
-<<<
-> rm-remote other
-<<<
-> rm-remote cat
-A remote with that name does not exist.
-<<<

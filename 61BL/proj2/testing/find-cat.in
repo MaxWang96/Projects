@@ -1,6 +1,0 @@
-D PREFIX "[a-f0-9]{6}"
-D HEADER2 "(${PREFIX})[a-f0-9]+"
-> find cat
-${HEADER2}
-<<<*
-D PRE "${1}"

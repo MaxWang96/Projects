@@ -1,7 +1,0 @@
-I template.in
-> add-remote other ../.gitlet
-<<<
-E .gitlet
-> add-remote other ../gitlet/.gitlet
-A remote with that name already exists.
-<<<

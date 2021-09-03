@@ -173,6 +173,7 @@ function drawChart(results) {
     lang: setting.lang.lang,
     time: {
       timezoneOffset: new Date().getTimezoneOffset(),
+      useUTC: false,
     },
   };
   Object.assign(globalSetting, setting.chart);

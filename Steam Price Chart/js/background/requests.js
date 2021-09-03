@@ -103,6 +103,10 @@ function abnormal(dataArr) {
         badDiscount();
       } else if (price1n !== price1) { // shadow of the tomb raider US; hunt: showdown US CN
         i += 1;
+      } else if (i + 3 === len
+        && price1 !== price2) { // Dead Cells: The Bad Seed US
+        tmpArr.push(arr[i]);
+        i += 2;
       } else {
         i += 2;
       }

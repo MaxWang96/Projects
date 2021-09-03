@@ -145,6 +145,22 @@
         "message": "简化图表",
         "description": "简化图表选项的文字（点击扩展图标时显示）"
     },
+    "range": {
+        "message": "时间范围",
+        "description": "时间范围选项的文字（点击扩展图标时显示）"
+    },
+    "1y": {
+        "message": "1年",
+        "description": "时间范围选项（点击扩展图标时显示）：1年"
+    },
+    "3y": {
+        "message": "3年",
+        "description": "时间范围选项（点击扩展图标时显示）：3年"
+    },
+    "all": {
+        "message": "全部",
+        "description": "时时间范围选项（点击扩展图标时显示）：全部"
+    },
     "feedback": {
         "message": "反馈",
         "description": "反馈选项的文字（点击扩展图标时显示）"

@@ -5,18 +5,18 @@
     <link rel="stylesheet" href="../css/popup.css" />
 </head>
 <body>
-    <div id="grid" class="grid-container">
+    <div id="grid-container">
         <label id="expand-1" class="clickable" for="simplify"></label>
-        <input class="switch clickable" type="checkbox" id="simplify">
-        <label for="range">Time Range</label>
-        <div id="range-selector" class="dropdown">
+        <input id="simplify" class="switch clickable" type="checkbox">
+        <label for="range"></label>
+        <div class="dropdown">
             <div class="select">
                 <span></span>
             </div>
             <ul id="range" class="dropdown-menu">
-                <li>1y</li>
-                <li>3y</li>
-                <li>All</li>
+                <li id="1y"></li>
+                <li id="3y"></li>
+                <li id="all"></li>
             </ul>
         </div>
         <button id="feedback-btn"></button>

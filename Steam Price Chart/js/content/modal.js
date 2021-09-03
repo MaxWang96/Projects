@@ -56,9 +56,9 @@ function showOriginalModal() {
 }
 
 function dataModal() {
-  // modal('price_data_error_modal',
-  //   chrome.i18n.getMessage('priceDataErrorHeader'),
-  //   chrome.i18n.getMessage('priceDataErrorText', getName()));
+  modal('price_data_error_modal',
+    chrome.i18n.getMessage('priceDataErrorHeader'),
+    chrome.i18n.getMessage('priceDataErrorText', getName()));
 }
 
 function updateDelayModal() {

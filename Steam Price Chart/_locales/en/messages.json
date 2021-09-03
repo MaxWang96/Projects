@@ -121,6 +121,18 @@
     "simplify": {
         "message": "Simplify Chart"
     },
+    "range": {
+        "message": "Time Range"
+    },
+    "1y": {
+        "message": "1y"
+    },
+    "3y": {
+        "message": "3y"
+    },
+    "all": {
+        "message": "All"
+    },
     "feedback": {
         "message": "Feedback"
     }

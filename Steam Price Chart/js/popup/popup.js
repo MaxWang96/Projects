@@ -1,5 +1,7 @@
 'use strict';
 
+let tab;
+
 function langSetup() {
   const labels = document.getElementsByTagName('label');
   labels[0].textContent = chrome.i18n.getMessage('simplify');
@@ -20,9 +22,9 @@ function setSimp() {
   const toggleSwitch = document.getElementById('simplify');
   const type = tab.url.split('/')[3];
   const toSet = (type === 'app') ? {
-    appSimp: toggleSwitch.checked
+    appSimp: toggleSwitch.checked,
   } : {
-    bundleSimp: toggleSwitch.checked
+    bundleSimp: toggleSwitch.checked,
   };
   saveAndChange(toSet, tab.id);
 }
@@ -32,7 +34,7 @@ function setup() {
     active: true,
     currentWindow: true,
   }, (tabs) => {
-    tab = tabs[0];
+    [tab] = tabs;
     const type = tab.url.split('/')[3];
     const simpType = (type === 'app') ? 'appSimp' : 'bundleSimp';
     chrome.storage.sync.get([simpType, 'range'], (value) => {
@@ -73,7 +75,7 @@ function setup() {
         if (span.textContent !== this.textContent) {
           span.textContent = this.textContent;
           saveAndChange({
-            [this.parentNode.id]: this.id
+            [this.parentNode.id]: this.id,
           }, tab.id);
         }
       });
@@ -81,5 +83,4 @@ function setup() {
   });
 }
 
-let tab;
 setup();

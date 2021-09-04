@@ -151,10 +151,13 @@ function drawChart(results) {
     simp,
     range,
   } = results[1];
-  const original = setupData(chartData.data, info.firstPurchaseOption, range);
+
+  setupData(chartData.data, info.firstPurchaseOption, range);
+  const showOriginal = (range === 'all' && chartData.data.origin);
 
   const title = (bundle === 'app' || bundle === 'appSub') ? chartData.bundleTitle : info.itemName;
-  const data = chartData.data.original ? chartData.originalData : chartData.data.points;
+  const data = showOriginal ? chartData.originalData : chartData.data.points;
+  if (showOriginal) showOriginalModal();
 
   const {
     sysLang,
@@ -205,9 +208,9 @@ function drawChart(results) {
 
     series: [{
       name: chrome.i18n.getMessage('lineName'),
-      data: data,
       color: '#67c1f5',
       step: true,
+      data,
     }],
 
     plotOptions: {
@@ -241,7 +244,8 @@ function drawChart(results) {
           fontSize: '12px',
         },
         formatter() {
-          return setting.price.currency[0] + Math.round(this.value) + setting.price.currency[1];
+          return setting.price.currency[0] + Math.round(this.value) + setting.price.currency[
+            1];
         },
       },
       offset: 30,
@@ -261,13 +265,16 @@ function drawChart(results) {
         const {
           point,
         } = this.points[0];
-        let htmlStr = `<span style="font-size:90%">${Highcharts.dateFormat(setting.lang.dateFormat, this.x)}</span>`;
-        htmlStr += `<br/>${chrome.i18n.getMessage('linePrefix')}<b>${setting.price.formatPrice(point.y)}</b><br/>`;
-        if (!original) {
+        const date = Highcharts.dateFormat(setting.lang.dateFormat, this.x);
+        const price = setting.price.formatPrice(point.y);
+        const discount = chartData.data.discount[point.index];
+        let htmlStr = `<span style="font-size:90%">${date}</span>`;
+        htmlStr += `<br/>${chrome.i18n.getMessage('linePrefix')}<b>${price}</b><br/>`;
+        if (!showOriginal) {
           if (chartData.data.discount[point.index] === 0) {
             htmlStr += chrome.i18n.getMessage('noDiscount');
           } else if (chartData.data.discount[point.index] !== 100) {
-            htmlStr += `${chrome.i18n.getMessage('discountPrefix')}<b>${chartData.data.discount[point.index]}%</b>`;
+            htmlStr += `${chrome.i18n.getMessage('discountPrefix')}<b>${discount}%</b>`;
           } else {
             htmlStr += chrome.i18n.getMessage('freeItem');
           }
@@ -292,7 +299,8 @@ function drawChart(results) {
         dateTimeLabelFormats: setting.lang.navigatorDateFormats,
       },
       yAxis: {
-        min: chartData.data.priceRange[0] - (chartData.data.priceRange[1] - chartData.data.priceRange[0]) * 0.6,
+        min: chartData.data.priceRange[0] - (chartData.data.priceRange[1]
+          - chartData.data.priceRange[0]) * 0.6,
       },
       outlineColor: 'rgba( 0, 0, 0, 0 )',
       maskFill: 'rgba(102,133,194,0.2)',
@@ -381,6 +389,7 @@ function drawChart(results) {
     formatPrice: setting.price.formatPrice,
     buttonText: text,
   };
+  if (chartData.data.origin) chart.rangeData.originalData = chartData.originalData;
 
   if (bundle === 'app') bundleModal(info.itemName);
   else if (bundle === 'appSub') subModal(info.itemName);
@@ -451,23 +460,28 @@ function updateRange(msg) {
   const chart = $('#chart_container').highcharts();
   const data = setRange(chart.rangeData.fullData, msg.range);
   if (chart.series[0].options.data[0][0] !== data[0][0][0]) {
-    const priceRange = findMinMax(data[0]);
-    const points = addIntermediatePoints(data[0]);
+    const showOriginal = msg.range === 'all' && chart.rangeData.originalData;
+    const results = minMaxAndAdd(data[0]);
     const discount = data[1];
-    const original = false;
+    const priceRange = results[0];
+    const points = showOriginal ? chart.rangeData.originalData : results[1];
+    if (showOriginal) showOriginalModal();
     chart.update({
       tooltip: {
         formatter() {
           const {
             point,
           } = this.points[0];
-          let htmlStr = `<span style="font-size:90%">${Highcharts.dateFormat(chart.rangeData.dateFormat, this.x)}</span>`;
-          htmlStr += `<br/>${chrome.i18n.getMessage('linePrefix')}<b>${chart.rangeData.formatPrice(point.y)}</b><br/>`;
-          if (!original) {
+          const date = Highcharts.dateFormat(chart.rangeData.dateFormat, this.x);
+          const price = chart.rangeData.formatPrice(point.y);
+          const curDiscount = discount[point.index];
+          let htmlStr = `<span style="font-size:90%">${date}</span>`;
+          htmlStr += `<br/>${chrome.i18n.getMessage('linePrefix')}<b>${price}</b><br/>`;
+          if (!showOriginal) {
             if (discount[point.index] === 0) {
               htmlStr += chrome.i18n.getMessage('noDiscount');
             } else if (discount[point.index] !== 100) {
-              htmlStr += `${chrome.i18n.getMessage('discountPrefix')}<b>${discount[point.index]}%</b>`;
+              htmlStr += `${chrome.i18n.getMessage('discountPrefix')}<b>${curDiscount}%</b>`;
             } else {
               htmlStr += chrome.i18n.getMessage('freeItem');
             }
@@ -486,7 +500,8 @@ function updateRange(msg) {
         buttons: setRangeButtons(msg.range, chart.rangeData.buttonText),
       },
     }, true, false, false);
-    chart.xAxis[0].setExtremes(points[points.length - 1][0] - 7776000000, points[points.length - 1][0]);
+    chart.xAxis[0].setExtremes(points[points.length - 1][0] - 7776000000,
+      points[points.length - 1][0]);
     chart.series[0].setData(points, true, false);
   } else {
     chart.update({

@@ -57,7 +57,7 @@
         "description": "原始数据弹窗的标题"
     },
     "originalDataText": {
-        "message": "对不起，Steam价格历史图无法清理$NAME$的价格历史数据。显示原始数据作为参考。",
+        "message": "对不起，Steam价格历史图无法清理$NAME$的价格历史数据。显示原始数据作为参考（选择更短的时间范围可以避免这个问题）。",
         "description": "原始数据弹窗的主体文字，$NAME$是商品名称",
         "placeholders": {
             "name": {

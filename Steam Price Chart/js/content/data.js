@@ -78,7 +78,7 @@ function setupEnd(pointsArr, priceArr, firstPurchaseOption) {
 }
 
 function setupBegin(points, price) {
-  let max = price[0];
+  let [max] = price;
   let beginDiscount = false;
   if (price.length === 2) {
     beginDiscount = true;
@@ -172,6 +172,7 @@ function checkAbnormalHigh(pointsArr, priceArr, baseArr, priceIncrease) {
   const [price, base] = [priceArr, baseArr];
   let tmp;
   let i = priceIncrease.length - 1;
+  let origin = false;
 
   if (pointsArr.length > 3 && pointsArr[0] === 0) { // XCOM 2 CN
     if (baseArr[0] !== baseArr[3]) {
@@ -189,7 +190,7 @@ function checkAbnormalHigh(pointsArr, priceArr, baseArr, priceIncrease) {
     const toDelete = [];
     const correctBase = base[tmp - 1];
     if (i >= 2) {
-      if (priceIncrease[i] - priceIncrease[i - 2] <= 10) showOriginalModal();
+      if (priceIncrease[i] - priceIncrease[i - 2] <= 10) origin = true;
     }
     while (j < n) {
       if (price[idx] < correctBase) {
@@ -229,14 +230,15 @@ function checkAbnormalHigh(pointsArr, priceArr, baseArr, priceIncrease) {
       makeBase(price, base, priceIncrease, tmp);
     }
   }
+  return origin;
 }
 
 function calculateBase(points, price) {
   const base = Array(price.length);
   const priceIncrease = [];
   makeBase(price, base, priceIncrease);
-  checkAbnormalHigh(points, price, base, priceIncrease);
-  return base;
+  const origin = checkAbnormalHigh(points, price, base, priceIncrease);
+  return [base, origin];
 }
 
 function restorePriceArr(points, priceArr, base, endDiscount) {
@@ -258,11 +260,12 @@ function makeDiscountArr(pointsArr, priceArr, base) {
   const [points, price, discount] = [pointsArr, priceArr, []];
   let len = points.length;
   let i = 0;
+  let origin = false;
   for (; i < len - 2; i += 1) {
     if ((points[i + 1][0] - points[i][0] <= 1656e5
         || points[i][1] === points[i + 1][1])
       && i > 0) {
-      showOriginalModal();
+      origin = true;
     }
     if (price[i] === base[i]) {
       discount.push(0, 0);
@@ -281,11 +284,11 @@ function makeDiscountArr(pointsArr, priceArr, base) {
               len -= 1;
             }
           } else {
-            showOriginalModal();
+            origin = true;
           }
         } else if (i === 1) {
           if (price[i - 1] === base[i - 1]) { // tomb raider US
-            showOriginalModal();
+            origin = true;
           }
         }
       }
@@ -295,10 +298,14 @@ function makeDiscountArr(pointsArr, priceArr, base) {
   }
   const lastDiscount = Math.round(1 - price[i] / base[i]) * 100;
   discount.push(lastDiscount, lastDiscount);
-  return discount;
+  return [discount, origin];
 }
 
-function calculateDiscount(points, firstPurchaseOption) {
+function calculateDiscount(dataObj, firstPurchaseOption) {
+  const data = dataObj;
+  const {
+    points,
+  } = data;
   if ((points[0][1] === 0
       && points[1][0] - points[0][0] >= 31536e6)
     || points[points.length - 1][1] !== points[points.length - 2][1]) {
@@ -306,9 +313,11 @@ function calculateDiscount(points, firstPurchaseOption) {
   }
   const priceArr = [];
   const endDiscount = setup(points, priceArr, firstPurchaseOption);
-  const base = calculateBase(points, priceArr);
+  const [base, origin] = calculateBase(points, priceArr);
   restorePriceArr(points, priceArr, base, endDiscount);
-  return makeDiscountArr(points, priceArr, base);
+  const results = makeDiscountArr(points, priceArr, base);
+  [data.discount] = results;
+  data.origin = origin || results[1];
 }
 
 function personalPrice(pointsArr, firstPurchaseOption) {
@@ -331,16 +340,15 @@ function personalPrice(pointsArr, firstPurchaseOption) {
 }
 
 function binarySearch(data, value, start, end) {
-  let mid = Math.floor((start + end) / 2);
+  const mid = Math.floor((start + end) / 2);
   const midValue = data[mid][0];
   if (midValue === value) return [0, mid];
-  else if (midValue > value) {
+  if (midValue > value) {
     if (data[mid - 1][0] < value) return [-1, mid];
-    else return binarySearch(data, value, start, mid - 1);
-  } else {
-    if (data[mid + 1][0] > value) return [1, mid];
-    else return binarySearch(data, value, mid + 1, end);
+    return binarySearch(data, value, start, mid - 1);
   }
+  if (data[mid + 1][0] > value) return [1, mid];
+  return binarySearch(data, value, mid + 1, end);
 }
 
 function setRange(data, range) {
@@ -354,11 +362,11 @@ function setRange(data, range) {
   else return [points, discount];
   const startTime = Date.now() - timeRange;
   if (startTime > points[0][0]) {
-    const result = binarySearch(points, startTime, 0, points.length - 1);
-    const startIdx = result[0] === 1 ? result[1] + 1 : result[1];
+    const results = binarySearch(points, startTime, 0, points.length - 1);
+    const startIdx = results[0] === 1 ? results[1] + 1 : results[1];
     const newPoints = points.slice(startIdx, points.length);
     const newDiscount = discount.slice(startIdx * 2, discount.length);
-    if (result[0]) {
+    if (results[0]) {
       newPoints.unshift([startTime, points[startIdx - 1][1]]);
       newDiscount.unshift(discount[startIdx * 2 - 1], discount[startIdx * 2 - 1]);
     }
@@ -367,44 +375,32 @@ function setRange(data, range) {
   return [points, discount];
 }
 
-function findMinMax(points) {
-  let [min, max] = [points[0][1], points[0][1]];
+function minMaxAndAdd(points) {
   const len = points.length;
-  for (let i = 1; i < len - 1; i += 1) {
+  const plotArr = [];
+  let [min, max] = [points[len - 1][1], points[len - 1][1]];
+  let i = 0;
+  for (; i < len - 2; i += 1) {
     const curPrice = points[i][1];
     if (curPrice < min) min = curPrice;
     else if (curPrice > max) max = curPrice;
-  }
-  return [min, max];
-}
-
-function addIntermediatePoints(points) {
-  const plotArr = [];
-  const len = points.length;
-  let i = 0;
-  for (; i < len - 2; i += 1) {
     plotArr.push(points[i]);
     plotArr.push([points[i + 1][0] - 36e5, points[i][1]]);
   }
   plotArr.push(points[i], points[i + 1]);
-  return plotArr;
+  return [
+    [min, max], plotArr,
+  ];
 }
 
-function setupData(data, firstPurchaseOption, timeRange) {
-  try {
-    data.discount = calculateDiscount(data.points, firstPurchaseOption);
-  } catch (e) {
-    if (e.message === 'original') {
-      data.original = true;
-      return;
-    } else throw e;
-  }
-  data.original = false;
+function setupData(dataObj, firstPurchaseOption, timeRange) {
+  const data = dataObj;
+  calculateDiscount(data, firstPurchaseOption);
   if (bundle) personalPrice(data.points, firstPurchaseOption);
-  data.fullData = {};
-  data.fullData.points = data.points;
-  data.fullData.discount = data.discount;
+  data.fullData = {
+    points: data.points,
+    discount: data.discount,
+  };
   [data.points, data.discount] = setRange(data, timeRange);
-  data.priceRange = findMinMax(data.points);
-  data.points = addIntermediatePoints(data.points);
+  [data.priceRange, data.points] = minMaxAndAdd(data.points);
 }

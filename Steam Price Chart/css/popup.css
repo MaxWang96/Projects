@@ -100,7 +100,6 @@ input.switch:checked:after {
 .dropdown {
   border: 0.1em solid #e5e5e5;
   border-radius: 0.12em;
-  transition: all 0.5s;
   position: relative;
   text-align: center;
   justify-self: end;

@@ -49,7 +49,7 @@
         "message": "Showing Original Data"
     },
     "originalDataText": {
-        "message": "Sorry, Steam Price Chart can't cleanse the price history data of $NAME$. The original data is displayed for referrence.",
+        "message": "Sorry, Steam Price Chart can't cleanse the price history data of $NAME$. The original data is displayed for referrence (changing to a shorter time range can avoid this problem).",
         "placeholders": {
             "name": {
                 "content": "$1"

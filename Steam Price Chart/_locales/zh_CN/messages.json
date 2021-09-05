@@ -145,6 +145,10 @@
         "message": "简化图表",
         "description": "简化图表选项的文字（点击扩展图标时显示）"
     },
+    "animation": {
+        "message": "动画",
+        "description": "动画选项的文字（点击扩展图标时显示）"
+    },
     "range": {
         "message": "时间范围",
         "description": "时间范围选项的文字（点击扩展图标时显示）"

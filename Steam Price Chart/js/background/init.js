@@ -4,6 +4,7 @@ function init() {
   chrome.storage.sync.set({
     appSimp: false,
     bundleSimp: true,
+    animation: false,
     range: '3y',
   });
   chrome.declarativeContent.onPageChanged.removeRules(undefined, () => {

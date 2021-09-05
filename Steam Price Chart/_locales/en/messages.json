@@ -121,6 +121,9 @@
     "simplify": {
         "message": "Simplify Chart"
     },
+    "animation": {
+        "message": "Animation"
+    },
     "range": {
         "message": "Time Range"
     },

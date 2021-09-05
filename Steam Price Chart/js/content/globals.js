@@ -89,9 +89,9 @@ const userChart = {
       enabled: true,
     },
 
-    tooltip: {
-      animation: true,
-    },
+    // tooltip: {
+    //   animation: true,
+    // },
 
     rangeSelector: {
       enabled: true,
@@ -103,15 +103,12 @@ const userChart = {
     },
   },
   simp: {
-    chart: {
-      animation: false,
-    },
-
-    plotOptions: {
-      series: {
-        animation: false,
-      },
-    },
+    chart: {},
+    // plotOptions: {
+    //   series: {
+    //     animation: false,
+    //   },
+    // },
 
     navigator: {
       margin: 20,
@@ -121,9 +118,9 @@ const userChart = {
       enabled: false,
     },
 
-    tooltip: {
-      animation: false,
-    },
+    // tooltip: {
+    //   animation: false,
+    // },
 
     rangeSelector: {
       selected: 1,

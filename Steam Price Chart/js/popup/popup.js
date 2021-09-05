@@ -2,14 +2,15 @@
 
 let tab;
 
+function langSetupHelper(elements, msgArr) {
+  for (let i = 0; i < elements.length; i += 1) {
+    elements[i].textContent = chrome.i18n.getMessage(msgArr[i]);
+  }
+}
+
 function langSetup() {
-  const labels = document.getElementsByTagName('label');
-  labels[0].textContent = chrome.i18n.getMessage('simplify');
-  labels[1].textContent = chrome.i18n.getMessage('range');
-  const rangeItems = document.getElementsByTagName('li');
-  rangeItems[0].textContent = chrome.i18n.getMessage('1y');
-  rangeItems[1].textContent = chrome.i18n.getMessage('3y');
-  rangeItems[2].textContent = chrome.i18n.getMessage('all');
+  langSetupHelper(document.getElementsByTagName('label'), ['simplify', 'animation', 'range']);
+  langSetupHelper(document.getElementsByTagName('li'), ['1y', '3y', 'all']);
   document.getElementById('feedback-btn').textContent = chrome.i18n.getMessage('feedback');
 }
 
@@ -37,8 +38,9 @@ function setup() {
     [tab] = tabs;
     const type = tab.url.split('/')[3];
     const simpType = (type === 'app') ? 'appSimp' : 'bundleSimp';
-    chrome.storage.sync.get([simpType, 'range'], (value) => {
+    chrome.storage.sync.get([simpType, 'animation', 'range'], (value) => {
       document.getElementById('simplify').checked = value[simpType];
+      document.getElementById('animation').checked = value.animation;
       setTimeout(() => {
         document.documentElement.style.setProperty('--transition-time', '.3s');
       }, 200);
@@ -46,18 +48,32 @@ function setup() {
     });
   });
 
+  [...document.getElementsByClassName('expand')].forEach((el, i) => {
+    el.style.gridRow = i + 1;
+    el.style.gridColumn = '1/3';
+  });
+  [...document.getElementsByClassName('switch')].forEach((el, i) => {
+    el.style.gridRow = i + 1;
+  });
   if (window.navigator.languages[0].startsWith('zh')) {
-    document.body.style['min-width'] = '120px';
+    document.body.style['min-width'] = '130px';
     document.getElementsByClassName('dropdown')[0].style.width = '36px';
   } else {
     document.getElementsByClassName('dropdown')[0].style.width = '32px';
   }
   document.getElementById('feedback-btn').onclick = () => {
-    window.open('https://chrome.google.com/webstore/detail/stayfocusd/laankejkbhbdhmipfmgcngdelahlfoji/support');
+    window.open(
+      'https://chrome.google.com/webstore/detail/stayfocusd/laankejkbhbdhmipfmgcngdelahlfoji/support'
+    );
   };
   langSetup();
 
   document.getElementById('simplify').addEventListener('change', setSimp);
+  document.getElementById('animation').addEventListener('change', () => {
+    saveAndChange({
+      animation: document.getElementById('animation').checked,
+    }, tab.id);
+  });
   [...document.getElementsByClassName('dropdown')].forEach((el) => {
     el.addEventListener('click', function dropdown1() {
       this.setAttribute('tabindex', 1);

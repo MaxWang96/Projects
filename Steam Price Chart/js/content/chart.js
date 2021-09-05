@@ -149,6 +149,7 @@ function drawChart(results) {
   } = results[0];
   const {
     simp,
+    animation,
     range,
   } = results[1];
 
@@ -197,6 +198,7 @@ function drawChart(results) {
       style: {
         fontFamily: '"Motiva Sans", sans-serif',
       },
+      animation,
     },
 
     title: {
@@ -216,6 +218,7 @@ function drawChart(results) {
     plotOptions: {
       series: {
         findNearestPointBy: 'xy',
+        animation,
       },
     },
 
@@ -253,7 +256,7 @@ function drawChart(results) {
     },
 
     tooltip: {
-      backgroundColor: '#171a21',
+      backgroundColor: 'rgba( 23, 26, 33, 0.9 )',
       style: {
         color: '#b8b6b4',
       },
@@ -448,12 +451,20 @@ function updateSimp(request) {
       height,
     });
     chart.update(userChart.full);
-    chart.update({
-      chart: {
-        animation: true,
-      },
-    });
+    // chart.update({
+    //   chart: {
+    //     animation: true,
+    //   },
+    // });
   }
+}
+
+function updateAnimation(msg) {
+  $('#chart_container').highcharts().update({
+    chart: {
+      animation: msg.animation,
+    },
+  });
 }
 
 function updateRange(msg) {

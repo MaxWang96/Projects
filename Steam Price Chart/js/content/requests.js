@@ -42,15 +42,17 @@ function dataRequest(resolve, reject) {
 
 function settingRequest(resolve, reject) {
   const simp = (bundle === 'bundle' || bundle === 'sub') ? 'bundleSimp' : 'appSimp';
-  chrome.storage.sync.get([simp, 'range'], (value) => {
+  chrome.storage.sync.get([simp, 'animation', 'range'], (value) => {
     resolve(value[simp] ? {
       simp: true,
       options: userChart.simp,
-      range: value.range
+      animation: value.animation,
+      range: value.range,
     } : {
       simp: false,
       options: userChart.full,
-      range: value.range
+      animation: value.animation,
+      range: value.range,
     });
   });
 }

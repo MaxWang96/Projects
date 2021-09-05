@@ -443,14 +443,14 @@ function updateSimp(request) {
     Object.assign(userChart.simp.chart, {
       height,
     });
-    chart.update(userChart.simp);
+    chart.update(userChart.simp, true, false, false);
   } else {
     const height = appPage ? tmp.appFull : tmp.bundleFull;
     container.css('height', height);
     Object.assign(userChart.full.chart, {
       height,
     });
-    chart.update(userChart.full);
+    chart.update(userChart.full, true, false, false);
     // chart.update({
     //   chart: {
     //     animation: true,

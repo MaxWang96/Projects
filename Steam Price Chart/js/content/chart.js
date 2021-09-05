@@ -384,7 +384,7 @@ function drawChart(results) {
       rangeSelector: {
         enabled: false,
       },
-    });
+    }, true, false, false);
   }
   chart.rangeData = {
     fullData: chartData.data.fullData,
@@ -451,11 +451,6 @@ function updateSimp(request) {
       height,
     });
     chart.update(userChart.full, true, false, false);
-    // chart.update({
-    //   chart: {
-    //     animation: true,
-    //   },
-    // });
   }
 }
 

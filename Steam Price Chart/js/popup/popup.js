@@ -2,7 +2,8 @@
 
 let tab;
 
-function langSetupHelper(elements, msgArr) {
+function langSetupHelper(elementsArr, msgArr) {
+  const elements = elementsArr;
   for (let i = 0; i < elements.length; i += 1) {
     elements[i].textContent = chrome.i18n.getMessage(msgArr[i]);
   }
@@ -49,11 +50,13 @@ function setup() {
   });
 
   [...document.getElementsByClassName('expand')].forEach((el, i) => {
-    el.style.gridRow = i + 1;
-    el.style.gridColumn = '1/3';
+    const element = el;
+    element.style.gridRow = i + 1;
+    element.style.gridColumn = '1/3';
   });
   [...document.getElementsByClassName('switch')].forEach((el, i) => {
-    el.style.gridRow = i + 1;
+    const element = el;
+    element.style.gridRow = i + 1;
   });
   if (window.navigator.languages[0].startsWith('zh')) {
     document.body.style['min-width'] = '130px';
@@ -63,7 +66,7 @@ function setup() {
   }
   document.getElementById('feedback-btn').onclick = () => {
     window.open(
-      'https://chrome.google.com/webstore/detail/stayfocusd/laankejkbhbdhmipfmgcngdelahlfoji/support'
+      'https://chrome.google.com/webstore/detail/stayfocusd/laankejkbhbdhmipfmgcngdelahlfoji/support',
     );
   };
   langSetup();

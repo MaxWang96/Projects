@@ -2,7 +2,9 @@
 
 const supportedRegion = ['US', 'CN', 'EU1'];
 
-const eu1 = ['AL', 'AD', 'AT', 'BE', 'FI', 'FR', 'DK', 'DE', 'IE', 'LI', 'LU', 'MK', 'NL', 'SE', 'CH'];
+const eu1 = ['AL', 'AD', 'AT', 'BE', 'FI', 'FR', 'DK', 'DE', 'IE', 'LI', 'LU', 'MK', 'NL', 'SE',
+  'CH'
+];
 
 class LocaleOptions {
   constructor(options = {}) {
@@ -89,10 +91,6 @@ const userChart = {
       enabled: true,
     },
 
-    // tooltip: {
-    //   animation: true,
-    // },
-
     rangeSelector: {
       enabled: true,
       selected: 1,
@@ -102,13 +100,9 @@ const userChart = {
       range: undefined,
     },
   },
+
   simp: {
     chart: {},
-    // plotOptions: {
-    //   series: {
-    //     animation: false,
-    //   },
-    // },
 
     navigator: {
       margin: 20,
@@ -118,10 +112,6 @@ const userChart = {
       enabled: false,
     },
 
-    // tooltip: {
-    //   animation: false,
-    // },
-
     rangeSelector: {
       selected: 1,
     },
@@ -130,6 +120,7 @@ const userChart = {
       range: 7776e6,
     },
   },
+
   height: {
     appSimp: '350px',
     appFull: '400px',

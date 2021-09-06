@@ -1,21 +1,41 @@
 'use strict';
 
 function findRegion() {
-  let region = JSON.parse(document.getElementById('application_config').getAttribute('data-config')).COUNTRY;
+  let region = JSON.parse(document.getElementById('application_config').getAttribute('data-config'))
+    .COUNTRY;
   if (eu1.includes(region)) region = 'EU1';
   if (!supportedRegion.includes(region)) regionModal(region);
   return region;
 }
 
+function findBestPackage(wrappers, startIdx) {
+  const priceArr = [];
+  for (let i = startIdx; i < wrappers.length; i += 1) {
+    const price = wrappers[i].getElementsByClassName('game_purchase_action')[0]
+      .querySelector('[data-price-final]').getAttribute('data-price-final');
+    priceArr.push(parseInt(price, 10));
+  }
+  let [min, idx] = [priceArr[0], 0];
+  for (let j = 1; j < priceArr.length; j += 1) {
+    if (min > priceArr[j]) {
+      min = priceArr[j];
+      idx = j;
+    }
+  }
+  return startIdx + idx;
+}
+
 function findIdAndOption(purchaseArea, isDlc, isMusic, name) {
   let id = window.location.href.split('/')[4];
-  let firstPurchaseOption;
+  let targetOption;
   let i = 0;
   const wrappers = purchaseArea.getElementsByClassName('game_area_purchase_game_wrapper');
   if (isDlc || isMusic) {
-    [firstPurchaseOption] = wrappers;
-    if (firstPurchaseOption.classList.length === 3) bundle = 'app';
-    else if (firstPurchaseOption.getElementsByClassName('package_contents').length === 1) bundle = 'appSub';
+    [targetOption] = wrappers;
+    if (targetOption.classList.length === 3) bundle = 'app';
+    else if (targetOption.getElementsByClassName('package_contents').length === 1) {
+      bundle = 'appSub';
+    }
   } else {
     for (;;) {
       const wrap = wrappers[i];
@@ -29,21 +49,34 @@ function findIdAndOption(purchaseArea, isDlc, isMusic, name) {
             || h1.startsWith(name)
             || h1.endsWith(name)) {
             if (option.getElementsByClassName('package_contents').length === 1) {
-              bundle = 'appSub';
-              [id] = option.getAttribute('id').match(/\d+/);
+              const packageIdx = findBestPackage(wrappers, i);
+              if (packageIdx === i) {
+                bundle = 'appSub';
+                [id] = option.getAttribute('id').match(/\d+/);
+                targetOption = wrap;
+                break;
+              } else {
+                i = packageIdx - 1;
+              }
+            } else {
+              targetOption = wrap;
+              break;
             }
-            firstPurchaseOption = wrap;
-            break;
           }
         }
       } else if (wrap.classList.length === 3) {
         if (wrap.getElementsByClassName('btn_disabled').length) {
           bundleOwnedModal();
         } else {
-          firstPurchaseOption = wrap;
-          bundle = 'app';
-          id = firstPurchaseOption.getAttribute('data-ds-bundleid');
-          break;
+          const packageIdx = findBestPackage(wrappers, i);
+          if (packageIdx === i) {
+            targetOption = wrap;
+            bundle = 'app';
+            id = targetOption.getAttribute('data-ds-bundleid');
+            break;
+          } else {
+            i = packageIdx - 1;
+          }
         }
       }
       i += 1;
@@ -51,7 +84,7 @@ function findIdAndOption(purchaseArea, isDlc, isMusic, name) {
   }
   return {
     id,
-    firstPurchaseOption,
+    targetOption,
   };
 }
 
@@ -93,9 +126,11 @@ function insertChart(height) {
       break;
     }
   }
-  loc.insertAdjacentHTML('afterbegin', `
+  const insertContent =
+    `
     <div class="steam_price_chart">
         <div id="chart_container" style="height: ${height}; min-width: 310px"></div>
     </div>
-    `);
+    `;
+  loc.insertAdjacentHTML('afterbegin', insertContent);
 }

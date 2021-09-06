@@ -14,13 +14,13 @@ function makePriceArr(points, price) {
   }
 }
 
-function setupEnd(pointsArr, priceArr, firstPurchaseOption) {
+function setupEnd(pointsArr, priceArr, targetOption) {
   const arr = priceArr;
   let price;
   let endDiscount = true;
   const len = arr.length;
   const curPrice = arr[len - 1];
-  const discount = firstPurchaseOption.getElementsByClassName('discount_block');
+  const discount = targetOption.getElementsByClassName('discount_block');
 
   function fillDiscount() {
     arr[len - 1] = price / 2;
@@ -48,12 +48,12 @@ function setupEnd(pointsArr, priceArr, firstPurchaseOption) {
       .match(/[\d.,]+/)[0]
       .replace(',', '.'));
   } else {
-    price = firstPurchaseOption.getElementsByClassName('game_purchase_price')[0].getAttribute('data-price-final') / 100;
+    price = targetOption.getElementsByClassName('game_purchase_price')[0].getAttribute('data-price-final') / 100;
     fillDiscount();
   }
 
   if (price !== curPrice) {
-    if (firstPurchaseOption.parentNode.getElementsByClassName('free_weekend').length === 0) {
+    if (targetOption.parentNode.getElementsByClassName('free_weekend').length === 0) {
       const updateDelay = Date.now() - pointsArr[len - 1][0];
       if (updateDelay >= 864e5) {
         dataModal();
@@ -97,9 +97,9 @@ function setupBegin(points, price) {
   }
 }
 
-function setup(points, price, firstPurchaseOption) {
+function setup(points, price, targetOption) {
   makePriceArr(points, price);
-  const endDiscount = setupEnd(points, price, firstPurchaseOption);
+  const endDiscount = setupEnd(points, price, targetOption);
   setupBegin(points, price);
   return endDiscount;
 }
@@ -301,7 +301,7 @@ function makeDiscountArr(pointsArr, priceArr, base) {
   return [discount, origin];
 }
 
-function calculateDiscount(dataObj, firstPurchaseOption) {
+function calculateDiscount(dataObj, targetOption) {
   const data = dataObj;
   const {
     points,
@@ -312,7 +312,7 @@ function calculateDiscount(dataObj, firstPurchaseOption) {
     dataModal();
   }
   const priceArr = [];
-  const endDiscount = setup(points, priceArr, firstPurchaseOption);
+  const endDiscount = setup(points, priceArr, targetOption);
   const [base, origin] = calculateBase(points, priceArr);
   restorePriceArr(points, priceArr, base, endDiscount);
   const results = makeDiscountArr(points, priceArr, base);
@@ -320,8 +320,8 @@ function calculateDiscount(dataObj, firstPurchaseOption) {
   data.origin = origin || results[1];
 }
 
-function personalPrice(pointsArr, firstPurchaseOption) {
-  const userPrice = firstPurchaseOption.getElementsByClassName('your_price');
+function personalPrice(pointsArr, targetOption) {
+  const userPrice = targetOption.getElementsByClassName('your_price');
   if (userPrice.length) {
     const price = parseFloat(userPrice[0]
       .children[1]
@@ -393,10 +393,10 @@ function minMaxAndAdd(points) {
   ];
 }
 
-function setupData(dataObj, firstPurchaseOption, timeRange) {
+function setupData(dataObj, targetOption, timeRange) {
   const data = dataObj;
-  calculateDiscount(data, firstPurchaseOption);
-  if (bundle) personalPrice(data.points, firstPurchaseOption);
+  calculateDiscount(data, targetOption);
+  if (bundle) personalPrice(data.points, targetOption);
   data.fullData = {
     points: data.points,
     discount: data.discount,

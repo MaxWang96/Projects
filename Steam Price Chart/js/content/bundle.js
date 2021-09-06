@@ -21,11 +21,11 @@ function findInfo() {
     itemName: getName(),
     sysLang: window.navigator.languages[0],
     id: urlParts[4],
-    firstPurchaseOption: (urlParts[3] === 'bundle')
+    targetOption: (urlParts[3] === 'bundle')
       ? document.getElementsByClassName('bundle')[0]
       : document.getElementsByClassName('game_area_purchase_game')[0],
   };
-  if (info.firstPurchaseOption.getElementsByClassName('btn_disabled').length) bundleOwnedModal();
+  if (info.targetOption.getElementsByClassName('btn_disabled').length) bundleOwnedModal();
   bundle = urlParts[3];
   info.gameName = info.itemName;
   return info;

@@ -153,7 +153,7 @@ function drawChart(results) {
     range,
   } = results[1];
 
-  setupData(chartData.data, info.firstPurchaseOption, range);
+  setupData(chartData.data, info.targetOption, range);
   const showOriginal = (range === 'all' && chartData.data.origin);
 
   const title = (bundle === 'app' || bundle === 'appSub') ? chartData.bundleTitle : info.itemName;

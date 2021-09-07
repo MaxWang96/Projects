@@ -32,9 +32,13 @@ function findIdAndOption(purchaseArea, isDlc, isMusic, name) {
   const wrappers = purchaseArea.getElementsByClassName('game_area_purchase_game_wrapper');
   if (isDlc || isMusic) {
     [targetOption] = wrappers;
-    if (targetOption.classList.length === 3) bundle = 'app';
-    else if (targetOption.getElementsByClassName('package_contents').length === 1) {
+    if (targetOption.classList.length === 3) {
+      bundle = 'app';
+      id = targetOption.getAttribute('data-ds-bundleid');
+    } else if (targetOption.getElementsByClassName('package_contents').length === 1) {
       bundle = 'appSub';
+      [id] = targetOption.getElementsByClassName('game_area_purchase_game')[0].getAttribute('id').match(
+        /\d+/);
     }
   } else {
     for (;;) {

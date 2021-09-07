@@ -296,7 +296,7 @@ function makeDiscountArr(pointsArr, priceArr, base) {
       discount.push(curDiscount, curDiscount);
     }
   }
-  const lastDiscount = Math.round(1 - price[i] / base[i]) * 100;
+  const lastDiscount = Math.round((1 - price[i] / base[i]) * 100);
   discount.push(lastDiscount, lastDiscount);
   return [discount, origin];
 }

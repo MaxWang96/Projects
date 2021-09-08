@@ -14,6 +14,7 @@ function getName() {
   return document.getElementsByClassName('pageheader')[0].textContent;
 }
 
+//find info about the page: store region, item name, game name, browser language, purchase option & its id
 function findInfo() {
   const urlParts = window.location.href.split('/');
   const info = {
@@ -31,6 +32,7 @@ function findInfo() {
   return info;
 }
 
+// insert the chart into the Steam webpage
 function insertChart(height) {
   document.getElementById('game_area_purchase')
     .insertAdjacentHTML('afterEnd', `

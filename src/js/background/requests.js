@@ -166,6 +166,7 @@ function abnormal(dataArr) {
   };
 }
 
+// send requests to isthereanydeal.com and howlongtobeat.com
 function requests(msg, sender, sendResponse) {
   let {
     name,

@@ -1,6 +1,6 @@
 'use strict';
 
-function makePriceArr(points, price) {
+function makePrice(points, price) {
   const len = points.length;
   price.push(points[0][1]);
   if (len === 2) {
@@ -14,6 +14,7 @@ function makePriceArr(points, price) {
   }
 }
 
+// modify the value at the end of the price history to set up for calculating the base price
 function setupEnd(pointsArr, priceArr, targetOption) {
   const arr = priceArr;
   let price;
@@ -48,10 +49,13 @@ function setupEnd(pointsArr, priceArr, targetOption) {
       .match(/[\d.,]+/)[0]
       .replace(',', '.'));
   } else {
-    price = targetOption.getElementsByClassName('game_purchase_price')[0].getAttribute('data-price-final') / 100;
+    price = targetOption.getElementsByClassName('game_purchase_price')[0].getAttribute(
+      'data-price-final'
+    ) / 100;
     fillDiscount();
   }
 
+  // handle the free weekend and delayed data update
   if (price !== curPrice) {
     if (targetOption.parentNode.getElementsByClassName('free_weekend').length === 0) {
       const updateDelay = Date.now() - pointsArr[len - 1][0];
@@ -77,6 +81,7 @@ function setupEnd(pointsArr, priceArr, targetOption) {
   return endDiscount;
 }
 
+// modify the value at the beginning of the price history to set up for calculating the base price
 function setupBegin(points, price) {
   let [max] = price;
   let beginDiscount = false;
@@ -98,13 +103,14 @@ function setupBegin(points, price) {
 }
 
 function setup(points, price, targetOption) {
-  makePriceArr(points, price);
+  makePrice(points, price);
   const endDiscount = setupEnd(points, price, targetOption);
   setupBegin(points, price);
   return endDiscount;
 }
 
-function makeBase(price, baseArr, priceIncrease, partial = false) {
+// calculate the base price history to set up for calculating the discount history
+function calculateBase(price, baseArr, priceIncrease, partial = false) {
   const base = baseArr;
   let i = partial ? partial - 1 : 0;
   const len = price.length;
@@ -179,7 +185,7 @@ function checkAbnormalHigh(pointsArr, priceArr, baseArr, priceIncrease) {
       base.splice(2, 2);
       price.splice(2, 2);
       pointsArr.splice(2, 2);
-      makeBase(price, base, priceIncrease, 1);
+      calculateBase(price, base, priceIncrease, 1);
     }
   }
 
@@ -224,23 +230,24 @@ function checkAbnormalHigh(pointsArr, priceArr, baseArr, priceIncrease) {
       removeAbnormal(1);
     } else if (base[tmp] !== base[tmp + 2]) {
       removeAbnormal(1);
-      makeBase(price, base, priceIncrease, tmp);
+      calculateBase(price, base, priceIncrease, tmp);
     } else if (tmp < base.length - 4 && base[tmp] !== base[tmp + 4]) { // rainbow six US
       removeAbnormal(2);
-      makeBase(price, base, priceIncrease, tmp);
+      calculateBase(price, base, priceIncrease, tmp);
     }
   }
   return origin;
 }
 
-function calculateBase(points, price) {
+function makeBase(points, price) {
   const base = Array(price.length);
   const priceIncrease = [];
-  makeBase(price, base, priceIncrease);
+  calculateBase(price, base, priceIncrease);
   const origin = checkAbnormalHigh(points, price, base, priceIncrease);
   return [base, origin];
 }
 
+// restore the beginning and end of the price history
 function restorePriceArr(points, priceArr, base, endDiscount) {
   const price = priceArr;
   if (points[0] === 0) {
@@ -256,7 +263,7 @@ function restorePriceArr(points, priceArr, base, endDiscount) {
   }
 }
 
-function makeDiscountArr(pointsArr, priceArr, base) {
+function calculateDiscount(pointsArr, priceArr, base) {
   const [points, price, discount] = [pointsArr, priceArr, []];
   let len = points.length;
   let i = 0;
@@ -301,7 +308,7 @@ function makeDiscountArr(pointsArr, priceArr, base) {
   return [discount, origin];
 }
 
-function calculateDiscount(dataObj, targetOption) {
+function makeDiscount(dataObj, targetOption) {
   const data = dataObj;
   const {
     points,
@@ -313,13 +320,14 @@ function calculateDiscount(dataObj, targetOption) {
   }
   const priceArr = [];
   const endDiscount = setup(points, priceArr, targetOption);
-  const [base, origin] = calculateBase(points, priceArr);
+  const [base, origin] = makeBase(points, priceArr);
   restorePriceArr(points, priceArr, base, endDiscount);
-  const results = makeDiscountArr(points, priceArr, base);
+  const results = calculateDiscount(points, priceArr, base);
   [data.discount] = results;
   data.origin = origin || results[1];
 }
 
+// calculate personal price for the bundle
 function personalPrice(pointsArr, targetOption) {
   const userPrice = targetOption.getElementsByClassName('your_price');
   if (userPrice.length) {
@@ -375,6 +383,7 @@ function setRange(data, range) {
   return [points, discount];
 }
 
+// find min and max of the price history and add intermediate points to the history
 function minMaxAndAdd(points) {
   const len = points.length;
   const plotArr = [];
@@ -395,7 +404,7 @@ function minMaxAndAdd(points) {
 
 function setupData(dataObj, targetOption, timeRange) {
   const data = dataObj;
-  calculateDiscount(data, targetOption);
+  makeDiscount(data, targetOption);
   if (bundle) personalPrice(data.points, targetOption);
   data.fullData = {
     points: data.points,

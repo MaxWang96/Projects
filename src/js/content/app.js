@@ -8,6 +8,7 @@ function findRegion() {
   return region;
 }
 
+// find the package with the lowest price when the item can only be purchased in a package
 function findBestPackage(wrappers, startIdx) {
   const priceArr = [];
   for (let i = startIdx; i < wrappers.length; i += 1) {
@@ -96,6 +97,7 @@ function getName() {
   return document.getElementsByClassName('apphub_AppName')[0].textContent;
 }
 
+//find info about the page: store region, item name & type, game name, browser language, purchase option & its id
 function findInfo() {
   const purchaseArea = document.getElementById('game_area_purchase');
   const isDlc = purchaseArea.getElementsByClassName('game_area_dlc_bubble').length !== 0;
@@ -120,6 +122,7 @@ function findInfo() {
   return info;
 }
 
+// insert the chart into the Steam webpage
 function insertChart(height) {
   const elements = document.getElementsByClassName('page_content');
   const len = elements.length;

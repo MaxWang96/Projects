@@ -3,7 +3,7 @@
 const supportedRegion = ['US', 'CN', 'EU1'];
 
 const eu1 = ['AL', 'AD', 'AT', 'BE', 'FI', 'FR', 'DK', 'DE', 'IE', 'LI', 'LU', 'MK', 'NL', 'SE',
-  'CH'
+  'CH',
 ];
 
 class LocaleOptions {
@@ -128,6 +128,7 @@ const userChart = {
     bundleFull: '350px',
   },
 };
+// freeze the user chart object to prevent Highcharts from changing it at runtime
 Object.freeze(userChart.full);
 Object.freeze(userChart.simp);
 

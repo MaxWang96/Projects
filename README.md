@@ -16,7 +16,7 @@
   
 ## Contributing
   
-If you are interested in contributing, please read the [contributing guide](contributing.md).
+If you are interested in contributing, please read the [contributing guide](CONTRIBUTING.md).
 
 ## Feedback
 

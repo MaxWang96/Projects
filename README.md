@@ -8,7 +8,14 @@
 </p>
 <br>
 
+## Important Notes
+
+- The extension currently supports three Steam store regions: United States, China, and EU1*. Support for other regions might be added depending on user demands.
+
+_*EU1 includes the following countries: Albania, Andorra, Austria, Belgium, Denmark, Finland, France, Germany, Ireland, Liechtenstein, Luxembourg, Macedonia, Netherlands, Sweden, and Switzerland_
+
 ## Feedback
 
 Please report problems or share ideas for new features or other improvements at here or at the Chrome web store page.
+
 If the extension doesn't work, or work incorrectly on a game, bundle, or other items, be sure to include the url and the Steam store region when reporting the problem.

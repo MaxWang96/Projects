@@ -12,7 +12,7 @@
 
 - The extension currently supports three Steam store regions: United States, China, and EU1*. Support for other regions might be added depending on user demands.
 
-_*EU1 includes the following countries: Albania, Andorra, Austria, Belgium, Denmark, Finland, France, Germany, Ireland, Liechtenstein, Luxembourg, Macedonia, Netherlands, Sweden, and Switzerland_
+<sub>_*EU1 includes the following countries: Albania, Andorra, Austria, Belgium, Denmark, Finland, France, Germany, Ireland, Liechtenstein, Luxembourg, Macedonia, Netherlands, Sweden, and Switzerland_<sub>
 
 ## Feedback
 

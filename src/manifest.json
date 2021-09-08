@@ -1,17 +1,15 @@
 {
   "name": "__MSG_extensionName__",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "manifest_version": 2,
   "permissions": [
     "https://isthereanydeal.com/*",
-    "https://steamspy.com/api.php*",
     "https://howlongtobeat.com/*",
-    "http://chrome.google.com/*",
+    "https://steamspy.com/api.php*",
     "declarativeContent",
     "storage",
     "tabs"
   ],
-  "optional_permissions": [],
   "author": "gingerax",
   "background": {
     "scripts": [
@@ -23,7 +21,6 @@
   },
   "description": "__MSG_extensionDescription__",
   "default_locale": "en",
-  "options_ui": "",
   "content_scripts": [
     {
       "js": [

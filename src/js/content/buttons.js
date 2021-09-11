@@ -103,14 +103,14 @@ function addItadButton(chart, url) {
 
   let itemType;
   let offset;
-  if (isMusic)[itemType, offset] = ['soundtrack', -230];
-  else if (isDlc)[itemType, offset] = ['DLC', -205];
-  else if (bundle === 'app')[itemType, offset] = ['bundle', -220];
-  else if (bundle === 'appSub')[itemType, offset] = ['package', -230];
-  else [itemType, offset] = ['game', -215];
+  if (isMusic)[itemType, offset] = ['soundtrack', -231];
+  else if (isDlc)[itemType, offset] = ['DLC', -206];
+  else if (bundle === 'app')[itemType, offset] = ['bundle', -221];
+  else if (bundle === 'appSub')[itemType, offset] = ['package', -231];
+  else [itemType, offset] = ['game', -216];
 
   const itadLabel = addLabel(chart, `View the ${itemType} on IsThereAnyDeal`).align(setAlign(offset));
-  addImgUrl(addImg(chart, itadImgUrl, itadLabel, -85), url);
+  addImgUrl(addImg(chart, itadImgUrl, itadLabel, -86), url);
 }
 
 function addHltbButton(chart, data) {
@@ -119,12 +119,12 @@ function addHltbButton(chart, data) {
   if (!data.hasOwnProperty('hltbUrl')) {
     let hltbImg;
     if (data.hltbReady) {
-      const hltbLabel = addLabel(cha, "Can't find the game on HowLongToBeat").align(setAlign(-190));
+      const hltbLabel = addLabel(cha, "Can't find the game on HowLongToBeat").align(setAlign(-193));
       hltbImg = addImg(cha, hltbImgUrl, hltbLabel, -55).css({
         opacity: 0.2,
       });
     } else {
-      const hltbLabel = addLabel(cha, "Looking for the game's link...").align(setAlign(-167));
+      const hltbLabel = addLabel(cha, "Looking for the game's link...").align(setAlign(-168));
       hltbImg = addImg(cha, hltbImgUrl, hltbLabel, -55).css({
         opacity: 0.5,
       });
@@ -133,7 +133,7 @@ function addHltbButton(chart, data) {
     }
     addImgUrl(hltbImg, 'https://howlongtobeat.com/');
   } else {
-    const hltbLabel = addLabel(chart, 'View the game on HowLongToBeat').align(setAlign(-183));
+    const hltbLabel = addLabel(chart, 'View the game on HowLongToBeat').align(setAlign(-184));
     addImgUrl(addImg(chart, hltbImgUrl, hltbLabel, -55), data.hltbUrl);
   }
 }

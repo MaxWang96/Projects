@@ -180,21 +180,38 @@ function requests(msg, sender, sendResponse) {
   const region = msg.storeRegion === 'EU1' ? 'FR' : msg.storeRegion;
   const resp = {};
   let [itadSent, hltbReady, regReceived, altReceived, altSuccess] = [0, 0, 0, 0, 0];
-  const itadCantConnect = setTimeout(() => {
+  const itadError = setTimeout(() => {
     resp.itadError = true;
     sendResponse(resp);
   }, 3000);
-  const hltbCantConnect = setTimeout(() => {
-    chrome.tabs.sendMessage(sender.tab.id, {
-      hltbError: true,
-    });
+  const hltbError = setTimeout(() => {
+    const hltbCantConnect = setTimeout(() => {
+      chrome.tabs.sendMessage(sender.tab.id, {
+        hltbError: 'error',
+      });
+    }, 3000);
+    fetch('https://howlongtobeat.com/')
+      .then((response) => {
+        clearTimeout(hltbCantConnect);
+        if (response.status === 200) {
+          chrome.tabs.sendMessage(sender.tab.id, {
+            hltbError: 'cantSearch',
+          });
+        } else {
+          chrome.tabs.sendMessage(sender.tab.id, {
+            hltbError: 'error',
+          });
+        }
+      });
   }, 5000);
 
   function sendItadRequest(itemName) {
-    fetch(`https://isthereanydeal.com/game/${itemName}/history/?country=${region}&shop%5B%5D=steam&generate=Select+Stores`)
+    fetch(
+      `https://isthereanydeal.com/game/${itemName}/history/?country=${region}&shop%5B%5D=steam&generate=Select+Stores`,
+    )
       .then((response) => response.text())
       .then((text) => {
-        clearTimeout(itadCantConnect);
+        clearTimeout(itadError);
         resp.originalData = JSON.parse(text.match(/"Steam","data":(\[\[.+?\]\])/)[1]);
         const dataArr = duplicate(resp.originalData);
         resp.data = abnormal(dataArr);
@@ -210,7 +227,9 @@ function requests(msg, sender, sendResponse) {
 
   function itad() {
     if (!bundle) {
-      fetch(`https://api.isthereanydeal.com/v02/game/plain/?key=2a0a6baa1713e7be64e451ab1b863b988ce63455&shop=steam&game_id=app%2F${msg.id}`)
+      fetch(
+        `https://api.isthereanydeal.com/v02/game/plain/?key=2a0a6baa1713e7be64e451ab1b863b988ce63455&shop=steam&game_id=app%2F${msg.id}`,
+      )
         .then((response) => response.text())
         .then((text) => {
           const gameName = text.match(/"plain":"(.+?)"/)[1];
@@ -219,8 +238,8 @@ function requests(msg, sender, sendResponse) {
     } else {
       const type = (bundle === 'sub' || bundle === 'appSub') ? 'sub' : 'bundle';
       fetch(`https://isthereanydeal.com/steam/${type}/${msg.id}/`, {
-          method: 'HEAD',
-        })
+        method: 'HEAD',
+      })
         .then((response) => {
           const bundleName = response.url.split('/')[4];
           sendItadRequest(bundleName);
@@ -230,7 +249,7 @@ function requests(msg, sender, sendResponse) {
 
   function tryMessage() {
     if (itadSent && hltbReady) {
-      clearTimeout(hltbCantConnect);
+      clearTimeout(hltbError);
       const hltbMessage = resp.hltbUrl ? {
         hltbUrl: resp.hltbUrl,
       } : {
@@ -242,12 +261,12 @@ function requests(msg, sender, sendResponse) {
 
   function hltbRequest(callback) {
     fetch('https://howlongtobeat.com/search_results.php', {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/x-www-form-urlencoded',
-        },
-        body: `queryString=${name}&t=games&sorthead=popular&sortd='Normal Order'`,
-      })
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/x-www-form-urlencoded',
+      },
+      body: `queryString=${name}&t=games&sorthead=popular&sortd='Normal Order'`,
+    })
       .then((response) => response.text())
       .then((text) => callback(text));
   }
@@ -331,9 +350,9 @@ function requests(msg, sender, sendResponse) {
             if (findName === null) {
               hltbReady = 1;
               if (itadSent) {
-                clearTimeout(hltbCantConnect);
+                clearTimeout(hltbError);
                 chrome.tabs.sendMessage(sender.tab.id, {
-                  hltbError: true,
+                  hltbError: 'error',
                 });
               }
             } else {

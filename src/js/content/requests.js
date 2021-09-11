@@ -24,7 +24,7 @@ function dataRequest(resolve, reject) {
     if (!response.hltbReady) {
       chrome.runtime.onMessage.addListener((msg) => {
         if (msg.hltbError) {
-          updateButton('error');
+          updateButton(msg.hltbError);
         } else if (msg.hltbUrl) {
           updateButton(msg.hltbUrl);
         } else if (msg.hltbCantFind) {

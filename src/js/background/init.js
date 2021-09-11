@@ -6,6 +6,7 @@ function init() {
     bundleSimp: true,
     animation: false,
     range: '3y',
+    diffDiscount: false,
   });
   chrome.declarativeContent.onPageChanged.removeRules(undefined, () => {
     chrome.declarativeContent.onPageChanged.addRules([{

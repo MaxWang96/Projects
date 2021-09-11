@@ -23,6 +23,12 @@
     "freeItem": {
         "message": "Free"
     },
+    "dsa": {
+        "message": "Don't show again"
+    },
+    "close": {
+        "message": "Close"
+    },
     "priceDataErrorHeader": {
         "message": "Data Error"
     },
@@ -117,6 +123,12 @@
     },
     "bundleOwnedText": {
         "message": "You already own the item, no chart will be displayed."
+    },
+    "diffDiscountHeader": {
+        "message": "Discount Difference"
+    },
+    "diffDiscountText": {
+        "message": "You may have noticed that the discounts shown on the website and the chart are different. Don't worry, it's not a mistake. The discount shown on the website is based on the price of buying individual items, while the discount shown in the chart is based on the original price of the bundle."
     },
     "simplify": {
         "message": "Simplify Chart"

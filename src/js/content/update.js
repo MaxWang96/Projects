@@ -16,12 +16,12 @@ function updateButton(msg) {
   else redrawButton('View the game on HowLongToBeat', -183, 1, msg);
 }
 
-function updateSimp(request) {
+function updateSimp(msg) {
   const container = $('#chart_container');
   const chart = container.highcharts();
   const tmp = userChart.height;
   const appPage = bundle !== 'bundle' && bundle !== 'sub';
-  const simp = appPage ? request.appSimp : request.bundleSimp;
+  const simp = appPage ? msg.appSimp.newValue : msg.bundleSimp.newValue;
   if (simp) {
     const height = appPage ? tmp.appSimp : tmp.bundleSimp;
     container.css('height', height);
@@ -47,16 +47,16 @@ function updateSimp(request) {
 function updateAnimation(msg) {
   $('#chart_container').highcharts().update({
     chart: {
-      animation: msg.animation,
+      animation: msg.animation.newValue,
     },
   });
 }
 
 function updateRange(msg) {
   const chart = $('#chart_container').highcharts();
-  const data = setRange(chart.rangeData.fullData, msg.range);
+  const data = setRange(chart.rangeData.fullData, msg.range.newValue);
   if (chart.series[0].options.data[0][0] !== data[0][0][0]) {
-    const showOriginal = msg.range === 'all' && chart.rangeData.originalData;
+    const showOriginal = msg.range.newValue === 'all' && chart.rangeData.originalData;
     const results = minMaxAndAdd(data[0]);
     const discount = data[1];
     const priceRange = results[0];
@@ -93,16 +93,16 @@ function updateRange(msg) {
       },
 
       rangeSelector: {
-        buttons: setRangeButtons(msg.range, chart.rangeData.buttonText),
+        buttons: setRangeButtons(msg.range.newValue, chart.rangeData.buttonText),
       },
     }, true, false, false);
-    chart.xAxis[0].setExtremes(points[points.length - 1][0] - 7776000000,
+    chart.xAxis[0].setExtremes(points[points.length - 1][0] - 7776e6,
       points[points.length - 1][0]);
     chart.series[0].setData(points, true, false);
   } else {
     chart.update({
       rangeSelector: {
-        buttons: setRangeButtons(msg.range, chart.rangeData.buttonText),
+        buttons: setRangeButtons(msg.range.newValue, chart.rangeData.buttonText),
       },
     }, true, false, false);
   }

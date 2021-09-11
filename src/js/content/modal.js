@@ -12,23 +12,45 @@ function showModal(id) {
     });
 }
 
-function modal(id, header, text, error = 'chart error') {
-  document.body.insertAdjacentHTML('beforeend', `
+function modal(id, header, text, error = 'chart error', dsa = false) {
+  let footer;
+  if (dsa) {
+    footer =
+      `
+    <div class="modal-footer flex">
+        <button type="button" class="close" id="save-button" data-dismiss="modal">${chrome.i18n.getMessage('dsa')}</button>
+        <button type="button" class="close flex-right" data-dismiss="modal">${chrome.i18n.getMessage('close')}</button>
+    </div>`;
+  } else {
+    footer = '';
+  }
+  document.body.insertAdjacentHTML('beforeend',
+    `
             <div class="spc_modal_container">
                 <div class="modal right fade" id="${id}" role="dialog">
-                    <div class="modal-dialog" style='width:230px;'>
+                    <div class="modal-dialog">
                         <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <p><img src="${chrome.runtime.getURL('../images/icon_48.png')}" style='width:15px;height:15px;vertical-align:middle;'> ${header} <p>
+                            <div class="modal-header flex">
+                                <img src="${chrome.runtime.getURL('../images/icon_16.png')}" alt="Steam Price Chart icon" id="spc-icon">
+                                <div id="header-text">${header}</div>
+                                <button type="button" class="close flex-right" data-dismiss="modal">&times;</button>
                             </div>
                             <div class="modal-body">
-                                <p style="margin:0px;">${text}</p>
-                            </div>
+                                <p>${text}</p>
+                            </div>${footer}
                         </div>
                     </div>
                 </div>
-            </div>`);
+            </div>`,
+  );
+
+  if (dsa) {
+    document.getElementById('save-button').onclick = () => {
+      chrome.storage.sync.set({
+        [dsa]: true,
+      });
+    };
+  }
 
   if (document.readyState !== 'complete') setTimeout(showModal.bind(null, id), 1000);
   else showModal(id);
@@ -100,4 +122,15 @@ function bundleOwnedModal() {
   modal('bundle_owned_modal',
     chrome.i18n.getMessage('bundleOwnedHeader'),
     chrome.i18n.getMessage('bundleOwnedText'));
+}
+
+function diffDiscountModal() {
+  chrome.storage.sync.get('diffDiscount', (value) => {
+    if (!value.diffDiscount) {
+      modal('different_discount_modal',
+        chrome.i18n.getMessage('diffDiscountHeader'),
+        chrome.i18n.getMessage('diffDiscountText'),
+        false, 'diffDiscount');
+    }
+  });
 }

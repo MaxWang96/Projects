@@ -1,7 +1,5 @@
 'use strict';
 
-let tab;
-
 function langSetupHelper(elementsArr, msgArr) {
   const elements = elementsArr;
   for (let i = 0; i < elements.length; i += 1) {
@@ -15,20 +13,14 @@ function langSetup() {
   // document.getElementById('feedback-btn').textContent = chrome.i18n.getMessage('feedback');
 }
 
-function saveAndChange(setting, id) {
-  chrome.storage.sync.set(setting);
-  chrome.tabs.sendMessage(id, setting);
-}
-
-function setSimp() {
+function setSimp(type) {
   const toggleSwitch = document.getElementById('simplify');
-  const type = tab.url.split('/')[3];
   const toSet = (type === 'app') ? {
     appSimp: toggleSwitch.checked,
   } : {
     bundleSimp: toggleSwitch.checked,
   };
-  saveAndChange(toSet, tab.id);
+  chrome.storage.sync.set(toSet);
 }
 
 function setup() {
@@ -36,8 +28,7 @@ function setup() {
     active: true,
     currentWindow: true,
   }, (tabs) => {
-    [tab] = tabs;
-    const type = tab.url.split('/')[3];
+    const type = tabs[0].url.split('/')[3];
     const simpType = (type === 'app') ? 'appSimp' : 'bundleSimp';
     chrome.storage.sync.get([simpType, 'animation', 'range'], (value) => {
       document.getElementById('simplify').checked = value[simpType];
@@ -47,6 +38,7 @@ function setup() {
       }, 200);
       document.getElementsByTagName('span')[0].textContent = chrome.i18n.getMessage(value.range);
     });
+    document.getElementById('simplify').addEventListener('change', setSimp.bind(null, type));
   });
 
   [...document.getElementsByClassName('expand')].forEach((el, i) => {
@@ -71,11 +63,10 @@ function setup() {
   // };
   langSetup();
 
-  document.getElementById('simplify').addEventListener('change', setSimp);
   document.getElementById('animation').addEventListener('change', () => {
-    saveAndChange({
+    chrome.storage.sync.set({
       animation: document.getElementById('animation').checked,
-    }, tab.id);
+    });
   });
   [...document.getElementsByClassName('dropdown')].forEach((el) => {
     el.addEventListener('click', function dropdown1() {
@@ -93,9 +84,9 @@ function setup() {
         const span = this.closest('.dropdown').getElementsByTagName('span')[0];
         if (span.textContent !== this.textContent) {
           span.textContent = this.textContent;
-          saveAndChange({
+          chrome.storage.sync.set({
             [this.parentNode.id]: this.id,
-          }, tab.id);
+          });
         }
       });
     });

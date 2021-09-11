@@ -28,6 +28,12 @@
     "freeItem": {
         "message": "免费"
     },
+    "dsa": {
+        "message": "不再显示"
+    },
+    "close": {
+        "message": "关闭"
+    },
     "priceDataErrorHeader": {
         "message": "数据错误",
         "description": "数据错误弹窗的标题"
@@ -140,6 +146,14 @@
     "bundleOwnedText": {
         "message": "您已经拥有了该商品，不显示图表。",
         "description": "已拥有商品弹窗的主体文字"
+    },
+    "diffDiscountHeader": {
+        "message": "折扣显示不同",
+        "description": "折扣显示不同弹窗的标题"
+    },
+    "diffDiscountText": {
+        "message": "您可能注意到了购买栏和图表中显示的折扣不同。不用担心，这不是出了错。购买栏的折扣是基于单独购买商品的价格，而图表中的折扣是基于捆绑包的原始价格。",
+        "description": "折扣显示不同弹窗的主体文字"
     },
     "simplify": {
         "message": "简化图表",

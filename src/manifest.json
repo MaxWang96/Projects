@@ -43,7 +43,7 @@
     },
     {
       "css": [
-        "css/bootstrap.css"
+        "css/modal.css"
       ],
       "js": [
         "js/content/libs/jquery.min.js",
@@ -80,7 +80,7 @@
     "128": "images/icon_128.png"
   },
   "web_accessible_resources": [
-    "images/icon_48.png",
+    "images/icon_16.png",
     "images/isthereanydeal_icon.svg",
     "images/howlongtobeat_icon.png"
   ]

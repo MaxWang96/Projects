@@ -91,6 +91,7 @@ function drawChart(results) {
       lineColor: '#626366',
       tickColor: '#626366',
       crosshair: false,
+      endOnTick: true,
       tickPixelInterval: 200,
       dateTimeLabelFormats: setting.lang.dateTimeLabelFormats,
     },
@@ -254,6 +255,12 @@ function drawChart(results) {
 
   if (bundle === 'app') bundleModal(info.itemName);
   else if (bundle === 'appSub') subModal(info.itemName);
+
+  chrome.storage.onChanged.addListener((change) => {
+    if (change.hasOwnProperty('appSimp') || change.hasOwnProperty('bundleSimp')) updateSimp(change);
+    else if (change.hasOwnProperty('animation')) updateAnimation(change);
+    else if (change.hasOwnProperty('range')) updateRange(change);
+  });
 }
 
 // get the price history and other data, user setting, and then draw the chart

@@ -50,7 +50,7 @@ function setupEnd(pointsArr, priceArr, targetOption) {
       .replace(',', '.'));
   } else {
     price = targetOption.getElementsByClassName('game_purchase_price')[0].getAttribute(
-      'data-price-final'
+      'data-price-final',
     ) / 100;
     fillDiscount();
   }
@@ -325,6 +325,14 @@ function makeDiscount(dataObj, targetOption) {
   const results = calculateDiscount(points, priceArr, base);
   [data.discount] = results;
   data.origin = origin || results[1];
+  if (bundle === 'bundle' || bundle === 'app') {
+    const discount = targetOption.getElementsByClassName('discount_pct')[0];
+    if (discount
+      && discount.textContent.match(/\d+/)
+      !== data.discount[data.discount.length - 1]) {
+      diffDiscountModal();
+    }
+  }
 }
 
 // calculate personal price for the bundle
@@ -365,8 +373,8 @@ function setRange(data, range) {
     discount,
   } = data;
   let timeRange;
-  if (range === '1y') timeRange = 31536000000;
-  else if (range === '3y') timeRange = 94608000000;
+  if (range === '1y') timeRange = 31536e6;
+  else if (range === '3y') timeRange = 94608e6;
   else return [points, discount];
   const startTime = Date.now() - timeRange;
   if (startTime > points[0][0]) {

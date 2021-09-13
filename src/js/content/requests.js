@@ -18,7 +18,7 @@ function dataRequest(resolve, reject) {
   chrome.runtime.sendMessage(msg, (response) => {
     clearTimeout(noResponse);
     if (response.itadError) {
-      return reject('cantConnect');
+      return reject(response.itadError);
     }
 
     if (!response.hltbReady) {

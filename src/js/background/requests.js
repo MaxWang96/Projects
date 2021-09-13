@@ -44,7 +44,8 @@ function abnormal(dataArr) {
   let time1n;
   let price1n;
   if (arr[len - 1][1] !== arr[len - 2][1]
-    && arr[len - 1][0] - arr[len - 2][0] <= fiveHours) {
+    && arr[len - 1][0] - arr[len - 2][0] <= fiveHours
+    && arr[len - 1][0] - arr[len - 2][0] >= 6e4) { // Life is Strange: True Colors US
     arr.splice(len - 2, 1);
     len -= 1;
   }
@@ -181,7 +182,7 @@ function requests(msg, sender, sendResponse) {
   const resp = {};
   let [itadSent, hltbReady, regReceived, altReceived, altSuccess] = [0, 0, 0, 0, 0];
   const itadError = setTimeout(() => {
-    resp.itadError = true;
+    resp.itadError = 'cantConnect';
     sendResponse(resp);
   }, 3000);
   const hltbError = setTimeout(() => {
@@ -212,15 +213,20 @@ function requests(msg, sender, sendResponse) {
       .then((response) => response.text())
       .then((text) => {
         clearTimeout(itadError);
-        resp.originalData = JSON.parse(text.match(/"Steam","data":(\[\[.+?\]\])/)[1]);
-        const dataArr = duplicate(resp.originalData);
-        resp.data = abnormal(dataArr);
-        if (button) resp.itadUrl = `https://isthereanydeal.com/game/${itemName}/info`;
-        if (bundle === 'app' || bundle === 'appSub') {
-          resp.bundleTitle = text.match(/<h1 id='gameTitle'>.+?>(.+?)</)[1];
+        const matchResult = text.match(/"Steam","data":(\[\[.+?\]\])/);
+        if (matchResult) {
+          resp.originalData = JSON.parse(matchResult[1]);
+          const dataArr = duplicate(resp.originalData);
+          resp.data = abnormal(dataArr);
+          if (button) resp.itadUrl = `https://isthereanydeal.com/game/${itemName}/info`;
+          if (bundle === 'app' || bundle === 'appSub') {
+            resp.bundleTitle = text.match(/<h1 id='gameTitle'>.+?>(.+?)</)[1];
+          }
+          resp.hltbReady = hltbReady;
+          itadSent = 1;
+        } else {
+          resp.itadError = 'wrongName';
         }
-        resp.hltbReady = hltbReady;
-        itadSent = 1;
         sendResponse(resp);
       });
   }

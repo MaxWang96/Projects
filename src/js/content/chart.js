@@ -272,6 +272,7 @@ function makeChart() {
     .catch((e) => {
       if (e === 'timeout') timeoutModal();
       else if (e === 'cantConnect') cantConnectModal();
+      else if (e === 'wrongName') dataModal();
       else if (e.message !== 'chart error') throw e;
     });
 }

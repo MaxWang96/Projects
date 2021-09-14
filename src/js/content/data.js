@@ -177,17 +177,41 @@ function calculateBase(price, baseArr, priceIncrease, partial = false) {
 function checkAbnormalHigh(pointsArr, priceArr, baseArr, priceIncrease) {
   const [price, base] = [priceArr, baseArr];
   let tmp;
-  let i = priceIncrease.length - 1;
   let origin = false;
+
+  function dataSplice(start, count) {
+    base.splice(start, count);
+    price.splice(start, count);
+    pointsArr.splice(start, count);
+  }
+
+  // Handle conflicts because of game names that have strings like 2022(ii0iiii) and 2013(ii0iiii)
+  if (!bundle && document.getElementById('appHubAppName').textContent.match(/2[12]/)) {
+    const releaseYear = document.getElementsByClassName('date')[0].textContent.match(/202[012]/);
+    if (releaseYear) {
+      const date1 = new Date(releaseYear[0] - 1, 0, 1);
+      if (date1 > pointsArr[0][0]) {
+        const date2 = new Date(releaseYear[0], 11, 31);
+        for (let i = 0; i < priceIncrease.length; i += 1) {
+          const incIdx = priceIncrease[i];
+          if (pointsArr[incIdx][0] > date1 && pointsArr[incIdx][0] < date2) {
+            dataSplice(0, incIdx);
+            priceIncrease.splice(0, i);
+            break;
+          }
+        }
+      }
+    }
+  }
 
   if (pointsArr.length > 3 && pointsArr[0] === 0) { // XCOM 2 CN
     if (baseArr[0] !== baseArr[3]) {
-      base.splice(2, 2);
-      price.splice(2, 2);
-      pointsArr.splice(2, 2);
+      dataSplice(2, 2);
       calculateBase(price, base, priceIncrease, 1);
     }
   }
+
+  let i = priceIncrease.length - 1;
 
   function removeAbnormal(n) {
     let j = 0;
@@ -217,10 +241,7 @@ function checkAbnormalHigh(pointsArr, priceArr, baseArr, priceIncrease) {
       }
     }
     for (let k = toDelete.length - 1; k >= 0; k -= 1) {
-      const deleteIdx = toDelete[k];
-      base.splice(deleteIdx, 1);
-      price.splice(deleteIdx, 1);
-      points.splice(deleteIdx, 1);
+      dataSplice(toDelete[k], 1);
     }
   }
 
@@ -325,6 +346,7 @@ function makeDiscount(dataObj, targetOption) {
   const results = calculateDiscount(points, priceArr, base);
   [data.discount] = results;
   data.origin = origin || results[1];
+
   if (bundle === 'bundle' || bundle === 'app') {
     const discount = targetOption.getElementsByClassName('discount_pct')[0];
     if (discount

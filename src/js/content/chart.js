@@ -257,7 +257,8 @@ function drawChart(results) {
   else if (bundle === 'appSub') subModal(info.itemName);
 
   chrome.storage.onChanged.addListener((change) => {
-    if (change.hasOwnProperty('appSimp') || change.hasOwnProperty('bundleSimp')) updateSimp(change);
+    if (change.hasOwnProperty('appSimp') || change.hasOwnProperty('bundleSimp')) updateSimp(
+      change);
     else if (change.hasOwnProperty('animation')) updateAnimation(change);
     else if (change.hasOwnProperty('range')) updateRange(change);
   });
@@ -265,14 +266,17 @@ function drawChart(results) {
 
 // get the price history and other data, user setting, and then draw the chart
 function makeChart() {
-  const getData = new Promise(dataRequest);
-  const getSetting = new Promise(settingRequest);
-  Promise.all([getData, getSetting])
-    .then(drawChart)
-    .catch((e) => {
-      if (e === 'timeout') timeoutModal();
-      else if (e === 'cantConnect') cantConnectModal();
-      else if (e === 'wrongName') dataModal();
-      else if (e.message !== 'chart error') throw e;
-    });
+  if (!(document.getElementsByClassName('blockbg')[0].firstElementChild.textContent
+      === 'All Hardware')) {
+    const getData = new Promise(dataRequest);
+    const getSetting = new Promise(settingRequest);
+    Promise.all([getData, getSetting])
+      .then(drawChart)
+      .catch((e) => {
+        if (e === 'timeout') timeoutModal();
+        else if (e === 'cantConnect') cantConnectModal();
+        else if (e === 'wrongName') dataModal();
+        else if (e.message !== 'chart error') throw e;
+      });
+  }
 }

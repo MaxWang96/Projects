@@ -94,7 +94,7 @@ function findIdAndOption(purchaseArea, isDlc, isMusic, name) {
 }
 
 function getName() {
-  return document.getElementsByClassName('apphub_AppName')[0].textContent;
+  return document.getElementById('appHubAppName').textContent;
 }
 
 //find info about the page: store region, item name & type, game name, browser language, purchase option & its id

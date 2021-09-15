@@ -110,7 +110,7 @@ function setup(points, price, targetOption) {
 }
 
 // calculate the base price history to set up for calculating the discount history
-function calculateBase(price, baseArr, priceIncrease, partial = false) {
+function calculateBase(points, price, baseArr, priceIncrease, partial = false) {
   const base = baseArr;
   let i = partial ? partial - 1 : 0;
   const len = price.length;
@@ -130,8 +130,14 @@ function calculateBase(price, baseArr, priceIncrease, partial = false) {
     } else if (cur > second) {
       const third = price[i + 3];
       if (cur === third) {
-        base.fill(cur, i + 1, i + 4);
-        i += 3;
+        if (points[i + 3][0] - points[i][0] > 2592e6) { // FINAL FANTASY XIV Online US
+          base[i + 1] = cur;
+          base[i + 2] = second;
+          i += 2;
+        } else {
+          base.fill(cur, i + 1, i + 4);
+          i += 3;
+        }
       } else if (cur === price[i + 4]) {
         base.fill(cur, i + 1, i + 5);
         i += 4;
@@ -186,7 +192,7 @@ function checkAbnormalHigh(pointsArr, priceArr, baseArr, priceIncrease) {
   }
 
   // Handle conflicts because of game names that have strings like 2022(ii0iiii) and 2013(ii0iiii)
-  if (!bundle && document.getElementById('appHubAppName').textContent.match(/2[12]/)) {
+  if (!bundle && getName().match(/2[12]/)) {
     const releaseYear = document.getElementsByClassName('date')[0].textContent.match(/202[012]/);
     if (releaseYear) {
       const date1 = new Date(releaseYear[0] - 1, 0, 1);
@@ -201,13 +207,6 @@ function checkAbnormalHigh(pointsArr, priceArr, baseArr, priceIncrease) {
           }
         }
       }
-    }
-  }
-
-  if (pointsArr.length > 3 && pointsArr[0] === 0) { // XCOM 2 CN
-    if (baseArr[0] !== baseArr[3]) {
-      dataSplice(2, 2);
-      calculateBase(price, base, priceIncrease, 1);
     }
   }
 
@@ -251,10 +250,10 @@ function checkAbnormalHigh(pointsArr, priceArr, baseArr, priceIncrease) {
       removeAbnormal(1);
     } else if (base[tmp] !== base[tmp + 2]) {
       removeAbnormal(1);
-      calculateBase(price, base, priceIncrease, tmp);
+      calculateBase(pointsArr, price, base, priceIncrease, tmp);
     } else if (tmp < base.length - 4 && base[tmp] !== base[tmp + 4]) { // rainbow six US
       removeAbnormal(2);
-      calculateBase(price, base, priceIncrease, tmp);
+      calculateBase(pointsArr, price, base, priceIncrease, tmp);
     }
   }
   return origin;
@@ -263,7 +262,7 @@ function checkAbnormalHigh(pointsArr, priceArr, baseArr, priceIncrease) {
 function makeBase(points, price) {
   const base = Array(price.length);
   const priceIncrease = [];
-  calculateBase(price, base, priceIncrease);
+  calculateBase(points, price, base, priceIncrease);
   const origin = checkAbnormalHigh(points, price, base, priceIncrease);
   return [base, origin];
 }
@@ -336,7 +335,8 @@ function makeDiscount(dataObj, targetOption) {
   } = data;
   if ((points[0][1] === 0
       && points[1][0] - points[0][0] >= 31536e6)
-    || points[points.length - 1][1] !== points[points.length - 2][1]) {
+    || points[points.length - 1][1] !== points[points.length - 2][1]
+    || Date.now() - points[points.length - 1][0] >= 6048e5) { // FINAL FANTASY XIV Online US
     dataModal();
   }
   const priceArr = [];

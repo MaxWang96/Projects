@@ -153,6 +153,12 @@ function abnormal(dataArr) {
         && price0 < arr[i + 3][1]) { // darkest dungeon CN
         tmpArr.push(arr[i], arr[i + 3]);
         i += 4;
+      } else if (price1n === arr[i + 3][1]
+          && price0 === price2
+          && price1 > price1n
+          && price1n > price0){ // FINAL FANTASY XIV Online US
+        tmpArr.push(arr[i], arr[i + 3]);
+        i += 4;
       } else {
         condiPush(1);
       }

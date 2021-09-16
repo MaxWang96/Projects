@@ -154,9 +154,9 @@ function abnormal(dataArr) {
         tmpArr.push(arr[i], arr[i + 3]);
         i += 4;
       } else if (price1n === arr[i + 3][1]
-          && price0 === price2
-          && price1 > price1n
-          && price1n > price0){ // FINAL FANTASY XIV Online US
+        && price0 === price2
+        && price1 > price1n
+        && price1n > price0) { // FINAL FANTASY XIV Online US
         tmpArr.push(arr[i], arr[i + 3]);
         i += 4;
       } else {
@@ -186,7 +186,7 @@ function requests(msg, sender, sendResponse) {
     && bundle !== 'sub';
   const region = msg.storeRegion === 'EU1' ? 'FR' : msg.storeRegion;
   const resp = {};
-  let [itadSent, hltbReady, regReceived, altReceived, altSuccess] = [0, 0, 0, 0, 0];
+  let [itadSent, hltbReady] = [0, 0];
   const itadError = setTimeout(() => {
     resp.itadError = 'cantConnect';
     sendResponse(resp);
@@ -283,76 +283,27 @@ function requests(msg, sender, sendResponse) {
       .then((text) => callback(text));
   }
 
-  function backupMethod() {
-    name = name.slice(0, name.lastIndexOf(' '));
+  function sendHltbRequest() {
     hltbRequest((data) => {
       const getId = data.match(/href="(.+?)"/);
       if (getId !== null) {
-        if (data.match(/title="(.+?)"/)[1].length === name.length) {
+        const nameDiff = data.match(/title="(.+?)"/)[1].length - name.length;
+        if (nameDiff <= 2 && nameDiff >= -2) {
           resp.hltbUrl = `http://howlongtobeat.com/${getId[1]}`;
         }
         hltbReady = 1;
         tryMessage();
       } else {
-        backupMethod();
+        name = name.slice(0, name.lastIndexOf(' '));
+        sendHltbRequest();
       }
     });
-  }
-
-  function altRequest(idx) {
-    name = name.slice(0, idx);
-    hltbRequest((data) => {
-      altReceived = 1;
-      const getId = data.match(/href="(.+?)"/);
-      if (getId !== null) {
-        altSuccess = 1;
-        resp.hltbUrl = `http://howlongtobeat.com/${getId[1]}`;
-        if (regReceived) {
-          hltbReady = 1;
-          tryMessage();
-        }
-      } else if (regReceived && !hltbReady) {
-        backupMethod();
-      }
-    });
-  }
-
-  function sendHltbRequest() {
-    hltbRequest((data) => {
-      regReceived = 1;
-      const getId = data.match(/href="(.+?)"/);
-      if (getId !== null) {
-        resp.hltbUrl = `http://howlongtobeat.com/${getId[1]}`;
-        hltbReady = 1;
-        tryMessage();
-      } else if (altSuccess) {
-        hltbReady = 1;
-        tryMessage();
-      } else if (altReceived) {
-        backupMethod();
-      }
-    });
-
-    if (name.includes('Edition')) {
-      const colonIdx = name.lastIndexOf(':');
-      const dashIdx = name.lastIndexOf('-');
-      if (colonIdx < dashIdx) {
-        altRequest(dashIdx);
-      } else if (colonIdx > dashIdx) {
-        altRequest(colonIdx);
-      } else {
-        const spaceIdx = name.lastIndexOf(' ', name.lastIndexOf(' ') - 1);
-        altRequest(spaceIdx);
-      }
-    } else {
-      altReceived = 1;
-    }
   }
 
   function hltb() {
     if (button) {
       if (msg.lang.startsWith('en') || bundle || msg.notGame) {
-        name = name.replace('’', "'").replace(/[^\w\s:',-]/gi, '');
+        name = name.replace(/[^\w\s:',-]/gi, '');
         sendHltbRequest();
       } else {
         fetch(`https://steamspy.com/api.php?request=appdetails&appid=${msg.id}`)
@@ -368,7 +319,7 @@ function requests(msg, sender, sendResponse) {
                 });
               }
             } else {
-              name = findName[1].replace('’', "'").replace(/[^\w\s:',-]/gi, '');
+              name = findName[1].replace(/[^\w\s:',-]/gi, '');
               sendHltbRequest();
             }
           });

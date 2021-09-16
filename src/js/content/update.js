@@ -12,7 +12,7 @@ function redrawButton(text, align, opacity = 0.2, url = 'https://howlongtobeat.c
 
 function updateButton(msg) {
   if (msg === 'error') redrawButton("Can't connect to HowLongToBeat", -174);
-  else if (msg === 'cantSearch') redrawButton("HowLongToBeat search function is down", -181);
+  else if (msg === 'cantSearch') redrawButton("HowLongToBeat search function is not available", -181);
   else if (msg === 'cantFind') redrawButton("Can't find the game on HowLongToBeat", -193);
   else redrawButton('View the game on HowLongToBeat', -184, 1, msg);
 }

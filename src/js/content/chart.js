@@ -266,8 +266,8 @@ function drawChart(results) {
 
 // get the price history and other data, user setting, and then draw the chart
 function makeChart() {
-  if (!(document.getElementsByClassName('blockbg')[0].firstElementChild.textContent
-      === 'All Hardware')) {
+  const blockbg = document.getElementsByClassName('blockbg')[0];
+  if (!blockbg || blockbg.firstElementChild.textContent !== 'All Hardware') {
     const getData = new Promise(dataRequest);
     const getSetting = new Promise(settingRequest);
     Promise.all([getData, getSetting])

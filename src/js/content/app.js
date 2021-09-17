@@ -47,12 +47,16 @@ function findIdAndOption(purchaseArea, isDlc, isMusic, name) {
       if (wrap.classList.length === 1) {
         const option = wrap.getElementsByClassName('game_area_purchase_game')[0];
         const h1 = option.getElementsByTagName('h1')[0].textContent;
-        if (!h1.includes('Soundtrack')) {
+        if (!h1.includes('Soundtrack')) { // Braid US
           const p = option.getElementsByTagName('p');
+          const altName = name.replace(/[^\w\s:',-]/gi, '');
+          if (!altName) altName += 'Filler';
           if (p.length === 0
-            || p[0].getElementsByTagName('a').length === 0
+            || p[0].getElementsByTagName('a').length === 0 // Portal 2 US
             || h1.startsWith(name)
-            || h1.endsWith(name)) {
+            || h1.endsWith(name)
+            || h1.startsWith(altName) // Tom Clancy's Splinter Cell Conviction™ Deluxe Edition US
+            || h1.endsWith(altName)) {
             if (option.getElementsByClassName('package_contents').length === 1) {
               const packageIdx = findBestPackage(wrappers, i);
               if (packageIdx === i) {

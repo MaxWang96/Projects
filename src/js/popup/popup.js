@@ -8,9 +8,9 @@ function langSetupHelper(elementsArr, msgArr) {
 }
 
 function langSetup() {
-  langSetupHelper(document.getElementsByTagName('label'), ['range', 'simplify', 'animation']);
+  langSetupHelper(document.getElementsByTagName('label'), ['simplify', 'animation', 'range']);
   langSetupHelper(document.getElementsByTagName('li'), ['1y', '3y', 'all']);
-  // document.getElementById('feedback-btn').textContent = chrome.i18n.getMessage('feedback');
+  document.getElementById('feedback-btn').textContent = chrome.i18n.getMessage('feedback');
 }
 
 function setSimp(type) {
@@ -43,12 +43,12 @@ function setup() {
 
   [...document.getElementsByClassName('expand')].forEach((el, i) => {
     const element = el;
-    element.style.gridRow = i + 2;
+    element.style.gridRow = i + 1;
     element.style.gridColumn = '1/3';
   });
   [...document.getElementsByClassName('switch')].forEach((el, i) => {
     const element = el;
-    element.style.gridRow = i + 2;
+    element.style.gridRow = i + 1;
   });
   if (window.navigator.languages[0].startsWith('zh')) {
     document.body.style['min-width'] = '130px';
@@ -56,11 +56,11 @@ function setup() {
   } else {
     document.getElementsByClassName('dropdown')[0].style.width = '32px';
   }
-  // document.getElementById('feedback-btn').onclick = () => {
-  //   window.open(
-  //     'https://chrome.google.com/webstore/detail/',
-  //   );
-  // };
+  document.getElementById('feedback-btn').onclick = () => {
+    window.open(
+      'https://chrome.google.com/webstore/detail/steam-price-chart/dbdjojacadfodjhofhmlaomimkgogcmc/support',
+    );
+  };
   langSetup();
 
   document.getElementById('animation').addEventListener('change', () => {

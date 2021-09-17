@@ -166,8 +166,8 @@ function abnormal(dataArr) {
       pushCur();
     }
   }
-  tmpArr.push(arr[i]);
-  if (i === len - 2) tmpArr.push(lastPoint);
+  if (i === len - 2) tmpArr.push(arr[i]);
+  tmpArr.push(lastPoint);
   return {
     points: tmpArr,
   };
@@ -214,8 +214,8 @@ function requests(msg, sender, sendResponse) {
 
   function sendItadRequest(itemName) {
     fetch(
-      `https://isthereanydeal.com/game/${itemName}/history/?country=${region}&shop%5B%5D=steam&generate=Select+Stores`,
-    )
+        `https://isthereanydeal.com/game/${itemName}/history/?country=${region}&shop%5B%5D=steam&generate=Select+Stores`,
+      )
       .then((response) => response.text())
       .then((text) => {
         clearTimeout(itadError);
@@ -240,8 +240,8 @@ function requests(msg, sender, sendResponse) {
   function itad() {
     if (!bundle) {
       fetch(
-        `https://api.isthereanydeal.com/v02/game/plain/?key=2a0a6baa1713e7be64e451ab1b863b988ce63455&shop=steam&game_id=app%2F${msg.id}`,
-      )
+          `https://api.isthereanydeal.com/v02/game/plain/?key=2a0a6baa1713e7be64e451ab1b863b988ce63455&shop=steam&game_id=app%2F${msg.id}`,
+        )
         .then((response) => response.text())
         .then((text) => {
           const gameName = text.match(/"plain":"(.+?)"/)[1];
@@ -250,8 +250,8 @@ function requests(msg, sender, sendResponse) {
     } else {
       const type = (bundle === 'sub' || bundle === 'appSub') ? 'sub' : 'bundle';
       fetch(`https://isthereanydeal.com/steam/${type}/${msg.id}/`, {
-        method: 'HEAD',
-      })
+          method: 'HEAD',
+        })
         .then((response) => {
           const bundleName = response.url.split('/')[4];
           sendItadRequest(bundleName);
@@ -273,12 +273,12 @@ function requests(msg, sender, sendResponse) {
 
   function hltbRequest(callback) {
     fetch('https://howlongtobeat.com/search_results.php', {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/x-www-form-urlencoded',
-      },
-      body: `queryString=${name}&t=games&sorthead=popular&sortd='Normal Order'`,
-    })
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/x-www-form-urlencoded',
+        },
+        body: `queryString=${name}&t=games&sorthead=popular&sortd='Normal Order'`,
+      })
       .then((response) => response.text())
       .then((text) => callback(text));
   }
@@ -303,7 +303,7 @@ function requests(msg, sender, sendResponse) {
   function hltb() {
     if (button) {
       if (msg.lang.startsWith('en') || bundle || msg.notGame) {
-        name = name.replace(/[^\w\s:',-]/gi, '');
+        name = name.replace(/[^\w\s:',-]/gi, '').replace(/[:-] /g, ' ');
         sendHltbRequest();
       } else {
         fetch(`https://steamspy.com/api.php?request=appdetails&appid=${msg.id}`)
@@ -319,7 +319,7 @@ function requests(msg, sender, sendResponse) {
                 });
               }
             } else {
-              name = findName[1].replace(/[^\w\s:',-]/gi, '');
+              name = findName[1].replace(/[^\w\s:',-]/gi, '').replace(/[:-] /g, ' ');
               sendHltbRequest();
             }
           });

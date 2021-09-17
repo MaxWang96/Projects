@@ -6,7 +6,7 @@ body {
   min-width: 150px;
   font-size: 15px;
   color: rgb(79, 148, 188);
-  height: 85px;
+  height: 125px;
   user-select: none;
 }
 *:focus {
@@ -33,7 +33,6 @@ input.switch {
   border-radius: 10px;
   box-shadow: inset -10px 0 0 0 #e5e5e5;
   transition-duration: var(--transition-time);
-  z-index: -1;
 }
 input.switch:after {
   content: "";

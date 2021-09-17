@@ -8,11 +8,19 @@
 </p>
 <br>
 
-## Install
+## Installation
 
-### Through the Internet
+### Install Through the Internet
 
-[Download on the Chrome Web Store.](https://chrome.google.com/webstore/detail/steam-price-chart/dbdjojacadfodjhofhmlaomimkgogcmc)
+Download on the [Chrome Web Store](https://chrome.google.com/webstore/detail/steam-price-chart/dbdjojacadfodjhofhmlaomimkgogcmc) (Compatible with Microsoft Edge and Opera).
+
+### Local Install
+
+1. Download this repo as a ZIP file.
+2. Unzip the file.
+3. Go to the browser's extensions page.
+4. Enable Developer Mode.
+5. Click "Load unpacked" button and select "Steam-Price-Chart-master/src". You can also install by dragging "Steam-Price-Chart-master/src" onto the page.
 
 ## Important Notes
 

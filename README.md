@@ -8,6 +8,10 @@
 </p>
 <br>
 
+## Install
+
+### Through the Internet
+
 ## Important Notes
 
 - The extension currently supports three Steam store regions: United States, China, and EU1*. Support for other regions might be added depending on user demands.

@@ -8,6 +8,12 @@
 </p>
 <br>
 
+## Install
+
+### Through the Internet
+
+[Download on the Chrome Web Store.](https://chrome.google.com/webstore/detail/steam-price-chart/dbdjojacadfodjhofhmlaomimkgogcmc)
+
 ## Important Notes
 
 - The extension currently supports three Steam store regions: United States, China, and EU1*. Support for other regions might be added depending on user demands.

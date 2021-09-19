@@ -3,7 +3,7 @@
         "message": "Steam Price Chart"
     },
     "extensionDescription": {
-        "message": "Adds price history charts for items to the Steam store pages."
+        "message": "Adds price (sale) history charts for games and other items to the Steam webpages."
     },
     "extensionTitle": {
         "message": "Steam Price Chart automatically loads on supported Steam store pages"

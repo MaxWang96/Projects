@@ -4,7 +4,7 @@
         "description": "扩展名称"
     },
     "extensionDescription": {
-        "message": "在Steam网页内插入商品价格历史图。",
+        "message": "在Steam网页内插入游戏及其它商品价格（促销）历史图。",
         "description": "扩展简介"
     },
     "extensionTitle": {

@@ -12,7 +12,7 @@
 
 ### Install Through the Internet
 
-Download on the [Chrome Web Store](https://chrome.google.com/webstore/detail/steam-price-chart/dbdjojacadfodjhofhmlaomimkgogcmc) (Compatible with Microsoft Edge and Opera).
+Download on the [Chrome Web Store](https://chrome.google.com/webstore/detail/steam-price-chart/dbdjojacadfodjhofhmlaomimkgogcmc) or [Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/steam-price-chart/ooejiddmppmcbkekgpgcfiggcacofifh).
 
 ### Local Install
 

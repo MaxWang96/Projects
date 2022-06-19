@@ -272,7 +272,7 @@ function requests(msg, sender, sendResponse) {
   }
 
   function hltbRequest(callback) {
-    fetch('https://howlongtobeat.com/search_results.php', {
+    fetch('https://howlongtobeat.com/search_results', {
         method: 'POST',
         headers: {
           'Content-type': 'application/x-www-form-urlencoded',

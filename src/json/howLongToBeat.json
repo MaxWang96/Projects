@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "priority": 10,
+    "action": {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        {
+          "header": "referer",
+          "operation": "set",
+          "value": "https://howlongtobeat.com"
+        }
+      ]
+    },
+    "condition": {
+      "initiatorDomains": [
+        "ooejiddmppmcbkekgpgcfiggcacofifh",
+        "dbdjojacadfodjhofhmlaomimkgogcmc",
+        "plfjmglhgmnihokmopgfngneodaeeaab"
+      ],
+      "urlFilter": "https://howlongtobeat.com/search_results*"
+    }
+  }
+]
